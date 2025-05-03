@@ -10,6 +10,7 @@ public class BulletBehavior : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             GameObject.FindGameObjectWithTag("Player").GetComponent<TimerManager>().timeLeft += collision.gameObject.GetComponent<TimerManager>().timeLeft;
+            Destroy(collision.gameObject.GetComponent<TimerManager>().timerText.gameObject);
             Destroy(collision.gameObject);
             Destroy(gameObject);
         }

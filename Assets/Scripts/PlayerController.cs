@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,11 +10,16 @@ public class PlayerController : MonoBehaviour
     public float bulletSpeed = 10f;
     public float bulletSpawnOffset = 1f;
     public float shootCooldown = 0.5f;
+    public int scoreFromCoins = 1;
     public Vector2 playerMovement;
+
+    public int score = 0;
 
     public InputActionAsset playerInputActions;
 
     public GameObject bullet;
+
+    private TMP_Text coinCounter;
 
     private float lastShootTime = -1f;
 
@@ -25,6 +31,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        coinCounter = GameObject.FindGameObjectWithTag("CoinCounter").GetComponent<TMP_Text>();
         moveAction = playerInputActions.FindAction("Move");
         shootAction = playerInputActions.FindAction("Shoot");
     }
@@ -37,6 +44,11 @@ public class PlayerController : MonoBehaviour
     private void OnDisable()
     {
         playerInputActions.Disable();
+    }
+
+    private void Start()
+    {
+        UpdateCoinCounter();
     }
 
     void Update()
@@ -66,8 +78,27 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            gameObject.GetComponent<TimerManager>().timeLeft -= collision.gameObject.GetComponent<TimerManager>().timeLeft;
+            if(score > 0)
+            {
+                score--;
+            }
+            else
+            {
+                gameObject.GetComponent<TimerManager>().timeLeft -= Mathf.Max(collision.gameObject.GetComponent<TimerManager>().timeLeft, 20);
+            }
+            Destroy(collision.gameObject.GetComponent<TimerManager>().timerText.gameObject);
             Destroy(collision.gameObject);
         }
+        else if (collision.gameObject.CompareTag("Coin"))
+        {
+            score += scoreFromCoins;
+            UpdateCoinCounter();
+            Destroy(collision.gameObject);
+        }
+    }
+
+    private void UpdateCoinCounter()
+    {
+        coinCounter.text = "Coins: " + score.ToString();
     }
 }
