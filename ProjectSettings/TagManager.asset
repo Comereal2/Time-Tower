@@ -9,6 +9,8 @@ TagManager:
   - Enemy
   - Coin
   - CoinCounter
+  - RoomContainer
+  - ShopCanvas
   layers:
   - Default
   - TransparentFX

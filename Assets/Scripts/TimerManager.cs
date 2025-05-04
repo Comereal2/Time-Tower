@@ -12,8 +12,10 @@ public class TimerManager : MonoBehaviour
     public TMP_Text timerText;
     private Canvas timerCanvas;
     private PlayerController playerController;
+    private Enemy enemy;
     public float timeLeft;
     public float bonusTimeFromCoins = 20f;
+    public bool canAutoConvertScoreToTime = true;
 
     private void Awake()
     {
@@ -21,6 +23,12 @@ public class TimerManager : MonoBehaviour
         if (GetComponent<PlayerController>() != null)
         {
             playerController = GetComponent<PlayerController>();
+            timeLeft = 60f;
+        }
+        else
+        {
+            enemy = GetComponent<Enemy>();
+            timeLeft = enemy.spawnTime;
         }
     }
 
@@ -38,12 +46,18 @@ public class TimerManager : MonoBehaviour
         {
             if(playerController != null)
             {
-                if (playerController.score > 0)
+                if (playerController.score > 0 && canAutoConvertScoreToTime)
                 {
                     playerController.score--;
                     timeLeft += bonusTimeFromCoins;
                     return;
                 }
+            }
+            else if(enemy.health > 1)
+            {
+                enemy.health--;
+                timeLeft += 15f;
+                return;
             }
             Destroy(timerText.gameObject);
             Destroy(gameObject);
