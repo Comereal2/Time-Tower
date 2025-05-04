@@ -18,5 +18,5 @@ MonoBehaviour:
   bulletTravelSpeed: 0
   isRanged: 0
   meleeRange: {x: 2, y: 1}
-  weaponEquipped: {fileID: 0}
+  weaponEquipped: {fileID: 21300000, guid: 5385849d31af2e94186dc46e81e8fe5d, type: 3}
   weaponDropped: {fileID: 21300000, guid: 47bb97bc4cfbee34f86fef619f372b48, type: 3}

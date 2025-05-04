@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+using System;
 using System.Reflection;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using static Modifier;
 
 public class PlayerController : MonoBehaviour
 {
@@ -30,7 +29,7 @@ public class PlayerController : MonoBehaviour
     private bool hasRangedWeapon = false;
     private float speed = 5f;
     private float bulletSpeed;
-    private float bulletSpawnOffset;
+    private float bulletSpawnOffset = 1f;
     private float shootCooldown;
     private float bulletDespawnTime;
     public float timeConsumeSpeed = 1f;
@@ -43,11 +42,14 @@ public class PlayerController : MonoBehaviour
     private InputAction moveAction;
     private InputAction shootAction;
     private InputAction equipAction;
+    private GameObject emptyGameObject;
 
     private Rigidbody2D rb;
-
+    
     private void Awake()
     {
+        emptyGameObject = new GameObject("Empty");
+        emptyGameObject.AddComponent<Text>();
         rb = GetComponent<Rigidbody2D>();
         coinCounter = GameObject.FindGameObjectWithTag("CoinCounter").GetComponent<TMP_Text>();
         moveAction = playerInputActions.FindAction("Move");
@@ -111,18 +113,23 @@ public class PlayerController : MonoBehaviour
                 {
                     PlaySound(attackMeleeSFX);
                 }
+                GameObject weaponObject = Instantiate(emptyGameObject, (Vector2)transform.position + direction, Quaternion.LookRotation(Vector3.forward, direction), transform);
+                SpriteRenderer spriteRenderer = weaponObject.AddComponent<SpriteRenderer>();
+                spriteRenderer.sprite = equippedWeapon.weaponEquipped;
+                float scaleFactor = (meleeRange.magnitude - 1) / meleeRange.magnitude;
+                weaponObject.transform.localScale = new Vector3(scaleFactor, scaleFactor, 1f);
+                Destroy(weaponObject, shootCooldown * 0.7f);
             }
-            Sprite spawnedWeapon = Instantiate(equippedWeapon.weaponEquipped, spawnPosition, Quaternion.LookRotation(Vector3.forward, direction));
-            Destroy(spawnedWeapon, 0.5f);
         }
         if (equipAction.triggered)
         {
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1f); // Adjust radius as needed  
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1f);
             foreach (var collider in colliders)
             {
                 if (collider.CompareTag("Weapon"))
                 {
-                    //UpdateWeaponStats(collider);
+                    UpdateWeaponStats(Resources.Load<Weapon>("Data/Weapons/"+collider.GetComponent<Text>().text));
+                    Destroy(collider.gameObject);
                     break;
                 }
             }
@@ -138,13 +145,27 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
+            var timerManager = gameObject.GetComponent<TimerManager>();
+            if (collision.gameObject.GetComponent<Enemy>().isBoss)
+            {
+                rb.AddForce(((Vector2)collision.transform.position - rb.position) * 3f, ForceMode2D.Impulse);
+                if (score > 0)
+                {
+                    score--;
+                }
+                else
+                {
+                    timerManager.timeLeft -= 20f;
+                }
+                return;
+            }
             if(score > 0)
             {
                 score--;
             }
             else
             {
-                gameObject.GetComponent<TimerManager>().timeLeft -= Mathf.Max(collision.gameObject.GetComponent<TimerManager>().timeLeft, 20);
+                timerManager.timeLeft -= Mathf.Max(collision.gameObject.GetComponent<TimerManager>().timeLeft, 20);
             }
             Destroy(collision.gameObject.GetComponent<TimerManager>().timerText.gameObject);
             Destroy(collision.gameObject);
@@ -163,14 +184,31 @@ public class PlayerController : MonoBehaviour
         coinCounter.text = "Coins:" + score.ToString();
     }
 
-    public void ChangeVariable(string name, float change)
+    public void ChangeVariable(string name, float change, ModifierType modifierType)
     {
-        if(name == "timeLeft")
+        if (name == "timeLeft")
         {
-            gameObject.GetComponent<TimerManager>().timeLeft += change;
+            var timerManager = gameObject.GetComponent<TimerManager>();
+            switch (modifierType)
+            {
+                case ModifierType.Add:
+                    timerManager.timeLeft += change;
+                    break;
+                case ModifierType.Subtract:
+                    timerManager.timeLeft -= change;
+                    break;
+                case ModifierType.Multiply:
+                    timerManager.timeLeft *= change;
+                    break;
+                case ModifierType.Divide:
+                    if (change != 0)
+                        timerManager.timeLeft /= change;
+                    break;
+            }
             return;
         }
-        var field = GetType().GetField(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+        var field = GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
         if (field == null)
         {
             Debug.LogWarning($"Field '{name}' not found in {GetType().Name}.");
@@ -180,12 +218,42 @@ public class PlayerController : MonoBehaviour
         if (field.FieldType == typeof(float))
         {
             float currentValue = (float)field.GetValue(this);
-            field.SetValue(this, currentValue + change);
+            switch (modifierType)
+            {
+                case ModifierType.Add:
+                    field.SetValue(this, currentValue + change);
+                    break;
+                case ModifierType.Subtract:
+                    field.SetValue(this, currentValue - change);
+                    break;
+                case ModifierType.Multiply:
+                    field.SetValue(this, currentValue * change);
+                    break;
+                case ModifierType.Divide:
+                    if (change != 0)
+                        field.SetValue(this, currentValue / change);
+                    break;
+            }
         }
         else if (field.FieldType == typeof(int))
         {
             int currentValue = (int)field.GetValue(this);
-            field.SetValue(this, currentValue + (int)change);
+            switch (modifierType)
+            {
+                case ModifierType.Add:
+                    field.SetValue(this, currentValue + (int)change);
+                    break;
+                case ModifierType.Subtract:
+                    field.SetValue(this, currentValue - (int)change);
+                    break;
+                case ModifierType.Multiply:
+                    field.SetValue(this, currentValue * (int)change);
+                    break;
+                case ModifierType.Divide:
+                    if (change != 0)
+                        field.SetValue(this, currentValue / (int)change);
+                    break;
+            }
         }
         else
         {
@@ -205,7 +273,7 @@ public class PlayerController : MonoBehaviour
         shootCooldown -= equippedWeapon.attackCooldown;
         bulletSpeed -= equippedWeapon.bulletTravelSpeed;
         bulletDespawnTime -= equippedWeapon.attackDespawnTime;
-        DropWeapon(equippedWeapon);
+        DropWeapon(equippedWeapon, gameObject.transform);
         equippedWeapon = newWeapon;
         bulletDamage += equippedWeapon.baseDamage;
         shootCooldown += equippedWeapon.attackCooldown;
@@ -215,11 +283,13 @@ public class PlayerController : MonoBehaviour
         meleeRange = equippedWeapon.meleeRange;
     }
 
-    private void DropWeapon(Weapon weapon)
+    public void DropWeapon(Weapon weapon, Transform transform)
     {
-        GameObject droppedWeapon = Instantiate(new GameObject(), gameObject.transform.position, Quaternion.identity, GameObject.FindGameObjectWithTag("RoomContainer").transform);
+        GameObject droppedWeapon = Instantiate(emptyGameObject, transform.position, Quaternion.identity, GameObject.FindGameObjectWithTag("RoomContainer").transform);
         droppedWeapon.AddComponent<SpriteRenderer>().sprite = weapon.weaponDropped;
         droppedWeapon.AddComponent<BoxCollider2D>().isTrigger = true;
         droppedWeapon.tag = "Weapon";
+        droppedWeapon.GetComponent<Text>().text = weapon.name;
+        droppedWeapon.transform.localScale = new Vector3(0.3f, 0.3f, 1f);
     }
 }

@@ -6,13 +6,18 @@ public class Modifier : ScriptableObject
 {
     public string modifiedVariable = "timeLeft";
     public float modifierValue = 20f;
+    public enum ModifierType
+    {
+        Add, Subtract, Multiply, Divide
+    }
+    public ModifierType modifierType;
     public string modifiedVariableVisibleDescription = "";
 
     private static readonly Dictionary<string, string> variableDescriptionMap = new Dictionary<string, string>
-   {
-       { "timeLeft", "Time" },
-       { "speed", "Movement Speed" }
-   };
+    {
+        { "timeLeft", "Time" },
+        { "speed", "Movement Speed" }
+    };
 
     private void Awake()
     {
@@ -25,7 +30,21 @@ public class Modifier : ScriptableObject
             modifiedVariableVisibleDescription = "Unknown Variable";
         }
         modifiedVariableVisibleDescription += ": ";
-        modifiedVariableVisibleDescription += modifierValue > 0 ? "+" : "-";
-        modifiedVariableVisibleDescription += ((int)modifierValue).ToString();
+        switch (modifierType)
+        {
+            case ModifierType.Add:
+                modifiedVariableVisibleDescription += "+";
+                break;
+            case ModifierType.Subtract:
+                modifiedVariableVisibleDescription += "-";
+                break;
+            case ModifierType.Multiply:
+                modifiedVariableVisibleDescription += "*";
+                break;
+            case ModifierType.Divide:
+                modifiedVariableVisibleDescription += "/";
+                break;
+        }
+        modifiedVariableVisibleDescription += modifierValue.ToString();
     }
 }

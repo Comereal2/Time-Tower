@@ -9,7 +9,7 @@ public class Weapon : ScriptableObject
     public float attackDespawnTime = 0;
     public float bulletTravelSpeed = 0;
     public bool isRanged = false;
-    public Vector2 meleeRange = new Vector2(0, 0);
+    public Vector2 meleeRange = new Vector2(1, 1);
     public Sprite weaponEquipped;
     public Sprite weaponDropped;
 }

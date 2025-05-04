@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: SpeedLow
   m_EditorClassIdentifier: 
   modifiedVariable: speed
-  modifierValue: 2
-  modifiedVariableVisibleDescription: 
+  modifierValue: 1.2
+  modifierType: 2
+  modifiedVariableVisibleDescription: 'Movement Speed: *1.2'

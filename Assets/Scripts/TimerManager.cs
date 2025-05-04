@@ -40,8 +40,11 @@ public class TimerManager : MonoBehaviour
     private void Update()
     {
         timerText.transform.position = Camera.main.WorldToScreenPoint(transform.position);
-        if (playerController != null && playerController.playerMovement != Vector2.zero) timeLeft -= Time.deltaTime * playerController.timeConsumeSpeed;
-        else timeLeft -= Time.deltaTime;
+        if (playerController != null)
+        { 
+            if (playerController.playerMovement != Vector2.zero) timeLeft -= Time.deltaTime * playerController.timeConsumeSpeed; 
+        }
+        else if (!enemy.isBoss) timeLeft -= Time.deltaTime;
         if(timeLeft <= 0)
         {
             if(playerController != null)

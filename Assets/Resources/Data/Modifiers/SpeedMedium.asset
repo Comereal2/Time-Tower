@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: SpeedMedium
   m_EditorClassIdentifier: 
   modifiedVariable: speed
-  modifierValue: 3
-  modifiedVariableVisibleDescription: 
+  modifierValue: 1.5
+  modifierType: 2
+  modifiedVariableVisibleDescription: 'Movement Speed: +3'

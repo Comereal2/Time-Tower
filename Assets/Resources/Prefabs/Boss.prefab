@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 4268097387431131939}
   - component: {fileID: 289312738905389095}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: Boss
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33,7 +33,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -146,11 +146,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc1c4f8d4a406c24e8f2ef7debb03763, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 1
-  speed: 3
-  spawnTime: 30
-  hasCoin: 0
-  isBoss: 0
+  health: 30
+  speed: 2
+  spawnTime: 100
+  hasCoin: 1
+  isBoss: 1
   equippedWeapon: {fileID: 11400000, guid: c55dc6f365b72eb49888f7d91b6bc984, type: 2}
 --- !u!114 &4363293796137045969
 MonoBehaviour:
