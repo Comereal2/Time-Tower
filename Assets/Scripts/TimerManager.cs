@@ -40,7 +40,7 @@ public class TimerManager : MonoBehaviour
     private void Update()
     {
         timerText.transform.position = Camera.main.WorldToScreenPoint(transform.position);
-        if (playerController != null) timeLeft -= Time.deltaTime * Mathf.Sqrt(Mathf.Pow(playerController.playerMovement.x, 2) + Mathf.Pow(playerController.playerMovement.y, 2));
+        if (playerController != null && playerController.playerMovement != Vector2.zero) timeLeft -= Time.deltaTime * playerController.timeConsumeSpeed;
         else timeLeft -= Time.deltaTime;
         if(timeLeft <= 0)
         {

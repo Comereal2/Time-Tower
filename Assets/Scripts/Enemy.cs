@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Enemy", menuName = "Object/Enemy")]
-
 public class Enemy : MonoBehaviour
 {
     public int health = 1;

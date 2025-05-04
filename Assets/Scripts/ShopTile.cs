@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -8,9 +9,7 @@ public class ShopTile : MonoBehaviour
     public GameObject itemTooltipPrefab;
     public int cost = 1;
     public string itemName = "PlaceholderName";
-    public string itemDescription = "PlaceholderDescription";
-    public string modifierName = "timeLeft";
-    public float modifierValue = 20f;
+    public Modifier[] modifiers;
 
     private TMP_Text itemTooltip;
     private Canvas shopCanvas;
@@ -23,9 +22,14 @@ public class ShopTile : MonoBehaviour
 
     private void Start()
     {
+        string itemDescription = "";
+        foreach(var modifier in modifiers)
+        {
+            itemDescription += modifier.modifiedVariableVisibleDescription + '\n';
+        }
         itemTooltipPrefab = Instantiate(itemTooltipPrefab, shopCanvas.transform);
         itemTooltip = itemTooltipPrefab.GetComponentInChildren<TMP_Text>();
-        itemTooltip.text = "<b><size=30>" + itemName + "</size></b> - Cost: " + cost + '\n' + "<size=14>" + itemDescription + "</size>";
+        itemTooltip.text = "<size=72><b>" + itemName + " - Cost: " + cost + "</b></size>" + '\n' + "<size=56>" + itemDescription + "</size>";
     }
 
     private void Update()
@@ -40,7 +44,10 @@ public class ShopTile : MonoBehaviour
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
             if (player.score < cost) return;
             player.ChangeScore(-cost);
-            player.ChangeVariable(modifierName, modifierValue);
+            foreach(var modifier in modifiers)
+            {
+                player.ChangeVariable(modifier.modifiedVariable, modifier.modifierValue);
+            }
         }
     }
 }

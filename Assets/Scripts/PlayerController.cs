@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -32,6 +33,7 @@ public class PlayerController : MonoBehaviour
     private float bulletSpawnOffset;
     private float shootCooldown;
     private float bulletDespawnTime;
+    public float timeConsumeSpeed = 1f;
     public int bulletDamage { get; private set; }
     private int scoreFromCoins = 1;
     private Vector2 meleeRange;
@@ -40,6 +42,7 @@ public class PlayerController : MonoBehaviour
 
     private InputAction moveAction;
     private InputAction shootAction;
+    private InputAction equipAction;
 
     private Rigidbody2D rb;
 
@@ -49,6 +52,7 @@ public class PlayerController : MonoBehaviour
         coinCounter = GameObject.FindGameObjectWithTag("CoinCounter").GetComponent<TMP_Text>();
         moveAction = playerInputActions.FindAction("Move");
         shootAction = playerInputActions.FindAction("Shoot");
+        equipAction = playerInputActions.FindAction("Equip");
         equippedWeapon = new Weapon();
     }
 
@@ -68,7 +72,7 @@ public class PlayerController : MonoBehaviour
         UpdateWeaponStats(Resources.Load<Weapon>("Data/Weapons/Default"));
     }
         
-void Update()
+    void Update()
     {
         playerMovement = moveAction.ReadValue<Vector2>();
         if (shootAction.triggered && Time.time >= lastShootTime + shootCooldown)
@@ -108,8 +112,20 @@ void Update()
                     PlaySound(attackMeleeSFX);
                 }
             }
-            Sprite spawnedWeapon = Instantiate(equippedWeapon.weapon, spawnPosition, Quaternion.LookRotation(Vector3.forward, direction));
+            Sprite spawnedWeapon = Instantiate(equippedWeapon.weaponEquipped, spawnPosition, Quaternion.LookRotation(Vector3.forward, direction));
             Destroy(spawnedWeapon, 0.5f);
+        }
+        if (equipAction.triggered)
+        {
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1f); // Adjust radius as needed  
+            foreach (var collider in colliders)
+            {
+                if (collider.CompareTag("Weapon"))
+                {
+                    //UpdateWeaponStats(collider);
+                    break;
+                }
+            }
         }
     }
 
@@ -144,7 +160,7 @@ void Update()
     public void ChangeScore(int change)
     {
         score += change;
-        coinCounter.text = "Coins: " + score.ToString();
+        coinCounter.text = "Coins:" + score.ToString();
     }
 
     public void ChangeVariable(string name, float change)
@@ -189,6 +205,7 @@ void Update()
         shootCooldown -= equippedWeapon.attackCooldown;
         bulletSpeed -= equippedWeapon.bulletTravelSpeed;
         bulletDespawnTime -= equippedWeapon.attackDespawnTime;
+        DropWeapon(equippedWeapon);
         equippedWeapon = newWeapon;
         bulletDamage += equippedWeapon.baseDamage;
         shootCooldown += equippedWeapon.attackCooldown;
@@ -196,5 +213,13 @@ void Update()
         bulletDespawnTime += equippedWeapon.attackDespawnTime;
         hasRangedWeapon = equippedWeapon.isRanged;
         meleeRange = equippedWeapon.meleeRange;
+    }
+
+    private void DropWeapon(Weapon weapon)
+    {
+        GameObject droppedWeapon = Instantiate(new GameObject(), gameObject.transform.position, Quaternion.identity, GameObject.FindGameObjectWithTag("RoomContainer").transform);
+        droppedWeapon.AddComponent<SpriteRenderer>().sprite = weapon.weaponDropped;
+        droppedWeapon.AddComponent<BoxCollider2D>().isTrigger = true;
+        droppedWeapon.tag = "Weapon";
     }
 }

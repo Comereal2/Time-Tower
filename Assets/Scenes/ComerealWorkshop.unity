@@ -485,8 +485,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Coins: {SCORE}'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c9fc215e69d5c8342bb5093035623756, type: 2}
+  m_sharedMaterial: {fileID: -819629961202747002, guid: c9fc215e69d5c8342bb5093035623756, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -510,8 +510,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 48
+  m_fontSizeBase: 48
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1298,6 +1298,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopTile
       objectReference: {fileID: 0}
+    - target: {fileID: 5058420197807633108, guid: b4a94b7ece76f9b4badfc409d7789403, type: 3}
+      propertyPath: itemName
+      value: Test Item
+      objectReference: {fileID: 0}
+    - target: {fileID: 5058420197807633108, guid: b4a94b7ece76f9b4badfc409d7789403, type: 3}
+      propertyPath: modifiers.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5058420197807633108, guid: b4a94b7ece76f9b4badfc409d7789403, type: 3}
+      propertyPath: modifiers.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 65e6b358efd5bdd4c9ec281afb816fcf, type: 2}
+    - target: {fileID: 5058420197807633108, guid: b4a94b7ece76f9b4badfc409d7789403, type: 3}
+      propertyPath: modifiers.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: f7cb386a21fc0104482be30aa631a0f7, type: 2}
     - target: {fileID: 8025773476966730345, guid: b4a94b7ece76f9b4badfc409d7789403, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
