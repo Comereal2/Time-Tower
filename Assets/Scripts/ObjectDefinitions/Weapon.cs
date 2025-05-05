@@ -5,10 +5,12 @@ using UnityEngine;
 public class Weapon : ScriptableObject
 {
     public int baseDamage = 0;
+    public int numberOfAttacks = 1;
     public float attackCooldown = 0;
     public float attackDespawnTime = 0;
     public float bulletTravelSpeed = 0;
+    public float meleeRangeX = 1f;
     public bool isRanged = false;
-    public Vector2 meleeRange = new Vector2(0, 0);
-    public Sprite weapon;
+    public Sprite weaponEquipped;
+    public Sprite weaponDropped;
 }

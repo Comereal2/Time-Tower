@@ -17,4 +17,6 @@ MonoBehaviour:
   attackDespawnTime: 3
   bulletTravelSpeed: 3
   isRanged: 1
-  weapon: {fileID: 0}
+  meleeRange: {x: 1, y: 1}
+  weaponEquipped: {fileID: 0}
+  weaponDropped: {fileID: 21300000, guid: 1d3854923f25ce4439b24e0c30f43ad7, type: 3}

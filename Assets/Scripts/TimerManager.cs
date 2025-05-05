@@ -12,9 +12,8 @@ public class TimerManager : MonoBehaviour
     public TMP_Text timerText;
     private Canvas timerCanvas;
     private PlayerController playerController;
-    private Enemy enemy;
+    private EnemyBehavior enemy;
     public float timeLeft;
-    public float bonusTimeFromCoins = 20f;
     public bool canAutoConvertScoreToTime = true;
 
     private void Awake()
@@ -27,8 +26,8 @@ public class TimerManager : MonoBehaviour
         }
         else
         {
-            enemy = GetComponent<Enemy>();
-            timeLeft = enemy.spawnTime;
+            enemy = GetComponent<EnemyBehavior>();
+            timeLeft = enemy.enemyStats.spawnTime;
         }
     }
 
@@ -40,8 +39,11 @@ public class TimerManager : MonoBehaviour
     private void Update()
     {
         timerText.transform.position = Camera.main.WorldToScreenPoint(transform.position);
-        if (playerController != null) timeLeft -= Time.deltaTime * Mathf.Sqrt(Mathf.Pow(playerController.playerMovement.x, 2) + Mathf.Pow(playerController.playerMovement.y, 2));
-        else timeLeft -= Time.deltaTime;
+        if (playerController != null)
+        { 
+            if (playerController.playerMovement != Vector2.zero) timeLeft -= Time.deltaTime * playerController.timeConsumeSpeed; 
+        }
+        else if (!enemy.enemyStats.isBoss) timeLeft -= Time.deltaTime;
         if(timeLeft <= 0)
         {
             if(playerController != null)
@@ -49,13 +51,13 @@ public class TimerManager : MonoBehaviour
                 if (playerController.score > 0 && canAutoConvertScoreToTime)
                 {
                     playerController.score--;
-                    timeLeft += bonusTimeFromCoins;
+                    timeLeft += 20f;
                     return;
                 }
             }
-            else if(enemy.health > 1)
+            else if(enemy.enemyStats.health > 1)
             {
-                enemy.health--;
+                enemy.enemyStats.health--;
                 timeLeft += 15f;
                 return;
             }

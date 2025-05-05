@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3581225514839705365}
   - component: {fileID: 1044219637857194413}
+  - component: {fileID: 5811361662789150160}
   - component: {fileID: 5539492049059721869}
   - component: {fileID: 3193834156772938080}
-  - component: {fileID: 4601007530887029001}
   - component: {fileID: 4363293796137045969}
   - component: {fileID: 4268097387431131939}
   - component: {fileID: 289312738905389095}
@@ -90,6 +90,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &5811361662789150160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4085007481450457465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b843480d461fd040bb3c61c0336c084, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyStats: {fileID: 0}
 --- !u!114 &5539492049059721869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,23 +145,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 8861610108603505591, guid: 625ca50e8e66c1a448884303d7c50e70, type: 3}
   timeLeft: 0
-  bonusTimeFromCoins: 20
---- !u!114 &4601007530887029001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4085007481450457465}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc1c4f8d4a406c24e8f2ef7debb03763, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 1
-  speed: 3
-  spawnTime: 30
-  hasCoin: 0
+  canAutoConvertScoreToTime: 1
 --- !u!114 &4363293796137045969
 MonoBehaviour:
   m_ObjectHideFlags: 0
