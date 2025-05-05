@@ -150,11 +150,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e64711c3885110449ad428c39854e82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemTooltipPrefab: {fileID: 7662991394043528609, guid: 096cc0dded8d57d489f00561c44383e6, type: 3}
-  cost: 1
-  itemName: PlaceholderName
-  modifiers: []
-  itemIcon: {fileID: 21300000, guid: 1d3d898c8994f6c4885eb0f1f8bb65e6, type: 3}
+  item: {fileID: 0}
+  isOneTimeUse: 0
 --- !u!1 &3021473883555286880
 GameObject:
   m_ObjectHideFlags: 0
@@ -181,7 +178,7 @@ Transform:
   m_GameObject: {fileID: 3021473883555286880}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

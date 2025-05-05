@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Reflection;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -8,14 +10,13 @@ using static Modifier;
 
 public class PlayerController : MonoBehaviour
 {
+    #region ScriptVariables
     public Vector2 playerMovement;
 
     public AudioClip attackMeleeSFX;
     public AudioClip coinCollectSFX;
     public AudioClip enemyHurtSFX;
     public AudioClip enemyDefeatSFX;
-
-    public int score = 0;
 
     public InputActionAsset playerInputActions;
 
@@ -26,17 +27,6 @@ public class PlayerController : MonoBehaviour
 
     private Weapon equippedWeapon;
 
-    private bool hasRangedWeapon = false;
-    private float speed = 5f;
-    private float bulletSpeed;
-    private float bulletSpawnOffset = 1f;
-    private float shootCooldown;
-    private float bulletDespawnTime;
-    public float timeConsumeSpeed = 1f;
-    public int bulletDamage { get; private set; }
-    private int scoreFromCoins = 1;
-    private Vector2 meleeRange;
-
     private float lastShootTime = -1f;
 
     private InputAction moveAction;
@@ -45,7 +35,29 @@ public class PlayerController : MonoBehaviour
     private GameObject emptyGameObject;
 
     private Rigidbody2D rb;
-    
+    #endregion
+
+    public int score = 0;
+
+    #region Modifiers
+    private bool hasRangedWeapon = false;
+    private bool weirdBullets = false;
+    private bool bouncyBullets = false;
+    private float speed = 5f;
+    private float bulletSpeed;
+    private float bulletSpawnOffset = 1f;
+    private float shootCooldown;
+    private float bulletDespawnTime;
+    private float bonusTimeFromCoins;
+    private float bulletArch = 15f;
+    private float damageResistance = 1f;
+    public float timeConsumeSpeed = 1f;
+    public int bulletDamage;
+    private int scoreFromCoins = 1;
+    private int numberOfAttacks = 1;
+    private Vector2 meleeRange;
+    #endregion
+
     private void Awake()
     {
         emptyGameObject = new GameObject("Empty");
@@ -82,16 +94,34 @@ public class PlayerController : MonoBehaviour
             lastShootTime = Time.time;
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 direction = (mousePosition - (Vector2)transform.position).normalized;
-            Vector2 spawnPosition = (Vector2)transform.position + direction * bulletSpawnOffset;
+
             if (hasRangedWeapon)
             {
-                GameObject spawnedBullet = Instantiate(bullet, spawnPosition, Quaternion.identity);
-                Rigidbody2D bulletRb = spawnedBullet.GetComponent<Rigidbody2D>();
-                if (bulletRb != null)
+                float angleStep = numberOfAttacks > 1 ? bulletArch : 0f;
+                float startAngle = -angleStep * (numberOfAttacks - 1) / 2;
+
+                for (int i = 0; i < numberOfAttacks; i++)
                 {
-                    bulletRb.velocity = direction * bulletSpeed;
+                    float currentAngle = startAngle + i * angleStep;
+                    Vector2 bulletDirection = Quaternion.Euler(0, 0, currentAngle) * direction;
+                    Vector2 spawnPosition = (Vector2)transform.position + bulletDirection * bulletSpawnOffset;
+                    GameObject spawnedBullet = Instantiate(bullet, spawnPosition, Quaternion.identity);
+                    spawnedBullet.GetComponent<BulletBehavior>().bouncyBullets = bouncyBullets;
+                    Rigidbody2D bulletRb = spawnedBullet.GetComponent<Rigidbody2D>();
+                    if (bulletRb != null)
+                    {
+                        if (weirdBullets)
+                        {
+                            StartCoroutine(MoveBulletInSinPattern(bulletRb, bulletDirection));
+                        }
+                        else
+                        {
+                            bulletRb.velocity = bulletDirection * bulletSpeed;
+                        }
+                    }
+                    if (weirdBullets) StopCoroutine(MoveBulletInSinPattern(bulletRb, bulletDirection));
+                    Destroy(spawnedBullet, bulletDespawnTime);
                 }
-                Destroy(spawnedBullet, bulletDespawnTime);
             }
             else
             {
@@ -100,13 +130,15 @@ public class PlayerController : MonoBehaviour
                 float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                 Collider2D[] hitColliders = Physics2D.OverlapBoxAll(rectangleCenter, rectangleSize, angle);
                 bool enemyFound = false;
+                int currentAttack = 1;
                 foreach (var collider in hitColliders)
                 {
                     if (collider.CompareTag("Enemy"))
                     {
                         enemyFound = true;
-                        collider.GetComponent<Enemy>().Attacked();
-                        break;
+                        collider.GetComponent<EnemyBehavior>().Attacked();
+                        if (currentAttack == numberOfAttacks) break;
+                        currentAttack++;
                     }
                 }
                 if (enemyFound)
@@ -128,11 +160,24 @@ public class PlayerController : MonoBehaviour
             {
                 if (collider.CompareTag("Weapon"))
                 {
-                    UpdateWeaponStats(Resources.Load<Weapon>("Data/Weapons/"+collider.GetComponent<Text>().text));
+                    UpdateWeaponStats(Resources.Load<Weapon>("Data/Weapons/" + collider.GetComponent<Text>().text));
                     Destroy(collider.gameObject);
                     break;
                 }
             }
+        }
+    }
+
+    private IEnumerator MoveBulletInSinPattern(Rigidbody2D bulletRb, Vector2 direction)
+    {
+        float time = 0f;
+        while (bulletRb != null)
+        {
+            float sinOffset = Mathf.Sin(time * 10f) * 1.5f;
+            Vector2 sinMovement = new Vector2(-direction.y, direction.x) * sinOffset;
+            bulletRb.velocity = (direction * bulletSpeed) + sinMovement;
+            time += Time.deltaTime;
+            yield return null;
         }
     }
 
@@ -143,35 +188,37 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        var timerManager = gameObject.GetComponent<TimerManager>();
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            var timerManager = gameObject.GetComponent<TimerManager>();
-            if (collision.gameObject.GetComponent<Enemy>().isBoss)
+            var enemy = collision.gameObject.GetComponent<EnemyBehavior>();
+            if (enemy.enemyStats.isBoss)
             {
                 rb.AddForce(((Vector2)collision.transform.position - rb.position) * 3f, ForceMode2D.Impulse);
                 if (score > 0)
                 {
-                    score--;
+                    ChangeScore((int)((float)-enemy.enemyStats.health * enemy.enemyStats.damageMultiplier / damageResistance));
                 }
                 else
                 {
-                    timerManager.timeLeft -= 20f;
+                    timerManager.timeLeft -= 20f * enemy.enemyStats.damageMultiplier / damageResistance;
                 }
                 return;
             }
             if(score > 0)
             {
-                score--;
+                ChangeScore((int)((float)-enemy.enemyStats.health * enemy.enemyStats.damageMultiplier / damageResistance));
             }
             else
             {
-                timerManager.timeLeft -= Mathf.Max(collision.gameObject.GetComponent<TimerManager>().timeLeft, 20);
+                timerManager.timeLeft -= Mathf.Max(collision.gameObject.GetComponent<TimerManager>().timeLeft, 20) * enemy.enemyStats.damageMultiplier / damageResistance;
             }
             Destroy(collision.gameObject.GetComponent<TimerManager>().timerText.gameObject);
             Destroy(collision.gameObject);
         }
         else if (collision.gameObject.CompareTag("Coin"))
         {
+            timerManager.timeLeft += bonusTimeFromCoins;
             PlaySound(coinCollectSFX);
             ChangeScore(scoreFromCoins);
             Destroy(collision.gameObject);
@@ -184,103 +231,100 @@ public class PlayerController : MonoBehaviour
         coinCounter.text = "Coins:" + score.ToString();
     }
 
-    public void ChangeVariable(string name, float change, ModifierType modifierType)
+    //Use in places like Store to buff or nerf the player
+    public void ChangeVariable(Modifier modifier)
     {
-        if (name == "timeLeft")
+        if (modifier.modifiedVariable == "timeLeft")
         {
             var timerManager = gameObject.GetComponent<TimerManager>();
-            switch (modifierType)
+            switch (modifier.modifierType)
             {
                 case ModifierType.Add:
-                    timerManager.timeLeft += change;
+                    timerManager.timeLeft += modifier.modifierValue;
                     break;
                 case ModifierType.Subtract:
-                    timerManager.timeLeft -= change;
+                    timerManager.timeLeft -= modifier.modifierValue;
                     break;
                 case ModifierType.Multiply:
-                    timerManager.timeLeft *= change;
-                    break;
-                case ModifierType.Divide:
-                    if (change != 0)
-                        timerManager.timeLeft /= change;
+                    timerManager.timeLeft *= modifier.modifierValue;
                     break;
             }
             return;
         }
 
-        var field = GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+        var field = GetType().GetField(modifier.modifiedVariable, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
         if (field == null)
         {
-            Debug.LogWarning($"Field '{name}' not found in {GetType().Name}.");
+            Debug.LogWarning($"Field '{modifier.modifiedVariable}' not found in {GetType()}.");
             return;
         }
 
         if (field.FieldType == typeof(float))
         {
             float currentValue = (float)field.GetValue(this);
-            switch (modifierType)
+            switch (modifier.modifierType)
             {
                 case ModifierType.Add:
-                    field.SetValue(this, currentValue + change);
+                    field.SetValue(this, currentValue + modifier.modifierValue);
                     break;
                 case ModifierType.Subtract:
-                    field.SetValue(this, currentValue - change);
+                    field.SetValue(this, currentValue - modifier.modifierValue);
                     break;
                 case ModifierType.Multiply:
-                    field.SetValue(this, currentValue * change);
-                    break;
-                case ModifierType.Divide:
-                    if (change != 0)
-                        field.SetValue(this, currentValue / change);
+                    field.SetValue(this, currentValue * modifier.modifierValue);
                     break;
             }
         }
         else if (field.FieldType == typeof(int))
         {
             int currentValue = (int)field.GetValue(this);
-            switch (modifierType)
+            switch (modifier.modifierType)
             {
                 case ModifierType.Add:
-                    field.SetValue(this, currentValue + (int)change);
+                    field.SetValue(this, currentValue + (int)modifier.modifierValue);
                     break;
                 case ModifierType.Subtract:
-                    field.SetValue(this, currentValue - (int)change);
+                    field.SetValue(this, currentValue - (int)modifier.modifierValue);
                     break;
                 case ModifierType.Multiply:
-                    field.SetValue(this, currentValue * (int)change);
-                    break;
-                case ModifierType.Divide:
-                    if (change != 0)
-                        field.SetValue(this, currentValue / (int)change);
+                    field.SetValue(this, currentValue * (int)modifier.modifierValue);
                     break;
             }
         }
+        else if (field.FieldType == typeof(bool))
+        {
+            field.SetValue(this, (modifier.modifierValue == 0 ? false : true));
+        }
         else
         {
-            Debug.LogWarning($"Field '{name}' is of unsupported type '{field.FieldType}'.");
+            Debug.LogWarning($"Field '{modifier.modifiedVariable}' is of unsupported type '{field.FieldType}'.");
         }
     }
 
+    //Play sound directly to the camera on the player
     public void PlaySound(AudioClip clip)
     {
         AudioSource audioSource = Camera.main.GetComponent<AudioSource>();
         audioSource.PlayOneShot(clip);
     }
 
+    //Execute to give player new weapon
     public void UpdateWeaponStats(Weapon newWeapon)
     {
         bulletDamage -= equippedWeapon.baseDamage;
         shootCooldown -= equippedWeapon.attackCooldown;
         bulletSpeed -= equippedWeapon.bulletTravelSpeed;
         bulletDespawnTime -= equippedWeapon.attackDespawnTime;
+        numberOfAttacks -= equippedWeapon.numberOfAttacks;
         DropWeapon(equippedWeapon, gameObject.transform);
         equippedWeapon = newWeapon;
         bulletDamage += equippedWeapon.baseDamage;
         shootCooldown += equippedWeapon.attackCooldown;
         bulletSpeed += equippedWeapon.bulletTravelSpeed;
         bulletDespawnTime += equippedWeapon.attackDespawnTime;
+        numberOfAttacks += equippedWeapon.numberOfAttacks;
         hasRangedWeapon = equippedWeapon.isRanged;
-        meleeRange = equippedWeapon.meleeRange;
+        meleeRange.x = equippedWeapon.meleeRangeX;
     }
 
     public void DropWeapon(Weapon weapon, Transform transform)

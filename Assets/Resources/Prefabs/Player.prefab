@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4626242397403359357}
   - component: {fileID: 1015275897447953776}
   - component: {fileID: 7908050059296474027}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -178,10 +178,12 @@ MonoBehaviour:
   coinCollectSFX: {fileID: 8300000, guid: 533d3fb52c471964ebed6510e61b9592, type: 3}
   enemyHurtSFX: {fileID: 8300000, guid: 99f4c47bb63c5b849a09e0b1cd26212f, type: 3}
   enemyDefeatSFX: {fileID: 8300000, guid: 6c66257e41d76c94181a568d2e4a3fbb, type: 3}
-  score: 0
   playerInputActions: {fileID: -944628639613478452, guid: fc4fa63dc9cc29f4eb959f3150bf0ac1, type: 3}
   bullet: {fileID: 8428211483359946682, guid: 2a5ef3bda870e664d99aa16739b75a7a, type: 3}
   coin: {fileID: 5267191078095984278, guid: 4fc509928d646bf46a192cf5a7064fb2, type: 3}
+  score: 0
+  timeConsumeSpeed: 1
+  bulletDamage: 0
 --- !u!114 &7908050059296474027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,7 +198,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 8861610108603505591, guid: 625ca50e8e66c1a448884303d7c50e70, type: 3}
   timeLeft: 0
-  bonusTimeFromCoins: 20
+  canAutoConvertScoreToTime: 1
 --- !u!1 &7138454381763495511
 GameObject:
   m_ObjectHideFlags: 0
@@ -209,7 +211,7 @@ GameObject:
   - component: {fileID: 3547734254952699724}
   - component: {fileID: 1948574948996822395}
   - component: {fileID: 4967385010764273471}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}

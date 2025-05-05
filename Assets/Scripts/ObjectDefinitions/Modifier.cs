@@ -8,15 +8,30 @@ public class Modifier : ScriptableObject
     public float modifierValue = 20f;
     public enum ModifierType
     {
-        Add, Subtract, Multiply, Divide
+        Add, Subtract, Multiply
     }
     public ModifierType modifierType;
     public string modifiedVariableVisibleDescription = "";
 
-    private static readonly Dictionary<string, string> variableDescriptionMap = new Dictionary<string, string>
+    private static readonly Dictionary<string, string> variableDescriptionMap = new()
     {
         { "timeLeft", "Time" },
-        { "speed", "Movement Speed" }
+        { "timeConsumeSpeed", "Time Consume" },
+        { "speed", "Movement Speed" },
+        { "scoreFromCoins", "Coin Value" },
+        { "bonusTimeFromCoins", "Extra Time From Coins" },
+        { "bulletSpeed", "Bullet Speed" },
+        { "bulletDamage", "Attack Damage" },
+        { "numberOfAttacks", "Number of Attacks" },
+        { "bulletArch", "Bullet Arch" },
+        { "weirdBullets", "Weird Bullets" },
+        { "damageResistance", "Damage Resistance" },
+        { "bouncyBullets", "Bouncy Bullets" },
+        { "bulletDespawnTime", "Bullet Lifespan" }
+    };
+
+    private List<string> boolVariableList = new(){
+        "weirdBullets", "bouncyBullets"
     };
 
     private void Awake()
@@ -30,6 +45,18 @@ public class Modifier : ScriptableObject
             modifiedVariableVisibleDescription = "Unknown Variable";
         }
         modifiedVariableVisibleDescription += ": ";
+        if (boolVariableList.Contains(modifiedVariable))
+        {
+            if(modifierValue == 0)
+            {
+                modifiedVariableVisibleDescription += "Off";
+            }
+            else
+            {
+                modifiedVariableVisibleDescription += "On";
+            }
+            return;
+        }
         switch (modifierType)
         {
             case ModifierType.Add:
@@ -40,9 +67,6 @@ public class Modifier : ScriptableObject
                 break;
             case ModifierType.Multiply:
                 modifiedVariableVisibleDescription += "*";
-                break;
-            case ModifierType.Divide:
-                modifiedVariableVisibleDescription += "/";
                 break;
         }
         modifiedVariableVisibleDescription += modifierValue.ToString();
