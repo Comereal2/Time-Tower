@@ -50,7 +50,7 @@ public class TimerManager : MonoBehaviour
             {
                 if (playerController.score > 0 && canAutoConvertScoreToTime)
                 {
-                    playerController.score--;
+                    playerController.ChangeScore(-1);
                     timeLeft += 20f;
                     return;
                 }

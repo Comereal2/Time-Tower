@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public Vector2 playerMovement;
 
     public AudioClip attackMeleeSFX;
+    public AudioClip attackRangedSFX;
     public AudioClip coinCollectSFX;
     public AudioClip enemyHurtSFX;
     public AudioClip enemyDefeatSFX;
@@ -52,6 +53,7 @@ public class PlayerController : MonoBehaviour
     private float bulletArch = 15f;
     private float damageResistance = 1f;
     public float timeConsumeSpeed = 1f;
+    public float costModifier = 1f;
     public int bulletDamage;
     private int scoreFromCoins = 1;
     private int numberOfAttacks = 1;
@@ -122,6 +124,7 @@ public class PlayerController : MonoBehaviour
                     if (weirdBullets) StopCoroutine(MoveBulletInSinPattern(bulletRb, bulletDirection));
                     Destroy(spawnedBullet, bulletDespawnTime);
                 }
+                PlaySound(attackRangedSFX);
             }
             else
             {
@@ -194,10 +197,10 @@ public class PlayerController : MonoBehaviour
             var enemy = collision.gameObject.GetComponent<EnemyBehavior>();
             if (enemy.enemyStats.isBoss)
             {
-                rb.AddForce(((Vector2)collision.transform.position - rb.position) * 3f, ForceMode2D.Impulse);
+                rb.velocity = (rb.position - (Vector2)collision.transform.position).normalized * 20f;
                 if (score > 0)
                 {
-                    ChangeScore((int)((float)-enemy.enemyStats.health * enemy.enemyStats.damageMultiplier / damageResistance));
+                    ChangeScore((int)-Mathf.Max(enemy.enemyStats.damageMultiplier / damageResistance, 1));
                 }
                 else
                 {
@@ -221,6 +224,11 @@ public class PlayerController : MonoBehaviour
             timerManager.timeLeft += bonusTimeFromCoins;
             PlaySound(coinCollectSFX);
             ChangeScore(scoreFromCoins);
+            Destroy(collision.gameObject);
+        }
+        else if (collision.gameObject.CompareTag("EnemyBullet"))
+        {
+            timerManager.timeLeft -= 20f;
             Destroy(collision.gameObject);
         }
     }

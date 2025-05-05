@@ -27,7 +27,8 @@ public class Modifier : ScriptableObject
         { "weirdBullets", "Weird Bullets" },
         { "damageResistance", "Damage Resistance" },
         { "bouncyBullets", "Bouncy Bullets" },
-        { "bulletDespawnTime", "Bullet Lifespan" }
+        { "bulletDespawnTime", "Bullet Lifespan" },
+        { "costModifier", "Cost Modifier" }
     };
 
     private List<string> boolVariableList = new(){

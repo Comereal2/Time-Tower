@@ -175,6 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMovement: {x: 0, y: 0}
   attackMeleeSFX: {fileID: 8300000, guid: 3eabafb8a30352b43b0c1aa2279faeb0, type: 3}
+  attackRangedSFX: {fileID: 8300000, guid: 91e8d2d5c0e113c47abee83f181bda9c, type: 3}
   coinCollectSFX: {fileID: 8300000, guid: 533d3fb52c471964ebed6510e61b9592, type: 3}
   enemyHurtSFX: {fileID: 8300000, guid: 99f4c47bb63c5b849a09e0b1cd26212f, type: 3}
   enemyDefeatSFX: {fileID: 8300000, guid: 6c66257e41d76c94181a568d2e4a3fbb, type: 3}
