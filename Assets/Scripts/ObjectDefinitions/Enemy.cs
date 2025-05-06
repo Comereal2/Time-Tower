@@ -11,12 +11,15 @@ public class Enemy : ScriptableObject
     public float spawnTime = 30f;
     public float scale = 1f;
     public float rangedAttackCooldown = 1f;
+    public float projectileSpeed = 5f;
     public bool hasCoin = false;
     public bool isBoss = false;
     public bool isRanged = false;
     public Sprite sprite;
 
-    //Execute when floor ends
+    /// <summary>
+    /// Upgrades the selected enemy statblock GLOBALLY
+    /// </summary>
     public void UpgradeEnemy()
     {
         switch(Random.Range(1, 5))
@@ -34,6 +37,7 @@ public class Enemy : ScriptableObject
                 if (isRanged)
                 {
                     rangedAttackCooldown *= 0.7f;
+                    projectileSpeed *= 1.3f;
                 }
                 else
                 {

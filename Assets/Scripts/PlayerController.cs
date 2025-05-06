@@ -8,7 +8,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using static Modifier;
 
-public class PlayerController : MonoBehaviour
+[RequireComponent(typeof(TimerManager))]
+public class PlayerController : FightingController
 {
     #region ScriptVariables
     public Vector2 playerMovement;
@@ -19,8 +20,6 @@ public class PlayerController : MonoBehaviour
     public AudioClip enemyHurtSFX;
     public AudioClip enemyDefeatSFX;
 
-    public InputActionAsset playerInputActions;
-
     public GameObject bullet;
     public GameObject coin;
 
@@ -30,10 +29,11 @@ public class PlayerController : MonoBehaviour
 
     private float lastShootTime = -1f;
 
+    [SerializeField] private InputActionAsset playerInputActions;
     private InputAction moveAction;
     private InputAction shootAction;
     private InputAction equipAction;
-    private GameObject emptyGameObject;
+    private InputAction dashAction;
 
     private Rigidbody2D rb;
     #endregion
@@ -44,9 +44,9 @@ public class PlayerController : MonoBehaviour
     private bool hasRangedWeapon = false;
     private bool weirdBullets = false;
     private bool bouncyBullets = false;
+    private bool canTeleport = false;
     private float speed = 5f;
     private float bulletSpeed;
-    private float bulletSpawnOffset = 1f;
     private float shootCooldown;
     private float bulletDespawnTime;
     private float bonusTimeFromCoins;
@@ -62,13 +62,16 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        // I honestly hate the fact that I couldnt instantiate the emptyGameObject in the FightingController, but that Awake would always be overwritten by this one
         emptyGameObject = new GameObject("Empty");
         emptyGameObject.AddComponent<Text>();
         rb = GetComponent<Rigidbody2D>();
+        // I tried making the player not rely on the coinCounter, but couldnt find a way. Welp, guess this is the one thing you have to add to the scene with him. Whoops
         coinCounter = GameObject.FindGameObjectWithTag("CoinCounter").GetComponent<TMP_Text>();
         moveAction = playerInputActions.FindAction("Move");
         shootAction = playerInputActions.FindAction("Shoot");
         equipAction = playerInputActions.FindAction("Equip");
+        dashAction = playerInputActions.FindAction("Dash");
         equippedWeapon = new Weapon();
     }
 
@@ -99,6 +102,7 @@ public class PlayerController : MonoBehaviour
 
             if (hasRangedWeapon)
             {
+                // 1 attack is a special case where the formula wouldnt work, so we set the arch to 0
                 float angleStep = numberOfAttacks > 1 ? bulletArch : 0f;
                 float startAngle = -angleStep * (numberOfAttacks - 1) / 2;
 
@@ -106,30 +110,24 @@ public class PlayerController : MonoBehaviour
                 {
                     float currentAngle = startAngle + i * angleStep;
                     Vector2 bulletDirection = Quaternion.Euler(0, 0, currentAngle) * direction;
-                    Vector2 spawnPosition = (Vector2)transform.position + bulletDirection * bulletSpawnOffset;
-                    GameObject spawnedBullet = Instantiate(bullet, spawnPosition, Quaternion.identity);
+
+                    GameObject spawnedBullet = Shoot(bullet, (Vector2)transform.position + bulletDirection, bulletSpeed, bulletDespawnTime);
                     spawnedBullet.GetComponent<BulletBehavior>().bouncyBullets = bouncyBullets;
                     Rigidbody2D bulletRb = spawnedBullet.GetComponent<Rigidbody2D>();
-                    if (bulletRb != null)
+
+                    if (weirdBullets)
                     {
-                        if (weirdBullets)
-                        {
-                            StartCoroutine(MoveBulletInSinPattern(bulletRb, bulletDirection));
-                        }
-                        else
-                        {
-                            bulletRb.velocity = bulletDirection * bulletSpeed;
-                        }
+                        StartCoroutine(MoveBulletInSinPattern(bulletRb, bulletDirection));
                     }
-                    if (weirdBullets) StopCoroutine(MoveBulletInSinPattern(bulletRb, bulletDirection));
-                    Destroy(spawnedBullet, bulletDespawnTime);
                 }
                 PlaySound(attackRangedSFX);
             }
             else
             {
-                Vector2 rectangleCenter = (Vector2)transform.position + direction * 1.5f;
+                //Actual collider of the attack
+                Vector2 rectangleCenter = (Vector2)transform.position + direction * meleeRange/2;
                 Vector2 rectangleSize = meleeRange;
+
                 float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                 Collider2D[] hitColliders = Physics2D.OverlapBoxAll(rectangleCenter, rectangleSize, angle);
                 bool enemyFound = false;
@@ -138,6 +136,7 @@ public class PlayerController : MonoBehaviour
                 {
                     if (collider.CompareTag("Enemy"))
                     {
+                        //Attack is NOT AOE, it attacks at most numberOfAttacks enemies, but one enemy cannot be attacked twice
                         enemyFound = true;
                         collider.GetComponent<EnemyBehavior>().Attacked();
                         if (currentAttack == numberOfAttacks) break;
@@ -148,6 +147,7 @@ public class PlayerController : MonoBehaviour
                 {
                     PlaySound(attackMeleeSFX);
                 }
+                //Graphics for the player, scalable based on range
                 GameObject weaponObject = Instantiate(emptyGameObject, (Vector2)transform.position + direction, Quaternion.LookRotation(Vector3.forward, direction), transform);
                 SpriteRenderer spriteRenderer = weaponObject.AddComponent<SpriteRenderer>();
                 spriteRenderer.sprite = equippedWeapon.weaponEquipped;
@@ -163,24 +163,16 @@ public class PlayerController : MonoBehaviour
             {
                 if (collider.CompareTag("Weapon"))
                 {
+                    // I would like to have a better way to do this, because having the sprite also have a text for this isnt great
                     UpdateWeaponStats(Resources.Load<Weapon>("Data/Weapons/" + collider.GetComponent<Text>().text));
                     Destroy(collider.gameObject);
                     break;
                 }
             }
         }
-    }
-
-    private IEnumerator MoveBulletInSinPattern(Rigidbody2D bulletRb, Vector2 direction)
-    {
-        float time = 0f;
-        while (bulletRb != null)
+        if (dashAction.triggered && canTeleport)
         {
-            float sinOffset = Mathf.Sin(time * 10f) * 1.5f;
-            Vector2 sinMovement = new Vector2(-direction.y, direction.x) * sinOffset;
-            bulletRb.velocity = (direction * bulletSpeed) + sinMovement;
-            time += Time.deltaTime;
-            yield return null;
+            Teleport(speed, playerMovement.normalized);
         }
     }
 
@@ -194,27 +186,38 @@ public class PlayerController : MonoBehaviour
         var timerManager = gameObject.GetComponent<TimerManager>();
         if (collision.gameObject.CompareTag("Enemy"))
         {
+            // Every enemy has an enemyBehavior
             var enemy = collision.gameObject.GetComponent<EnemyBehavior>();
+
+            /* The damage system has two cases, because score is a shield for the player in case of melee attacks to make the game a bit more bearable
+             * An enemy always takes at least 1 score, even with 100% damage resistance, enemies also have a damageMultiplier, which negates itself with the resistance
+             * For any enemy which is not a boss, you always deal the amount of damage multiplied by health to increase the penalty on the player
+             * If a player does not have score, you subtract time and the calculation is more brutal in that case, because it always takes as least the score to time conversion
+             */
+
+            var damage = Mathf.Max(enemy.enemyStats.damageMultiplier / damageResistance, 1);
             if (enemy.enemyStats.isBoss)
             {
                 rb.velocity = (rb.position - (Vector2)collision.transform.position).normalized * 20f;
-                if (score > 0)
+                if (score > damage)
                 {
-                    ChangeScore((int)-Mathf.Max(enemy.enemyStats.damageMultiplier / damageResistance, 1));
+                    ChangeScore((int)-damage);
                 }
                 else
                 {
-                    timerManager.timeLeft -= 20f * enemy.enemyStats.damageMultiplier / damageResistance;
+                    timerManager.timeLeft -= 20f * (damage - score);
+                    ChangeScore(-score);
                 }
                 return;
             }
-            if(score > 0)
+            if(score > damage)
             {
-                ChangeScore((int)((float)-enemy.enemyStats.health * enemy.enemyStats.damageMultiplier / damageResistance));
+                ChangeScore((int)((float)-enemy.enemyStats.health * damage));
             }
             else
             {
-                timerManager.timeLeft -= Mathf.Max(collision.gameObject.GetComponent<TimerManager>().timeLeft, 20) * enemy.enemyStats.damageMultiplier / damageResistance;
+                timerManager.timeLeft -= Mathf.Max(collision.gameObject.GetComponent<TimerManager>().timeLeft, 20f) * (damage - score);
+                ChangeScore(-score);
             }
             Destroy(collision.gameObject.GetComponent<TimerManager>().timerText.gameObject);
             Destroy(collision.gameObject);
@@ -228,18 +231,27 @@ public class PlayerController : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("EnemyBullet"))
         {
+            //This is the ranged damage, it is the only form which pierces the "score shield" to make the, already rare form, that extra bit more dangerous,
+            //making it possible to die with score
             timerManager.timeLeft -= 20f;
             Destroy(collision.gameObject);
         }
     }
 
+    /// <summary>
+    /// Adds the change to the current score and updates the display
+    /// </summary>
+    /// <param name="change">Amount of score to add</param>
     public void ChangeScore(int change)
     {
         score += change;
         coinCounter.text = "Coins:" + score.ToString();
     }
 
-    //Use in places like Store to buff or nerf the player
+    /// <summary>
+    /// Applies the sent modifier to the player
+    /// </summary>
+    /// <param name="modifier"></param>
     public void ChangeVariable(Modifier modifier)
     {
         if (modifier.modifiedVariable == "timeLeft")
@@ -309,14 +321,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //Play sound directly to the camera on the player
+    /// <summary>
+    /// Plays a one-time audio clip directly to the player
+    /// </summary>
+    /// <param name="clip"></param>
     public void PlaySound(AudioClip clip)
     {
-        AudioSource audioSource = Camera.main.GetComponent<AudioSource>();
+        //Checks if the current camera has an audio source and if not adds it
+        AudioSource audioSource = Camera.main.GetComponent<AudioSource>() == null ? Camera.main.AddComponent<AudioSource>() : Camera.main.GetComponent<AudioSource>();
         audioSource.PlayOneShot(clip);
     }
 
-    //Execute to give player new weapon
+    /// <summary>
+    /// Removes the stats of the previous weapon, drops it and equips the new one
+    /// </summary>
+    /// <param name="newWeapon"></param>
     public void UpdateWeaponStats(Weapon newWeapon)
     {
         bulletDamage -= equippedWeapon.baseDamage;
@@ -324,7 +343,7 @@ public class PlayerController : MonoBehaviour
         bulletSpeed -= equippedWeapon.bulletTravelSpeed;
         bulletDespawnTime -= equippedWeapon.attackDespawnTime;
         numberOfAttacks -= equippedWeapon.numberOfAttacks;
-        DropWeapon(equippedWeapon, gameObject.transform);
+        DropWeapon(equippedWeapon, gameObject.transform.position);
         equippedWeapon = newWeapon;
         bulletDamage += equippedWeapon.baseDamage;
         shootCooldown += equippedWeapon.attackCooldown;
@@ -335,13 +354,22 @@ public class PlayerController : MonoBehaviour
         meleeRange.x = equippedWeapon.meleeRangeX;
     }
 
-    public void DropWeapon(Weapon weapon, Transform transform)
+    /// <summary>
+    /// Used for weird bullets. Takes in the rigidbody and direction and changes the movement of the bullet according to the sin graph
+    /// </summary>
+    /// <param name="bulletRb">Rigidbody of the projectile</param>
+    /// <param name="direction">Normalized direction towards the target point</param>
+    private IEnumerator MoveBulletInSinPattern(Rigidbody2D bulletRb, Vector2 direction)
     {
-        GameObject droppedWeapon = Instantiate(emptyGameObject, transform.position, Quaternion.identity, GameObject.FindGameObjectWithTag("RoomContainer").transform);
-        droppedWeapon.AddComponent<SpriteRenderer>().sprite = weapon.weaponDropped;
-        droppedWeapon.AddComponent<BoxCollider2D>().isTrigger = true;
-        droppedWeapon.tag = "Weapon";
-        droppedWeapon.GetComponent<Text>().text = weapon.name;
-        droppedWeapon.transform.localScale = new Vector3(0.3f, 0.3f, 1f);
+        float time = 0f;
+        while (bulletRb != null)
+        {
+            float sinOffset = Mathf.Sin(time * 10f) * 1.5f;
+            Vector2 sinMovement = new Vector2(-direction.y, direction.x) * sinOffset;
+            bulletRb.velocity = (direction * bulletSpeed) + sinMovement;
+            time += Time.deltaTime;
+            yield return null;
+        }
+        StopCoroutine(MoveBulletInSinPattern(bulletRb, direction));
     }
 }

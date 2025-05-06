@@ -23,8 +23,7 @@ public class ShopTile : MonoBehaviour
     {
         if(item == null)
         {
-            var resources = Resources.LoadAll<Item>("Data/Items");
-            item = resources[UnityEngine.Random.Range(0, resources.Length)];
+            RandomizeItem();
             isRandomizedItem = true;
         }
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
@@ -35,15 +34,11 @@ public class ShopTile : MonoBehaviour
 
     private void Start()
     {
-        itemTooltipPrefab = Instantiate(itemTooltipPrefab, shopCanvas.transform);
+        itemTooltipPrefab = Instantiate(itemTooltipPrefab, shopCanvas != null ? shopCanvas.transform : 
+            /*Make sure tooltip exists, even if it wont display*/ gameObject.transform);
         itemTooltip = itemTooltipPrefab.GetComponentInChildren<TMP_Text>();
         UpdateItemText();
-        if (item.itemIcon != null)
-        {
-            var childRenderer = transform.GetChild(0).GetComponentInChildren<SpriteRenderer>();
-            childRenderer.sprite = item.itemIcon;
-            childRenderer.transform.localScale = new Vector2(item.spriteXScale, item.spriteYScale);
-        }
+        UpdateItemSprite();
     }
 
     private void Update()
@@ -56,34 +51,48 @@ public class ShopTile : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
-            if (player.score < Mathf.Max(item.cost * player.costModifier, 1)) return;
+            int price = (int)Mathf.Max(item.cost * player.costModifier, 1);
+            // Dont realize the purchase if player doesnt have the money for it
+            if (player.score < price) return;
+
             player.PlaySound(itemPurchaseSFX[UnityEngine.Random.Range(0, itemPurchaseSFX.Length)]);
-            player.ChangeScore(-(int)Mathf.Max(item.cost * player.costModifier, 1));
+            player.ChangeScore(-price);
+
             foreach(var modifier in item.modifiers)
             {
                 player.ChangeVariable(modifier);
             }
+
             if (isOneTimeUse)
             {
                 Destroy(itemTooltipPrefab);
                 Destroy(gameObject);
             }
+
             if (isRandomizedItem)
             {
-                var resources = Resources.LoadAll("Data/Items");
-                item = (Item)resources[UnityEngine.Random.Range(0, resources.Length)];
-                if (item.itemIcon != null)
-                {
-                    var childRenderer = transform.GetChild(0).GetComponentInChildren<SpriteRenderer>();
-                    childRenderer.sprite = item.itemIcon;
-                    childRenderer.transform.localScale = new Vector2(item.spriteXScale, item.spriteYScale);
-                }
+                RandomizeItem();
             }
+
             //Update item description just in case price changes
             UpdateItemText();
         }
     }
 
+    /// <summary>
+    /// Randomizes the item in the shop tile
+    /// </summary>
+    private void RandomizeItem()
+    {
+        var resources = Resources.LoadAll("Data/Items");
+        item = (Item)resources[UnityEngine.Random.Range(0, resources.Length)];
+        UpdateItemText();
+        UpdateItemSprite();
+    }
+
+    /// <summary>
+    /// Updates the text displayed in the itemTooltip
+    /// </summary>
     private void UpdateItemText()
     {
         string itemDescription = "";
@@ -92,5 +101,18 @@ public class ShopTile : MonoBehaviour
             itemDescription += modifier.modifiedVariableVisibleDescription + '\n';
         }
         itemTooltip.text = "<size=72><b>" + item.itemName + " - Cost: " + Mathf.Max(item.cost * player.costModifier, 1) + "</b></size>" + '\n' + "<size=56>" + itemDescription + "</size>";
+    }
+
+    /// <summary>
+    /// Updates the sprite displayed on the shop tile itself
+    /// </summary>
+    private void UpdateItemSprite()
+    {
+        if (item.itemIcon != null)
+        {
+            var childRenderer = transform.GetChild(0).GetComponentInChildren<SpriteRenderer>();
+            childRenderer.sprite = item.itemIcon;
+            childRenderer.transform.localScale = new Vector2(item.spriteXScale, item.spriteYScale);
+        }
     }
 }

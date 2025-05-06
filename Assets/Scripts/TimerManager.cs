@@ -18,15 +18,16 @@ public class TimerManager : MonoBehaviour
 
     private void Awake()
     {
-        timerCanvas = GameObject.FindGameObjectWithTag("TimerCanvas").GetComponent<Canvas>();
-        if (GetComponent<PlayerController>() != null)
+        timerCanvas = GameObject.FindGameObjectWithTag("TimerCanvas") != null ? GameObject.FindGameObjectWithTag("TimerCanvas").GetComponent<Canvas>() : new GameObject("TemporaryTimeCanvas").AddComponent<Canvas>();
+        playerController = GetComponent<PlayerController>();
+        enemy = GetComponent<EnemyBehavior>();
+        // An object with a timer manager should always have at least one controller to reference for movement
+        if (playerController != null)
         {
-            playerController = GetComponent<PlayerController>();
             timeLeft = 60f;
         }
-        else
+        else if (enemy != null)
         {
-            enemy = GetComponent<EnemyBehavior>();
             timeLeft = enemy.enemyStats.spawnTime;
         }
     }
@@ -55,7 +56,7 @@ public class TimerManager : MonoBehaviour
                     return;
                 }
             }
-            else if(enemy.enemyStats.health > 1)
+            else if(enemy != null && enemy.enemyStats.health > 1)
             {
                 enemy.enemyStats.health--;
                 timeLeft += 15f;
