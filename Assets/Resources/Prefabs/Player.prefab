@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4626242397403359357}
   - component: {fileID: 1015275897447953776}
   - component: {fileID: 7908050059296474027}
+  - component: {fileID: 2246419083274845565}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -78,7 +79,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: -1498802035, guid: 5b0d21b8268933749a3585ef43e5a868, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -175,14 +176,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMovement: {x: 0, y: 0}
   attackMeleeSFX: {fileID: 8300000, guid: 3eabafb8a30352b43b0c1aa2279faeb0, type: 3}
+  attackRangedSFX: {fileID: 8300000, guid: 91e8d2d5c0e113c47abee83f181bda9c, type: 3}
   coinCollectSFX: {fileID: 8300000, guid: 533d3fb52c471964ebed6510e61b9592, type: 3}
   enemyHurtSFX: {fileID: 8300000, guid: 99f4c47bb63c5b849a09e0b1cd26212f, type: 3}
   enemyDefeatSFX: {fileID: 8300000, guid: 6c66257e41d76c94181a568d2e4a3fbb, type: 3}
-  playerInputActions: {fileID: -944628639613478452, guid: fc4fa63dc9cc29f4eb959f3150bf0ac1, type: 3}
   bullet: {fileID: 8428211483359946682, guid: 2a5ef3bda870e664d99aa16739b75a7a, type: 3}
   coin: {fileID: 5267191078095984278, guid: 4fc509928d646bf46a192cf5a7064fb2, type: 3}
+  playerInputActions: {fileID: -944628639613478452, guid: fc4fa63dc9cc29f4eb959f3150bf0ac1, type: 3}
   score: 0
   timeConsumeSpeed: 1
+  costModifier: 1
   bulletDamage: 0
 --- !u!114 &7908050059296474027
 MonoBehaviour:
@@ -199,6 +202,27 @@ MonoBehaviour:
   timerText: {fileID: 8861610108603505591, guid: 625ca50e8e66c1a448884303d7c50e70, type: 3}
   timeLeft: 0
   canAutoConvertScoreToTime: 1
+--- !u!95 &2246419083274845565
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567660374053344025}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7d4dec0c71bef404987de66a63eb8dcd, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7138454381763495511
 GameObject:
   m_ObjectHideFlags: 0
