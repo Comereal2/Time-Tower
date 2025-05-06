@@ -35,11 +35,12 @@ public class TimerManager : MonoBehaviour
     private void Start()
     {
         timerText = Instantiate(timerText, timerCanvas.transform).GetComponent<TMP_Text>();
+        if (enemy != null) if (enemy.enemyStats.isBoss) timerText.gameObject.SetActive(false);
     }
 
     private void Update()
     {
-        timerText.transform.position = Camera.main.WorldToScreenPoint(transform.position);
+        timerText.transform.position = Camera.main.WorldToScreenPoint(transform.position+Vector3.down * transform.localScale.x);
         if (playerController != null)
         { 
             if (playerController.playerMovement != Vector2.zero) timeLeft -= Time.deltaTime * playerController.timeConsumeSpeed; 

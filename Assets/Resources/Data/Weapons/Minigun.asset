@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24a819a2a0554544685deecacd75173f, type: 3}
+  m_Name: Minigun
+  m_EditorClassIdentifier: 
+  baseDamage: 100
+  numberOfAttacks: 30
+  attackCooldown: 0
+  attackDespawnTime: 3
+  bulletTravelSpeed: 10
+  meleeRangeX: 1
+  isRanged: 1
+  weaponEquipped: {fileID: 0}
+  weaponDropped: {fileID: 21300000, guid: 53023a27050847546b3d536b19585ffc, type: 3}

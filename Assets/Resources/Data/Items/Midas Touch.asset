@@ -17,6 +17,6 @@ MonoBehaviour:
   modifiers:
   - {fileID: 11400000, guid: 80f23cdc8ea604545a204971b1a85ee4, type: 2}
   - {fileID: 11400000, guid: 02e843ca5655f5c41bc2d34a8a76d0d4, type: 2}
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 21300000, guid: 4d9474be8c2ac5f4db8dc8a949bd1f11, type: 3}
   spriteXScale: 1
   spriteYScale: 1

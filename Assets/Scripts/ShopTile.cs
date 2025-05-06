@@ -18,24 +18,25 @@ public class ShopTile : MonoBehaviour
     private Vector2 tooltipOffset = new Vector2(0, 1.5f);
     private PlayerController player;
     private bool isRandomizedItem = false;
+    private bool displayShopItems = true;
 
     private void Awake()
     {
-        if(item == null)
-        {
-            RandomizeItem();
-            isRandomizedItem = true;
-        }
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         itemPurchaseSFX = Resources.LoadAll<AudioClip>("SFX/Purchase");
         itemTooltipPrefab = Resources.Load<GameObject>("Prefabs/ItemTooltip");
         shopCanvas = GameObject.FindGameObjectWithTag("ShopCanvas").GetComponent<Canvas>();
+        if (item == null)
+        {
+            RandomizeItem();
+            isRandomizedItem = true;
+        }
+        displayShopItems = PlayerPrefs.GetInt("ShopTags", 1) == 1;
     }
 
     private void Start()
     {
-        itemTooltipPrefab = Instantiate(itemTooltipPrefab, shopCanvas != null ? shopCanvas.transform : 
-            /*Make sure tooltip exists, even if it wont display*/ gameObject.transform);
+        itemTooltipPrefab = Instantiate(itemTooltipPrefab, shopCanvas != null ? shopCanvas.transform : gameObject.transform); /*Make sure tooltip exists, even if it wont display*/
         itemTooltip = itemTooltipPrefab.GetComponentInChildren<TMP_Text>();
         UpdateItemText();
         UpdateItemSprite();
@@ -86,7 +87,6 @@ public class ShopTile : MonoBehaviour
     {
         var resources = Resources.LoadAll("Data/Items");
         item = (Item)resources[UnityEngine.Random.Range(0, resources.Length)];
-        UpdateItemText();
         UpdateItemSprite();
     }
 
@@ -100,7 +100,8 @@ public class ShopTile : MonoBehaviour
         {
             itemDescription += modifier.modifiedVariableVisibleDescription + '\n';
         }
-        itemTooltip.text = "<size=72><b>" + item.itemName + " - Cost: " + Mathf.Max(item.cost * player.costModifier, 1) + "</b></size>" + '\n' + "<size=56>" + itemDescription + "</size>";
+        if (displayShopItems) itemTooltip.text = "<size=72><b>" + item.itemName + " - Cost: " + (Mathf.Max(item.cost * player.costModifier, 1)).ToString() + "</b></size>" + '\n' + "<size=56>" + itemDescription + "</size>";
+        else itemTooltip.text = "<size=72><b>??? - Cost: ???</b></size>" + '\n' + "???";
     }
 
     /// <summary>
@@ -108,11 +109,15 @@ public class ShopTile : MonoBehaviour
     /// </summary>
     private void UpdateItemSprite()
     {
+        var childRenderer = transform.GetChild(0).GetComponentInChildren<SpriteRenderer>();
         if (item.itemIcon != null)
         {
-            var childRenderer = transform.GetChild(0).GetComponentInChildren<SpriteRenderer>();
             childRenderer.sprite = item.itemIcon;
             childRenderer.transform.localScale = new Vector2(item.spriteXScale, item.spriteYScale);
+        }
+        else
+        {
+            childRenderer.sprite = null;
         }
     }
 }

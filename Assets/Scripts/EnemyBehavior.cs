@@ -8,10 +8,10 @@ public class EnemyBehavior : FightingController
 {
     public Enemy enemyStats;
     public Weapon equippedWeapon;
-
-    private int maxHealth = 1;
+    private int currentHealth = 1;
+    private bool displayHealthBars = true;
     private GameObject enemyProjectile;
-    private GameObject healthBar;
+    public GameObject healthBar;
     private Vector2 bossBarOffset = new(0f, 1f); //This theoretically could just be a constant, but changing it for bosses with a larger scale should be possible
 
     private void Awake()
@@ -21,6 +21,7 @@ public class EnemyBehavior : FightingController
         // I honestly hate the fact that I couldnt instantiate the emptyGameObject in the FightingController, but that Awake would always be overwritten by this one
         emptyGameObject = new GameObject("Empty");
         emptyGameObject.AddComponent<Text>();
+        displayHealthBars = PlayerPrefs.GetInt("EnemyHealthBars", 1) == 1;
     }
 
     private void Start()
@@ -28,10 +29,10 @@ public class EnemyBehavior : FightingController
         // Pathfinding and movement is handled in the pathfinding asset entirely, so we need to refer to that when setting enemy speed
         // Every enemy should be able to pathfind, even stationary ones, if you want an enemy to not move, set their speed to 0
         GetComponent<AIPath>().maxSpeed = enemyStats.speed;
-        if (enemyStats.health > 1)
+        if (enemyStats.health > 1 && displayHealthBars)
         {
             healthBar = Instantiate(healthBar, GameObject.FindGameObjectWithTag("TimerCanvas").transform);
-            maxHealth = enemyStats.health;
+            currentHealth = enemyStats.health;
             UpdateHealthBar();
         }
         if (enemyStats.sprite != null) transform.GetComponent<SpriteRenderer>().sprite = enemyStats.sprite;
@@ -41,7 +42,7 @@ public class EnemyBehavior : FightingController
 
     private void Update()
     {
-        if (maxHealth > 1) healthBar.transform.position = Camera.main.WorldToScreenPoint(transform.position + (Vector3)bossBarOffset);
+        if (enemyStats.health > 1 && displayHealthBars) healthBar.transform.position = Camera.main.WorldToScreenPoint(transform.position + (Vector3)bossBarOffset);
     }
 
     /// <summary>
@@ -49,7 +50,7 @@ public class EnemyBehavior : FightingController
     /// </summary>
     private void UpdateHealthBar()
     {
-        healthBar.GetComponent<Slider>().value = (float)enemyStats.health / (float)maxHealth;
+        healthBar.GetComponent<Slider>().value = (float)currentHealth / (float)enemyStats.health;
     }
 
     /// <summary>
@@ -71,10 +72,10 @@ public class EnemyBehavior : FightingController
     public void Attacked()
     {
         PlayerController player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-        if (enemyStats.health - player.bulletDamage > 0)
+        if (currentHealth - player.bulletDamage > 0)
         {
-            enemyStats.health -= player.bulletDamage;
-            if (maxHealth > 1) UpdateHealthBar();
+            currentHealth -= player.bulletDamage;
+            if (enemyStats.health > 1 && displayHealthBars) UpdateHealthBar();
             player.PlaySound(player.enemyHurtSFX);
             if(enemyStats.isBoss && enemyStats.isRanged)
             {
@@ -89,7 +90,7 @@ public class EnemyBehavior : FightingController
             {
                 Instantiate(player.coin, transform.position, Quaternion.identity, GameObject.FindGameObjectWithTag("RoomContainer").transform);
             }
-            if (maxHealth > 1) Destroy(healthBar);
+            if (enemyStats.health > 1 && displayHealthBars) Destroy(healthBar);
             player.PlaySound(player.enemyDefeatSFX);
             if(equippedWeapon != null) DropWeapon(equippedWeapon, gameObject.transform.position);
             Destroy(gameObject.GetComponent<TimerManager>().timerText.gameObject);

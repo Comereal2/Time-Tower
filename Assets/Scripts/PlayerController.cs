@@ -36,6 +36,8 @@ public class PlayerController : FightingController
     private InputAction dashAction;
 
     private Rigidbody2D rb;
+
+    private Animator animator;
     #endregion
 
     public int score = 0;
@@ -57,8 +59,10 @@ public class PlayerController : FightingController
     public int bulletDamage;
     private int scoreFromCoins = 1;
     private int numberOfAttacks = 1;
-    private Vector2 meleeRange;
+    private Vector2 meleeRange = new Vector2(0f, 1.5f);
     #endregion
+
+    private bool isHardMode = false;
 
     private void Awake()
     {
@@ -66,6 +70,7 @@ public class PlayerController : FightingController
         emptyGameObject = new GameObject("Empty");
         emptyGameObject.AddComponent<Text>();
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         // I tried making the player not rely on the coinCounter, but couldnt find a way. Welp, guess this is the one thing you have to add to the scene with him. Whoops
         coinCounter = GameObject.FindGameObjectWithTag("CoinCounter").GetComponent<TMP_Text>();
         moveAction = playerInputActions.FindAction("Move");
@@ -73,6 +78,8 @@ public class PlayerController : FightingController
         equipAction = playerInputActions.FindAction("Equip");
         dashAction = playerInputActions.FindAction("Dash");
         equippedWeapon = new Weapon();
+        isHardMode = PlayerPrefs.GetInt("HardMode", 0) == 1;
+        if (isHardMode) gameObject.GetComponent<TimerManager>().canAutoConvertScoreToTime = false;
     }
 
     private void OnEnable()
@@ -87,13 +94,20 @@ public class PlayerController : FightingController
 
     private void Start()
     {
-        ChangeScore(0);
+        ChangeScore(PlayerPrefs.GetInt("BonusCash", 0) == 1 ? 5 : 0);
         UpdateWeaponStats(Resources.Load<Weapon>("Data/Weapons/Default"));
     }
         
-    void Update()
+    private void Update()
     {
         playerMovement = moveAction.ReadValue<Vector2>();
+
+        if(playerMovement != Vector2.zero)
+        {
+            animator.SetFloat("XInput", playerMovement.x);
+            animator.SetFloat("YInput", playerMovement.y);
+        }
+
         if (shootAction.triggered && Time.time >= lastShootTime + shootCooldown)
         {
             lastShootTime = Time.time;
@@ -125,7 +139,7 @@ public class PlayerController : FightingController
             else
             {
                 //Actual collider of the attack
-                Vector2 rectangleCenter = (Vector2)transform.position + direction * meleeRange/2;
+                Vector2 rectangleCenter = (Vector2)transform.position + direction * (meleeRange.x+1f)/2f;
                 Vector2 rectangleSize = meleeRange;
 
                 float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -147,6 +161,7 @@ public class PlayerController : FightingController
                 {
                     PlaySound(attackMeleeSFX);
                 }
+
                 //Graphics for the player, scalable based on range
                 GameObject weaponObject = Instantiate(emptyGameObject, (Vector2)transform.position + direction, Quaternion.LookRotation(Vector3.forward, direction), transform);
                 SpriteRenderer spriteRenderer = weaponObject.AddComponent<SpriteRenderer>();
@@ -199,7 +214,7 @@ public class PlayerController : FightingController
             if (enemy.enemyStats.isBoss)
             {
                 rb.velocity = (rb.position - (Vector2)collision.transform.position).normalized * 20f;
-                if (score > damage)
+                if (score > damage && !isHardMode)
                 {
                     ChangeScore((int)-damage);
                 }
@@ -210,7 +225,7 @@ public class PlayerController : FightingController
                 }
                 return;
             }
-            if(score > damage)
+            if(score > damage && !isHardMode)
             {
                 ChangeScore((int)((float)-enemy.enemyStats.health * damage));
             }
@@ -220,6 +235,7 @@ public class PlayerController : FightingController
                 ChangeScore(-score);
             }
             Destroy(collision.gameObject.GetComponent<TimerManager>().timerText.gameObject);
+            Destroy(enemy.healthBar);
             Destroy(collision.gameObject);
         }
         else if (collision.gameObject.CompareTag("Coin"))
