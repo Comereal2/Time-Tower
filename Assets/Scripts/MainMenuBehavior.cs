@@ -24,7 +24,13 @@ public class MainMenuBehavior : MonoBehaviour
 
     private void PlayButton()
     {
-
+        foreach (var enemy in Resources.LoadAll<Enemy>("Data/Enemies"))
+        {
+            for(int i = 0; i < PlayerPrefs.GetInt("ChallengeRating", 0); i++)
+            {
+                enemy.UpgradeEnemy();
+            }
+        }
     }
 
     private void OptionsButton()
