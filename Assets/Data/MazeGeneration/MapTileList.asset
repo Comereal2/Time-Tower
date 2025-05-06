@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfae28ebb49294d47b52eb996d469c72, type: 3}
+  m_Name: MapTileList
+  m_EditorClassIdentifier: 
+  floors:
+  - {fileID: 11400000, guid: 5c84bd39fb4246b40bf35d60717de914, type: 2}
+  - {fileID: 11400000, guid: 9c1e3af1f9674e141b16d6c14c7f1ee0, type: 2}
+  walls:
+  - {fileID: 11400000, guid: 9259eb3b54f43644ab2880aae90bdc67, type: 2}
+  cornerIn: {fileID: 11400000, guid: 922a49eb33b3f394381467a447634a52, type: 2}
+  cornerOut: {fileID: 11400000, guid: b80455dc72edcce4298fca4814263440, type: 2}
