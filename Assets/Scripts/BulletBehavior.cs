@@ -39,4 +39,12 @@ public class BulletBehavior : MonoBehaviour
             }
         }
     }
+
+    private void OnDestroy()
+    {
+        if(PlayerController.playerController.equippedWeapon.teleportsPlayer)
+        {
+            PlayerController.playerController.Teleport((transform.position-PlayerController.playerController.transform.position).magnitude, (Vector2)transform.position.normalized);
+        }
+    }
 }

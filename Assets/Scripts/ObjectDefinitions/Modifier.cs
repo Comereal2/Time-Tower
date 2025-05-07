@@ -29,7 +29,9 @@ public class Modifier : ScriptableObject
         { "bouncyBullets", "Bouncy Bullets" },
         { "bulletDespawnTime", "Bullet Lifespan" },
         { "costModifier", "Cost Modifier" },
-        { "canTeleport", "Teleportation" }
+        { "canTeleport", "Teleportation" },
+        { "timeMultiplier", "Global Time Multiplier" },
+        { "enemyTimeMultiplier", "Enemy Time Multiplier" }
     };
 
     //Special case for display

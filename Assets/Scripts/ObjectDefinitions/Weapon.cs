@@ -11,6 +11,7 @@ public class Weapon : ScriptableObject
     public float bulletTravelSpeed = 0;
     public float meleeRangeX = 1f;
     public bool isRanged = false;
+    public bool teleportsPlayer = false;
     public Sprite weaponEquipped;
     public Sprite weaponDropped;
 }

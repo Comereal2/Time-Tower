@@ -2852,7 +2852,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "<align=center>Credits:</align>\nProgrammers:\n   Comereal\n   Bojed\nGraphic
-    Designers:\n   Son of a Glitch\nComposers:\n   DameDaNe"
+    Designers:\n   Son of a Glitch\n   DarkLion\nComposers:\n   Haku\n   FlightFight"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c9fc215e69d5c8342bb5093035623756, type: 2}
   m_sharedMaterial: {fileID: -819629961202747002, guid: c9fc215e69d5c8342bb5093035623756, type: 2}
@@ -2879,8 +2879,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 96
-  m_fontSizeBase: 96
+  m_fontSize: 88
+  m_fontSizeBase: 88
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2936,7 +2936,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8895851488693940795
 Transform:
   m_ObjectHideFlags: 0
@@ -3466,6 +3466,7 @@ MonoBehaviour:
   creditsMenuObject: {fileID: 678984086163574564}
   mainMenuObject: {fileID: 6880983478073180522}
   settingsMenuObject: {fileID: 8703344350926624482}
+  image: {fileID: 0}
   buttons:
   - {fileID: 5750051401473192602}
   - {fileID: 2023212226413468549}
@@ -3789,7 +3790,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2378246102029721123
 Transform:
   m_ObjectHideFlags: 0

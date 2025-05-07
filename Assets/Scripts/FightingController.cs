@@ -73,7 +73,7 @@ public class FightingController : MonoBehaviour
     /// </summary>  
     /// <param name="range">Range of the teleport</param>  
     /// <param name="direction">Direction of the teleport</param>  
-    protected void Teleport(float range, Vector2 direction)
+    public void Teleport(float range, Vector2 direction)
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, range, LayerMask.GetMask("LevelObjects"));
 
