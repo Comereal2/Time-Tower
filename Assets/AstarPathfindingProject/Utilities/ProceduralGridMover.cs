@@ -68,6 +68,7 @@ namespace Pathfinding {
 		public int graphIndex;
 
 		void Start () {
+			target = GameObject.FindWithTag("Player").transform;
 			if (AstarPath.active == null) throw new System.Exception("There is no AstarPath object in the scene");
 
 			// If one creates this component via a script then they may have already set the graph field.
