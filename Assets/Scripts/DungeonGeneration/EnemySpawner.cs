@@ -24,8 +24,8 @@ public class EnemySpawner : MonoBehaviour
 		gameObject.SetActive(false);
 		EnemyBehavior newEnemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity, gameObject.transform);
 		newEnemy.enemyStats = enemyList.RandomEnemy();
-		// newEnemy.GetComponent<Pathfinding.AIDestinationSetter>().target = other.gameObject.transform;
 		newEnemy.gameObject.transform.SetParent(null);
+		Destroy(gameObject);
 	}
 };
 

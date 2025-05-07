@@ -14,6 +14,7 @@ public class FloorSO : ScriptableObject
 	[SerializeField] Vector2Int spawnRoomDims;
 	[SerializeField] int roomAttempts;
 	[SerializeField] int numEnemies;
+	[SerializeField] EnemySpawner enemySpawner;
 	[SerializeField] RoomSizeParameters roomSizeParameters;
 	[SerializeField] ICorridorGenerationStrategy corridorGenerationStrategy;
 
@@ -119,6 +120,17 @@ public class FloorSO : ScriptableObject
 		FloodWithRock();
 		GenerateRooms();
 		corridorGenerationStrategy.GenerateCorridors(rooms, ref terrains);
+	}
+
+	public void PlaceEnemies(Tilemap displayTilemap)
+	{
+		for (int i = 0; i < numEnemies; ++i)
+		{
+			Vector2Int roomCoords = RandomNonSpawnRoom().RandomPointInside();
+
+			Vector3 offset = 2 * new Vector3(roomCoords.x, roomCoords.y);
+			Instantiate(enemySpawner, displayTilemap.transform.position + offset, Quaternion.identity);
+		}
 	}
 
 	public DungeonRoom RandomNonSpawnRoom()

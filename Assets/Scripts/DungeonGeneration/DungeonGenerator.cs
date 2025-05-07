@@ -42,17 +42,18 @@ public class DungeonGenerator : MonoBehaviour
 		++floorNumber;
 
 		Debug.Log($"Floor {floorNumber} generated");
+		dungeon.PlaceEnemies(displayTilemap);
 		PlacePlayer();
 	}
 
 	private void PlacePlayer()
 	{
-		GameObject player = GameObject.FindWithTag("Player");
+		PlayerController player = PlayerController.playerController;
 		if (player == null)
 		{
 			Debug.LogWarning("Player not in scene");
 		}
-		player.transform.position = displayTilemap.gameObject.transform.position + 2 * (Vector3)dungeon.SpawnRoom().rect.center; 
+		player.transform.position = displayTilemap.transform.position + 2 * (Vector3)dungeon.SpawnRoom().rect.center; 
 	}
 }
 
