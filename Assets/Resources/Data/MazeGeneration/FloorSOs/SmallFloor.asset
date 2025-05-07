@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dec673cd622393a43ac849d34682e10b, type: 3}
   m_Name: SmallFloor
   m_EditorClassIdentifier: 
-  mapSize: {x: 0, y: 0}
-  spawnRoomDims: {x: 0, y: 0}
-  roomAttempts: 0
-  roomSizeParameters: {fileID: 0}
-  corridorGenerationStrategy: {fileID: 0}
+  mapSize: {x: 20, y: 20}
+  spawnRoomDims: {x: 4, y: 4}
+  roomAttempts: 10
+  roomSizeParameters: {fileID: 11400000, guid: 4a9c641f221c22e478548ff558a9939a, type: 2}
+  corridorGenerationStrategy: {fileID: 11400000, guid: 53fb409971bdc3241b56b7ecba88b840, type: 2}

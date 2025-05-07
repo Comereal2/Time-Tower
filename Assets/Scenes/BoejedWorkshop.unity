@@ -145,6 +145,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapManager
       objectReference: {fileID: 0}
+    - target: {fileID: 1367420154115075161, guid: d93748215e497484181acfb6b0dd517a, type: 3}
+      propertyPath: mapTileList
+      value: 
+      objectReference: {fileID: 11400000, guid: b3e8ac570b65d494d9f9d22fc4bc7e85, type: 2}
     - target: {fileID: 3068316179215526051, guid: d93748215e497484181acfb6b0dd517a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.03
@@ -2838,6 +2842,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: c564b4ca9e053d6438cc8b4b58f439b6, type: 2}
     - target: {fileID: 6869618230481067459, guid: d93748215e497484181acfb6b0dd517a, type: 3}
+      propertyPath: playerPrefab
+      value: 
+      objectReference: {fileID: 1015275897447953776, guid: 891f53175b873c743ae4295c341462d2, type: 3}
+    - target: {fileID: 6869618230481067459, guid: d93748215e497484181acfb6b0dd517a, type: 3}
       propertyPath: displayTilemap
       value: 
       objectReference: {fileID: 764407981}
@@ -2845,6 +2853,14 @@ PrefabInstance:
       propertyPath: collisionTilemap
       value: 
       objectReference: {fileID: 1804478586}
+    - target: {fileID: 8134395126008225092, guid: d93748215e497484181acfb6b0dd517a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8134395126008225092, guid: d93748215e497484181acfb6b0dd517a, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8134395126008225092, guid: d93748215e497484181acfb6b0dd517a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.5476675

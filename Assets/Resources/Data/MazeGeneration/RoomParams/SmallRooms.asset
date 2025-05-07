@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b55fb64ec4deea64b991ae13b1d0c30a, type: 3}
   m_Name: SmallRooms
   m_EditorClassIdentifier: 
-  minWidth: 0
-  maxWidth: 0
-  minHeight: 0
-  maxHeight: 0
+  minWidth: 3
+  maxWidth: 5
+  minHeight: 3
+  maxHeight: 4

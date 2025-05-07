@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6d922ab15b2e0145bdf643ee32be2d2, type: 3}
   m_Name: Closest Room Corridors
   m_EditorClassIdentifier: 
-  numRandomCorridors: 4
+  numRandomCorridors: 2

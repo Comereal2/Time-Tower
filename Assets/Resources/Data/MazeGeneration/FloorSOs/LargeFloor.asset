@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LargeFloor
   m_EditorClassIdentifier: 
   mapSize: {x: 75, y: 50}
+  spawnRoomDims: {x: 5, y: 5}
   roomAttempts: 100
   roomSizeParameters: {fileID: 11400000, guid: 3e2b7d3ed1b5b644f9d4c3740233c75e, type: 2}
-  mapTileList: {fileID: 11400000, guid: b3e8ac570b65d494d9f9d22fc4bc7e85, type: 2}
   corridorGenerationStrategy: {fileID: 11400000, guid: 53fb409971bdc3241b56b7ecba88b840, type: 2}
