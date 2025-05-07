@@ -20,6 +20,7 @@ public class PlayerController : FightingController
     public AudioClip coinCollectSFX;
     public AudioClip enemyHurtSFX;
     public AudioClip enemyDefeatSFX;
+    public AudioClip playerHurtSFX;
 
     public GameObject bullet;
     public GameObject coin;
@@ -29,7 +30,7 @@ public class PlayerController : FightingController
 
     private TMP_Text coinCounter;
 
-    private Weapon equippedWeapon;
+    public Weapon equippedWeapon;
 
     private float lastShootTime = -1f;
 
@@ -65,6 +66,8 @@ public class PlayerController : FightingController
     public float timeConsumeSpeed = 1f;
     public float costModifier = 1f;
     public int bulletDamage;
+    public float timeMultiplier = 1f;
+    public float enemyTimeMultiplier = 1f;
     private int scoreFromCoins = 1;
     private int numberOfAttacks = 1;
     private Vector2 meleeRange = new (0f, 1.5f);
@@ -213,6 +216,8 @@ public class PlayerController : FightingController
         var timerManager = gameObject.GetComponent<TimerManager>();
         if (collision.gameObject.CompareTag("Enemy"))
         {
+            MusicManager.musicManager.PlaySound(playerHurtSFX);
+
             // Every enemy has an enemyBehavior
             var enemy = collision.gameObject.GetComponent<EnemyBehavior>();
 
@@ -252,7 +257,7 @@ public class PlayerController : FightingController
         }
         else if (collision.gameObject.CompareTag("Coin"))
         {
-            timerManager.timeLeft += bonusTimeFromCoins;
+            timerManager.timeLeft += bonusTimeFromCoins * timeMultiplier;
             MusicManager.musicManager.PlaySound(coinCollectSFX);
             ChangeScore(scoreFromCoins);
             Destroy(collision.gameObject);
@@ -289,13 +294,13 @@ public class PlayerController : FightingController
             switch (modifier.modifierType)
             {
                 case ModifierType.Add:
-                    timerManager.timeLeft += modifier.modifierValue;
+                    timerManager.timeLeft += modifier.modifierValue * timeMultiplier;
                     break;
                 case ModifierType.Subtract:
-                    timerManager.timeLeft -= modifier.modifierValue;
+                    timerManager.timeLeft -= modifier.modifierValue * timeMultiplier;
                     break;
                 case ModifierType.Multiply:
-                    timerManager.timeLeft *= modifier.modifierValue;
+                    timerManager.timeLeft *= modifier.modifierValue * timeMultiplier;
                     break;
             }
             return;

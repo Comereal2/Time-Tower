@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc248821b4b444946ae1b36621e21b23, type: 3}
+  m_Name: DebtCollector
+  m_EditorClassIdentifier: 
+  cost: 3
+  itemName: Debt Collector
+  modifiers:
+  - {fileID: 11400000, guid: b46a148377abcb94bba22a7da86f65cd, type: 2}
+  - {fileID: 11400000, guid: e2b6d9c5a4a17724da0787b01ebbf7eb, type: 2}
+  itemIcon: {fileID: 21300000, guid: 3d0795729bf67a94bba2d473a501d296, type: 3}
+  spriteXScale: 0.3
+  spriteYScale: 0.3
