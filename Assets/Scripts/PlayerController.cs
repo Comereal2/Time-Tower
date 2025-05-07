@@ -5,6 +5,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static Modifier;
 
@@ -22,6 +23,9 @@ public class PlayerController : FightingController
 
     public GameObject bullet;
     public GameObject coin;
+    [SerializeField] private GameObject menu;
+    [SerializeField] private GameObject weaponCompare;
+    private Button pauseButton;
 
     private TMP_Text coinCounter;
 
@@ -40,7 +44,11 @@ public class PlayerController : FightingController
     private Animator animator;
     #endregion
 
+    public static PlayerController playerController;
+
     public int score = 0;
+
+    private int maxScore = 0;
 
     #region Modifiers
     private bool hasRangedWeapon = false;
@@ -66,6 +74,7 @@ public class PlayerController : FightingController
 
     private void Awake()
     {
+        playerController = this;
         // I honestly hate the fact that I couldnt instantiate the emptyGameObject in the FightingController, but that Awake would always be overwritten by this one
         emptyGameObject = new GameObject("Empty");
         emptyGameObject.AddComponent<Text>();
@@ -73,6 +82,8 @@ public class PlayerController : FightingController
         animator = GetComponent<Animator>();
         // I tried making the player not rely on the coinCounter, but couldnt find a way. Welp, guess this is the one thing you have to add to the scene with him. Whoops
         coinCounter = GameObject.FindGameObjectWithTag("CoinCounter").GetComponent<TMP_Text>();
+        pauseButton = coinCounter.transform.parent.Find("PauseButton").GetComponent<Button>();
+        pauseButton.onClick.AddListener(Pause);
         moveAction = playerInputActions.FindAction("Move");
         shootAction = playerInputActions.FindAction("Shoot");
         equipAction = playerInputActions.FindAction("Equip");
@@ -262,6 +273,7 @@ public class PlayerController : FightingController
     {
         score += change;
         coinCounter.text = "Coins:" + score.ToString();
+        if (change > 0) maxScore += change;
     }
 
     /// <summary>
@@ -354,20 +366,72 @@ public class PlayerController : FightingController
     /// <param name="newWeapon"></param>
     public void UpdateWeaponStats(Weapon newWeapon)
     {
-        bulletDamage -= equippedWeapon.baseDamage;
-        shootCooldown -= equippedWeapon.attackCooldown;
-        bulletSpeed -= equippedWeapon.bulletTravelSpeed;
-        bulletDespawnTime -= equippedWeapon.attackDespawnTime;
-        numberOfAttacks -= equippedWeapon.numberOfAttacks;
+        RemoveWeaponStats(equippedWeapon);
+        DisplayWeaponCompare(equippedWeapon, newWeapon);
         DropWeapon(equippedWeapon, gameObject.transform.position);
+        AddWeaponStats(newWeapon);
         equippedWeapon = newWeapon;
-        bulletDamage += equippedWeapon.baseDamage;
-        shootCooldown += equippedWeapon.attackCooldown;
-        bulletSpeed += equippedWeapon.bulletTravelSpeed;
-        bulletDespawnTime += equippedWeapon.attackDespawnTime;
-        numberOfAttacks += equippedWeapon.numberOfAttacks;
-        hasRangedWeapon = equippedWeapon.isRanged;
-        meleeRange.x = equippedWeapon.meleeRangeX;
+    }
+
+    /// <summary>
+    /// Removes the weapon's bonuses from the player
+    /// </summary>
+    /// <param name="weapon"></param>
+    private void RemoveWeaponStats(Weapon weapon)
+    {
+        bulletDamage -= weapon.baseDamage;
+        shootCooldown -= weapon.attackCooldown;
+        bulletSpeed -= weapon.bulletTravelSpeed;
+        bulletDespawnTime -= weapon.attackDespawnTime;
+        numberOfAttacks -= weapon.numberOfAttacks;
+    }
+
+    /// <summary>
+    /// Adds the weapon's bonuses to the player
+    /// </summary>
+    /// <param name="weapon"></param>
+    private void AddWeaponStats(Weapon weapon)
+    {
+        bulletDamage += weapon.baseDamage;
+        shootCooldown += weapon.attackCooldown;
+        bulletSpeed += weapon.bulletTravelSpeed;
+        bulletDespawnTime += weapon.attackDespawnTime;
+        numberOfAttacks += weapon.numberOfAttacks;
+        hasRangedWeapon = weapon.isRanged;
+        meleeRange.x = weapon.meleeRangeX;
+    }
+
+    /// <summary>  
+    /// Compares two weapons and displays the difference (counting modifiers)
+    /// </summary>  
+    /// <param name="oldWeapon"></param>  
+    /// <param name="newWeapon"></param>  
+    private void DisplayWeaponCompare(Weapon oldWeapon, Weapon newWeapon)
+    {
+        GameObject currentWeaponCompare = Instantiate(weaponCompare, coinCounter.transform.parent);
+        string description = "<size=60><b>" + newWeapon.name + "</b></size><size=40>" + '\n';
+
+        var comparisons = new (float oldValue, float newValue, string label, float currentValue)[]
+        {
+           (oldWeapon.baseDamage, newWeapon.baseDamage, "Base Damage", bulletDamage),
+           (oldWeapon.attackCooldown, newWeapon.attackCooldown, "Attack Cooldown", shootCooldown),
+           (oldWeapon.bulletTravelSpeed, newWeapon.bulletTravelSpeed, "Bullet Speed", bulletSpeed),
+           (oldWeapon.attackDespawnTime, newWeapon.attackDespawnTime, "Bullet Despawn Time", bulletDespawnTime),
+           (oldWeapon.numberOfAttacks, newWeapon.numberOfAttacks, "Number of Attacks", numberOfAttacks),
+           (oldWeapon.meleeRangeX, newWeapon.meleeRangeX, "Melee Range X", meleeRange.x)
+        };
+
+        foreach (var (oldValue, newValue, label, currentValue) in comparisons)
+        {
+            string change = (newValue - oldValue) > 0 ? $"+{Mathf.Round((newValue - oldValue) * 10f) / 10f}" : $"{Mathf.Round((newValue - oldValue) * 10f) / 10f}";
+            description += $"{label}: {(Mathf.Round(newValue * 10f) / 10f) + Mathf.Round(currentValue * 10f) / 10f} ({change}) \n";
+        }
+
+        description += $"Is Ranged: {newWeapon.isRanged}\n";
+        description += "</size>";
+
+        currentWeaponCompare.transform.GetChild(0).GetComponent<TMP_Text>().text = description;
+        Destroy(currentWeaponCompare, 5f);
     }
 
     /// <summary>
@@ -387,5 +451,60 @@ public class PlayerController : FightingController
             yield return null;
         }
         StopCoroutine(MoveBulletInSinPattern(bulletRb, direction));
+    }
+
+    /// <summary>
+    /// Should be executed when the time runs out for the player
+    /// </summary>
+    public void Defeat() 
+    {
+        Time.timeScale = 0;
+        GameObject defeatScreen = Instantiate(weaponCompare, coinCounter.transform.parent);
+        defeatScreen.transform.position = new Vector2(Screen.width/2, Screen.height/2);
+        defeatScreen.transform.GetChild(0).GetComponent<TMP_Text>().text = $"<align=center><size=72>Score: {maxScore} \n </size><size=108><b>Defeat</b></size> \n <size=72>Floor: GetFloorNumber() </size></align>";
+        SpawnQuitButton();
+        pauseButton.onClick.RemoveAllListeners();
+    }
+
+    /// <summary>
+    /// Only use this in Defeat()
+    /// </summary>
+    private void SpawnQuitButton()
+    {
+        GameObject pauseMenu = Instantiate(menu, gameObject.transform);
+        pauseMenu.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(ToMainMenu);
+        Destroy(pauseMenu.transform.GetChild(0));
+    }
+
+    private void OnApplicationPause(bool pause)
+    {
+        Pause();
+    }
+
+    /// <summary>
+    /// Pauses the game
+    /// </summary>
+    private void Pause()
+    {
+        GameObject pauseMenu = Instantiate(menu, gameObject.transform);
+        Time.timeScale = 0;
+        pauseMenu.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => Resume(pauseMenu));
+        pauseMenu.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(ToMainMenu);
+        pauseButton.onClick.RemoveAllListeners();
+    }
+
+    /// <summary>
+    /// Resumes the game
+    /// </summary>
+    private void Resume(GameObject pauseMenu)
+    {
+        pauseButton.onClick.AddListener(Pause);
+        Time.timeScale = 1;
+        Destroy(pauseMenu);
+    }
+
+    private void ToMainMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 }

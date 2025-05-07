@@ -10,13 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc248821b4b444946ae1b36621e21b23, type: 3}
-  m_Name: Time Baron
+  m_Name: More Speedy Boi
   m_EditorClassIdentifier: 
   cost: 3
-  itemName: Time Baron
+  itemName: Speedier Boi
   modifiers:
-  - {fileID: 11400000, guid: a84897be14a82b641b4f13bca02cd4c9, type: 2}
-  - {fileID: 11400000, guid: 2cc4b74a04f6ff043a037ba2def78e45, type: 2}
-  itemIcon: {fileID: 21300000, guid: db44c62611da82a4faea849b792a59c4, type: 3}
-  spriteXScale: 0.9
-  spriteYScale: 0.9
+  - {fileID: 11400000, guid: 2bc6d0c268e515f4eb7894febfe897e8, type: 2}
+  itemIcon: {fileID: 21300000, guid: 6fe4034f17ab80044b04dc689e19bcb0, type: 3}
+  spriteXScale: 1
+  spriteYScale: 1

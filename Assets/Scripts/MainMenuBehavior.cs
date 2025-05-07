@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenuBehavior : MonoBehaviour
@@ -31,6 +32,9 @@ public class MainMenuBehavior : MonoBehaviour
                 enemy.UpgradeEnemy();
             }
         }
+        //Just in case
+        Time.timeScale = 1;
+        SceneManager.LoadScene(1);
     }
 
     private void OptionsButton()

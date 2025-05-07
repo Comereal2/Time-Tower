@@ -182,6 +182,8 @@ MonoBehaviour:
   enemyDefeatSFX: {fileID: 8300000, guid: 6c66257e41d76c94181a568d2e4a3fbb, type: 3}
   bullet: {fileID: 8428211483359946682, guid: 2a5ef3bda870e664d99aa16739b75a7a, type: 3}
   coin: {fileID: 5267191078095984278, guid: 4fc509928d646bf46a192cf5a7064fb2, type: 3}
+  menu: {fileID: 7819262435258659835, guid: e26ba936a35cf7741a6c2f9e52a8f454, type: 3}
+  weaponCompare: {fileID: 2783306225454407676, guid: 483859a8f0da5304f8dcddf64bf9d2ac, type: 3}
   playerInputActions: {fileID: -944628639613478452, guid: fc4fa63dc9cc29f4eb959f3150bf0ac1, type: 3}
   score: 0
   timeConsumeSpeed: 1

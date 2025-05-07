@@ -58,7 +58,7 @@ public class EnemyBehavior : FightingController
     /// </summary>
     private void DetermineShot()
     {
-        var player = GameObject.FindGameObjectWithTag("Player");
+        var player = PlayerController.playerController.gameObject;
         if (player == null) return;
         else
         {
@@ -71,7 +71,7 @@ public class EnemyBehavior : FightingController
     /// </summary>
     public void Attacked()
     {
-        PlayerController player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        PlayerController player = PlayerController.playerController;
         if (currentHealth - player.bulletDamage > 0)
         {
             currentHealth -= player.bulletDamage;

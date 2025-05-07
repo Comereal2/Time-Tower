@@ -22,7 +22,7 @@ public class ShopTile : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        player = PlayerController.playerController;
         itemPurchaseSFX = Resources.LoadAll<AudioClip>("SFX/Purchase");
         itemTooltipPrefab = Resources.Load<GameObject>("Prefabs/ItemTooltip");
         shopCanvas = GameObject.FindGameObjectWithTag("ShopCanvas").GetComponent<Canvas>();
@@ -49,9 +49,8 @@ public class ShopTile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject == player.gameObject)
         {
-            PlayerController player = collision.gameObject.GetComponent<PlayerController>();
             int price = (int)Mathf.Max(item.cost * player.costModifier, 1);
             // Dont realize the purchase if player doesnt have the money for it
             if (player.score < price) return;

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 24a819a2a0554544685deecacd75173f, type: 3}
-  m_Name: TimelordStaff
+  m_Name: Timelord Staff
   m_EditorClassIdentifier: 
   baseDamage: 3
   numberOfAttacks: 1
