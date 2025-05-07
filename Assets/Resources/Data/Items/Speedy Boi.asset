@@ -16,4 +16,6 @@ MonoBehaviour:
   itemName: Speedy Boi
   modifiers:
   - {fileID: 11400000, guid: a22278c64123aff44b435e67ed198373, type: 2}
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 21300000, guid: a48782e91c49d1247885f61efedcc811, type: 3}
+  spriteXScale: 1
+  spriteYScale: 1

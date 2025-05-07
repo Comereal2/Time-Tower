@@ -11,6 +11,7 @@ public class EnemyBehavior : FightingController
     private int currentHealth = 1;
     private bool displayHealthBars = true;
     private GameObject enemyProjectile;
+    private GameObject endOfLevelFlag;
     public GameObject healthBar;
     private Vector2 bossBarOffset = new(0f, 1f); //This theoretically could just be a constant, but changing it for bosses with a larger scale should be possible
 
@@ -18,6 +19,7 @@ public class EnemyBehavior : FightingController
     {
         if (enemyStats.health > 1) healthBar = Resources.Load<GameObject>("Prefabs/HealthBar");
         if (enemyStats.isRanged) enemyProjectile = Resources.Load<GameObject>("Prefabs/EnemyBullet");
+        endOfLevelFlag = Resources.Load<GameObject>("Prefabs/Rooms/Goal");
         // I honestly hate the fact that I couldnt instantiate the emptyGameObject in the FightingController, but that Awake would always be overwritten by this one
         emptyGameObject = new GameObject("Empty");
         emptyGameObject.AddComponent<Text>();
@@ -37,7 +39,8 @@ public class EnemyBehavior : FightingController
         }
         if (enemyStats.sprite != null) transform.GetComponent<SpriteRenderer>().sprite = enemyStats.sprite;
         gameObject.transform.localScale = new Vector2(enemyStats.scale, enemyStats.scale);
-        if (enemyStats.isRanged) InvokeRepeating("DetermineShot", 0, enemyStats.rangedAttackCooldown);
+        if (enemyStats.isRanged) InvokeRepeating(nameof(DetermineShot), 0, enemyStats.rangedAttackCooldown);
+        if (enemyStats.isBoss) MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.bossTheme);
     }
 
     private void Update()
@@ -58,7 +61,7 @@ public class EnemyBehavior : FightingController
     /// </summary>
     private void DetermineShot()
     {
-        var player = GameObject.FindGameObjectWithTag("Player");
+        var player = PlayerController.playerController.gameObject;
         if (player == null) return;
         else
         {
@@ -71,12 +74,12 @@ public class EnemyBehavior : FightingController
     /// </summary>
     public void Attacked()
     {
-        PlayerController player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        PlayerController player = PlayerController.playerController;
         if (currentHealth - player.bulletDamage > 0)
         {
             currentHealth -= player.bulletDamage;
             if (enemyStats.health > 1 && displayHealthBars) UpdateHealthBar();
-            player.PlaySound(player.enemyHurtSFX);
+            MusicManager.musicManager.PlaySound(player.enemyHurtSFX);
             if(enemyStats.isBoss && enemyStats.isRanged)
             {
                 //Made the teleport range for enemies constant to not make it too unbalanced
@@ -90,8 +93,14 @@ public class EnemyBehavior : FightingController
             {
                 Instantiate(player.coin, transform.position, Quaternion.identity, GameObject.FindGameObjectWithTag("RoomContainer").transform);
             }
+            if (enemyStats.isBoss)
+            {
+                MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.dungeonTheme);
+                //This will only work once we merge everything
+                Instantiate(endOfLevelFlag, transform.position, Quaternion.identity, transform.parent);
+            }
             if (enemyStats.health > 1 && displayHealthBars) Destroy(healthBar);
-            player.PlaySound(player.enemyDefeatSFX);
+            MusicManager.musicManager.PlaySound(player.enemyDefeatSFX);
             if(equippedWeapon != null) DropWeapon(equippedWeapon, gameObject.transform.position);
             Destroy(gameObject.GetComponent<TimerManager>().timerText.gameObject);
             Destroy(gameObject);

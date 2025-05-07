@@ -56,6 +56,12 @@ public class TimerManager : MonoBehaviour
                     timeLeft += 20f;
                     return;
                 }
+                else
+                {
+                    playerController.Defeat();
+                    this.enabled = false;
+                    return;
+                }
             }
             else if(enemy != null && enemy.enemyStats.health > 1)
             {
