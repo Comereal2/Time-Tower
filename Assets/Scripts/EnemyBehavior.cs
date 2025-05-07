@@ -88,7 +88,7 @@ public class EnemyBehavior : FightingController
         }
         else
         {
-            player.gameObject.GetComponent<TimerManager>().timeLeft += gameObject.GetComponent<TimerManager>().timeLeft;
+            player.gameObject.GetComponent<TimerManager>().timeLeft += gameObject.GetComponent<TimerManager>().timeLeft * player.timeMultiplier * player.enemyTimeMultiplier;
             if (enemyStats.hasCoin)
             {
                 Instantiate(player.coin, transform.position, Quaternion.identity, GameObject.FindGameObjectWithTag("RoomContainer").transform);
