@@ -15,14 +15,12 @@ public class ShopTile : MonoBehaviour
 
     private TMP_Text itemTooltip;
     private Canvas shopCanvas;
-    private Vector2 tooltipOffset = new Vector2(0, 1.5f);
-    private PlayerController player;
+    private Vector2 tooltipOffset = new (0, 1.5f);
     private bool isRandomizedItem = false;
     private bool displayShopItems = true;
 
     private void Awake()
     {
-        player = PlayerController.playerController;
         itemPurchaseSFX = Resources.LoadAll<AudioClip>("SFX/Purchase");
         itemTooltipPrefab = Resources.Load<GameObject>("Prefabs/ItemTooltip");
         shopCanvas = GameObject.FindGameObjectWithTag("ShopCanvas").GetComponent<Canvas>();
@@ -49,18 +47,18 @@ public class ShopTile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject == player.gameObject)
+        if (collision.gameObject == PlayerController.playerController.gameObject)
         {
-            int price = (int)Mathf.Max(item.cost * player.costModifier, 1);
+            int price = item.cost == 0 ? 0 : (int)Mathf.Max(item.cost * PlayerController.playerController.costModifier, 1);
             // Dont realize the purchase if player doesnt have the money for it
-            if (player.score < price) return;
+            if (PlayerController.playerController.score < price) return;
 
-            player.PlaySound(itemPurchaseSFX[UnityEngine.Random.Range(0, itemPurchaseSFX.Length)]);
-            player.ChangeScore(-price);
+            MusicManager.musicManager.PlaySound(itemPurchaseSFX[UnityEngine.Random.Range(0, itemPurchaseSFX.Length)]);
+            PlayerController.playerController.ChangeScore(-price);
 
             foreach(var modifier in item.modifiers)
             {
-                player.ChangeVariable(modifier);
+                PlayerController.playerController.ChangeVariable(modifier);
             }
 
             if (isOneTimeUse)
@@ -99,7 +97,7 @@ public class ShopTile : MonoBehaviour
         {
             itemDescription += modifier.modifiedVariableVisibleDescription + '\n';
         }
-        if (displayShopItems) itemTooltip.text = "<size=72><b>" + item.itemName + " - Cost: " + (Mathf.Max(item.cost * player.costModifier, 1)).ToString() + "</b></size>" + '\n' + "<size=56>" + itemDescription + "</size>";
+        if (displayShopItems) itemTooltip.text = "<size=72><b>" + item.itemName + " - Cost: " + (item.cost == 0 ? 0 : (Mathf.Max(item.cost * PlayerController.playerController.costModifier, 1)).ToString()) + "</b></size>" + '\n' + "<size=56>" + itemDescription + "</size>";
         else itemTooltip.text = "<size=72><b>??? - Cost: ???</b></size>" + '\n' + "???";
     }
 

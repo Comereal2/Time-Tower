@@ -14,6 +14,7 @@ public class MainMenuBehavior : MonoBehaviour
 
     private void Awake()
     {
+        MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.mainMenuTheme);
         BackButton();
         buttons[0].onClick.AddListener(PlayButton);
         buttons[1].onClick.AddListener(OptionsButton);
@@ -23,6 +24,9 @@ public class MainMenuBehavior : MonoBehaviour
         buttons[5].onClick.AddListener(() => { BackButton(); SaveSettings(); });
     }
 
+    /// <summary>
+    /// Executes the enemy upgrade and loads the game scene
+    /// </summary>
     private void PlayButton()
     {
         foreach (var enemy in Resources.LoadAll<Enemy>("Data/Enemies"))
@@ -37,6 +41,9 @@ public class MainMenuBehavior : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
+    /// <summary>
+    /// Enables the options on the main menu canvas
+    /// </summary>
     private void OptionsButton()
     {
         settings[0].GetComponent<Toggle>().isOn = PlayerPrefs.GetInt("HardMode", 0) == 1;
@@ -48,17 +55,26 @@ public class MainMenuBehavior : MonoBehaviour
         mainMenuObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Enables the credits on the main menu canvas
+    /// </summary>
     private void CreditsButton()
     {
         creditsMenuObject.SetActive(true);
         mainMenuObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Quits the application
+    /// </summary>
     private void QuitButton()
     {
         Application.Quit();
     }
 
+    /// <summary>
+    /// Puts you back onto the start screen by hiding the other two
+    /// </summary>
     private void BackButton()
     {
         creditsMenuObject.SetActive(false);
@@ -66,6 +82,9 @@ public class MainMenuBehavior : MonoBehaviour
         settingsMenuObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Executed by the back button in settings
+    /// </summary>
     private void SaveSettings()
     {
         PlayerPrefs.SetInt("HardMode", settings[0].GetComponent<Toggle>().isOn ? 1 : 0);

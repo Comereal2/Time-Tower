@@ -67,7 +67,7 @@ public class PlayerController : FightingController
     public int bulletDamage;
     private int scoreFromCoins = 1;
     private int numberOfAttacks = 1;
-    private Vector2 meleeRange = new Vector2(0f, 1.5f);
+    private Vector2 meleeRange = new (0f, 1.5f);
     #endregion
 
     private bool isHardMode = false;
@@ -105,6 +105,7 @@ public class PlayerController : FightingController
 
     private void Start()
     {
+        MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.dungeonTheme);
         ChangeScore(PlayerPrefs.GetInt("BonusCash", 0) == 1 ? 5 : 0);
         UpdateWeaponStats(Resources.Load<Weapon>("Data/Weapons/Default"));
     }
@@ -145,7 +146,7 @@ public class PlayerController : FightingController
                         StartCoroutine(MoveBulletInSinPattern(bulletRb, bulletDirection));
                     }
                 }
-                PlaySound(attackRangedSFX);
+                MusicManager.musicManager.PlaySound(attackRangedSFX);
             }
             else
             {
@@ -170,7 +171,7 @@ public class PlayerController : FightingController
                 }
                 if (enemyFound)
                 {
-                    PlaySound(attackMeleeSFX);
+                    MusicManager.musicManager.PlaySound(attackMeleeSFX);
                 }
 
                 //Graphics for the player, scalable based on range
@@ -204,7 +205,7 @@ public class PlayerController : FightingController
 
     private void FixedUpdate()
     {
-        rb.MovePosition(rb.position + playerMovement * speed * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + speed * Time.fixedDeltaTime * playerMovement);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -252,7 +253,7 @@ public class PlayerController : FightingController
         else if (collision.gameObject.CompareTag("Coin"))
         {
             timerManager.timeLeft += bonusTimeFromCoins;
-            PlaySound(coinCollectSFX);
+            MusicManager.musicManager.PlaySound(coinCollectSFX);
             ChangeScore(scoreFromCoins);
             Destroy(collision.gameObject);
         }
@@ -341,23 +342,12 @@ public class PlayerController : FightingController
         }
         else if (field.FieldType == typeof(bool))
         {
-            field.SetValue(this, (modifier.modifierValue == 0 ? false : true));
+            field.SetValue(this, (modifier.modifierValue != 0));
         }
         else
         {
             Debug.LogWarning($"Field '{modifier.modifiedVariable}' is of unsupported type '{field.FieldType}'.");
         }
-    }
-
-    /// <summary>
-    /// Plays a one-time audio clip directly to the player
-    /// </summary>
-    /// <param name="clip"></param>
-    public void PlaySound(AudioClip clip)
-    {
-        //Checks if the current camera has an audio source and if not adds it
-        AudioSource audioSource = Camera.main.GetComponent<AudioSource>() == null ? Camera.main.AddComponent<AudioSource>() : Camera.main.GetComponent<AudioSource>();
-        audioSource.PlayOneShot(clip);
     }
 
     /// <summary>
@@ -431,7 +421,7 @@ public class PlayerController : FightingController
         description += "</size>";
 
         currentWeaponCompare.transform.GetChild(0).GetComponent<TMP_Text>().text = description;
-        Destroy(currentWeaponCompare, 5f);
+        Destroy(currentWeaponCompare, 3f);
     }
 
     /// <summary>
@@ -462,23 +452,22 @@ public class PlayerController : FightingController
         GameObject defeatScreen = Instantiate(weaponCompare, coinCounter.transform.parent);
         defeatScreen.transform.position = new Vector2(Screen.width/2, Screen.height/2);
         defeatScreen.transform.GetChild(0).GetComponent<TMP_Text>().text = $"<align=center><size=72>Score: {maxScore} \n </size><size=108><b>Defeat</b></size> \n <size=72>Floor: GetFloorNumber() </size></align>";
-        SpawnQuitButton();
+        StartCoroutine(SpawnQuitButton());
         pauseButton.onClick.RemoveAllListeners();
     }
 
     /// <summary>
     /// Only use this in Defeat()
     /// </summary>
-    private void SpawnQuitButton()
+    private IEnumerator SpawnQuitButton()
     {
+        yield return new WaitForSecondsRealtime(2f);
         GameObject pauseMenu = Instantiate(menu, gameObject.transform);
-        pauseMenu.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(ToMainMenu);
-        Destroy(pauseMenu.transform.GetChild(0));
-    }
-
-    private void OnApplicationPause(bool pause)
-    {
-        Pause();
+        var quitButton = pauseMenu.transform.GetChild(1);
+        quitButton.position += new Vector3(0, -50f, 0);
+        quitButton.GetComponent<Button>().onClick.AddListener(ToMainMenu);
+        Destroy(pauseMenu.transform.GetChild(0).gameObject);
+        StopCoroutine(SpawnQuitButton());
     }
 
     /// <summary>
@@ -503,6 +492,9 @@ public class PlayerController : FightingController
         Destroy(pauseMenu);
     }
 
+    /// <summary>
+    /// Loads 1st scene in build hierarchy
+    /// </summary>
     private void ToMainMenu()
     {
         SceneManager.LoadScene(0);

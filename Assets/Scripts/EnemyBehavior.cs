@@ -37,7 +37,8 @@ public class EnemyBehavior : FightingController
         }
         if (enemyStats.sprite != null) transform.GetComponent<SpriteRenderer>().sprite = enemyStats.sprite;
         gameObject.transform.localScale = new Vector2(enemyStats.scale, enemyStats.scale);
-        if (enemyStats.isRanged) InvokeRepeating("DetermineShot", 0, enemyStats.rangedAttackCooldown);
+        if (enemyStats.isRanged) InvokeRepeating(nameof(DetermineShot), 0, enemyStats.rangedAttackCooldown);
+        if (enemyStats.isBoss) MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.bossTheme);
     }
 
     private void Update()
@@ -76,7 +77,7 @@ public class EnemyBehavior : FightingController
         {
             currentHealth -= player.bulletDamage;
             if (enemyStats.health > 1 && displayHealthBars) UpdateHealthBar();
-            player.PlaySound(player.enemyHurtSFX);
+            MusicManager.musicManager.PlaySound(player.enemyHurtSFX);
             if(enemyStats.isBoss && enemyStats.isRanged)
             {
                 //Made the teleport range for enemies constant to not make it too unbalanced
@@ -90,8 +91,9 @@ public class EnemyBehavior : FightingController
             {
                 Instantiate(player.coin, transform.position, Quaternion.identity, GameObject.FindGameObjectWithTag("RoomContainer").transform);
             }
+            if (enemyStats.isBoss) MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.dungeonTheme);
             if (enemyStats.health > 1 && displayHealthBars) Destroy(healthBar);
-            player.PlaySound(player.enemyDefeatSFX);
+            MusicManager.musicManager.PlaySound(player.enemyDefeatSFX);
             if(equippedWeapon != null) DropWeapon(equippedWeapon, gameObject.transform.position);
             Destroy(gameObject.GetComponent<TimerManager>().timerText.gameObject);
             Destroy(gameObject);
