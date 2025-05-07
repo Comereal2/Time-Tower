@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -9,13 +12,18 @@ public class MainMenuBehavior : MonoBehaviour
     [SerializeField] private GameObject creditsMenuObject;
     [SerializeField] private GameObject mainMenuObject;
     [SerializeField] private GameObject settingsMenuObject;
+    [SerializeField] private GameObject image;
     [SerializeField] private Button[] buttons;
     [SerializeField] private GameObject[] settings;
 
     private void Awake()
     {
-        MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.mainMenuTheme);
         BackButton();
+    }
+
+    private void Start()
+    {
+        MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.mainMenuTheme);
         buttons[0].onClick.AddListener(PlayButton);
         buttons[1].onClick.AddListener(OptionsButton);
         buttons[2].onClick.AddListener(CreditsButton);
@@ -50,9 +58,10 @@ public class MainMenuBehavior : MonoBehaviour
         settings[1].GetComponent<Toggle>().isOn = PlayerPrefs.GetInt("EnemyHealthBars", 1) == 1;
         settings[2].GetComponent<Toggle>().isOn = PlayerPrefs.GetInt("ShopTags", 1) == 1;
         settings[3].GetComponent<Toggle>().isOn = PlayerPrefs.GetInt("BonusCash", 0) == 1;
-        settings[4].GetComponent<InputField>().text = PlayerPrefs.GetInt("ChallengeRating", 0) == 0 ? "" : PlayerPrefs.GetInt("ChallengeRating", 0).ToString();
+        settings[4].GetComponent<TMP_InputField>().text = PlayerPrefs.GetInt("ChallengeRating", 0) == 0 ? "" : PlayerPrefs.GetInt("ChallengeRating", 0).ToString();
         settingsMenuObject.SetActive(true);
         mainMenuObject.SetActive(false);
+        image.SetActive(false);
     }
 
     /// <summary>
@@ -80,6 +89,7 @@ public class MainMenuBehavior : MonoBehaviour
         creditsMenuObject.SetActive(false);
         mainMenuObject.SetActive(true);
         settingsMenuObject.SetActive(false);
+        image.SetActive(true);
     }
 
     /// <summary>
@@ -91,7 +101,7 @@ public class MainMenuBehavior : MonoBehaviour
         PlayerPrefs.SetInt("EnemyHealthBars", settings[1].GetComponent<Toggle>().isOn ? 1 : 0);
         PlayerPrefs.SetInt("ShopTags", settings[2].GetComponent<Toggle>().isOn ? 1 : 0);
         PlayerPrefs.SetInt("BonusCash", settings[3].GetComponent<Toggle>().isOn ? 1 : 0);
-        PlayerPrefs.SetInt("ChallengeRating", int.Parse(settings[4].GetComponent<InputField>().text));
+        PlayerPrefs.SetInt("ChallengeRating", int.Parse(settings[4].GetComponent<TMP_InputField>().text != null ? settings[4].GetComponent<TMP_InputField>().text : "0"));
         PlayerPrefs.Save();
     }
 }
