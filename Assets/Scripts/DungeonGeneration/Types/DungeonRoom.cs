@@ -7,78 +7,53 @@ using System.Collections.Generic;
 namespace DungeonGeneration
 {
 
+// Room is defined by a rect that has a ring of padding
 public class DungeonRoom
 {
 	public RectInt rect { get; private set; }
+	bool isSpawnRoom;
 
-	// Generates a random room given params
-	public DungeonRoom(Vector2Int mapSize, RoomSizeParameters roomSizeParameters)
+	public DungeonRoom(Vector2Int mapSize, Vector2Int spawnRoomDims)
 	{
-		Vector2Int randomLowerLeftPoint = new (UnityEngine.Random.Range(0, mapSize.x - roomSizeParameters.minWidth)
-				, UnityEngine.Random.Range(0, mapSize.y - roomSizeParameters.minHeight));
-		Vector2Int randomSize = new (UnityEngine.Random.Range(roomSizeParameters.minWidth, Mathf.Min(roomSizeParameters.maxWidth, mapSize.x - randomLowerLeftPoint.x + 1))
-				, UnityEngine.Random.Range(roomSizeParameters.minWidth, Mathf.Min(roomSizeParameters.maxHeight, mapSize.y - randomLowerLeftPoint.y + 1)));
+		spawnRoomDims = spawnRoomDims + 2 * Vector2Int.one;
+		int leftPointX = UnityEngine.Random.Range(-1, mapSize.x - spawnRoomDims.x + 1);
+		int leftPointY = UnityEngine.Random.Range(-1, mapSize.y - spawnRoomDims.y + 1);
+		Vector2Int randomLowerLeftPoint = new (leftPointX, leftPointY);
+		
+		rect = new RectInt(randomLowerLeftPoint, spawnRoomDims);
+		isSpawnRoom = true;
+	}
+
+	// Generates a random room given params, padded by a ring of walls
+	public DungeonRoom(Vector2Int mapSize, RoomSizeParametersWithPadding rsp)
+	{
+		int leftPointX = UnityEngine.Random.Range(-1, mapSize.x - rsp.minWidth + 1);
+		int leftPointY = UnityEngine.Random.Range(-1, mapSize.y - rsp.minHeight + 1);
+		Vector2Int randomLowerLeftPoint = new (leftPointX, leftPointY);
+
+		int maxPossibleSizeX = Mathf.Min(rsp.maxWidth, mapSize.x - leftPointX + 1);
+		int maxPossibleSizeY = Mathf.Min(rsp.maxHeight, mapSize.y - leftPointY + 1);
+		int sizeX = UnityEngine.Random.Range(rsp.minWidth, maxPossibleSizeX);
+		int sizeY = UnityEngine.Random.Range(rsp.minWidth, maxPossibleSizeY);
+		Vector2Int randomSize = new (sizeX, sizeY);
 
 		rect = new RectInt(randomLowerLeftPoint, randomSize);
+		isSpawnRoom = false;
 	}
 
-	// TODO: Make Base versions of each accent and randomly select which one, biasing main tile
-	TileBase GetTileForPosition(Vector3Int pos, MapTileList mapTileList)
+	public Vector2Int RandomPointInside()
 	{
-		if (pos.x == 0 || pos.x == rect.size.x - 1)
-		{
-			return (pos.y == rect.size.y - 1 || pos.y == 0)
-				? mapTileList.cornerIn
-				: mapTileList.walls[0];
-		}
-		if (pos.y == 0 || pos.y == rect.size.y - 1)
-		{
-			return mapTileList.walls[0];
-		}
-		return mapTileList.floors[0];
+		return new(UnityEngine.Random.Range(rect.xMin + 1, rect.xMax), UnityEngine.Random.Range(rect.yMin + 1, rect.yMax));
 	}
 
-	// TODO: make the Rotation matrices a static array
-	Matrix4x4 GetTransformForPosition(Vector3Int pos)
+	public void PopulateSpawnRoom()
 	{
-		if (pos.x == 0)
-		{
-			if (pos.y == 0)
-				return Matrix4x4.Rotate(Quaternion.Euler(0, 0, 180));
-			return Matrix4x4.Rotate(Quaternion.Euler(0, 0, 90));
-		}
-		if (pos.x == rect.size.x - 1)
-		{
-			if (pos.y < rect.size.y - 1)
-				return Matrix4x4.Rotate(Quaternion.Euler(0, 0, 270));
-		}
-		if (pos.y == 0)
-			return Matrix4x4.Rotate(Quaternion.Euler(0, 0, 180));
-		return Matrix4x4.Rotate(Quaternion.identity);
+		if (!isSpawnRoom)
+			Debug.LogWarning("Populating non-spawn room with spawn room items");
+
+		// TODO
 	}
-	
-	// Requires this to be valid in the map (not overlapping with any other rooms)
-	public void Draw(Tilemap map, MapTileList mapTileList)
-	{
-		List<TileChangeData> tileChangeDataArray = new List<TileChangeData>();
-		for (int i = 0; i < rect.size.x; ++i)
-		{
-			for (int j = 0; j < rect.size.y; ++j)
-			{
-				Vector3Int relative_pos = new (i, j);
-				Vector3Int absolute_pos = new (i + rect.x, j + rect.y);
-				TileBase tile = GetTileForPosition(relative_pos, mapTileList);
-				tileChangeDataArray.Add(new TileChangeData{
-						position = absolute_pos,
-						tile = tile,
-						color = (tile == mapTileList.floors[0])
-							? Color.black
-							: Color.white,
-						transform = GetTransformForPosition(relative_pos)});
-			}
-		}
-		map.SetTiles(tileChangeDataArray.ToArray(), true);
-	}
+
 };
 
 } // namespace DungeonGeneration
