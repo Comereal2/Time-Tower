@@ -12,9 +12,11 @@ public class FloorSO : ScriptableObject
 	[Header("Settings")]
 	public Vector2Int mapSize;
 	[SerializeField] Vector2Int spawnRoomDims;
+	[SerializeField] Vector2Int bossRoomDims;
 	[SerializeField] int roomAttempts;
 	[SerializeField] int numEnemies;
 	[SerializeField] EnemySpawner enemySpawner;
+	[SerializeField] EnemySpawner bossSpawner;
 	[SerializeField] RoomSizeParameters roomSizeParameters;
 	[SerializeField] ICorridorGenerationStrategy corridorGenerationStrategy;
 
@@ -25,8 +27,11 @@ public class FloorSO : ScriptableObject
 	void OnValidate()
 	{
 		int x = Mathf.Max(spawnRoomDims.x, 3);
-		int y = Mathf.Max(spawnRoomDims.y, 3);
+		int y = Mathf.Max(spawnRoomDims.y, 2);
 		spawnRoomDims = new Vector2Int(x, y);
+		int bossx = Mathf.Max(bossRoomDims.x, 4);
+		int bossy = Mathf.Max(bossRoomDims.y, 4);
+		bossRoomDims = new Vector2Int(bossx, bossy);
 		rspPadded.UpdateParams(roomSizeParameters);
 	}
 
@@ -42,13 +47,32 @@ public class FloorSO : ScriptableObject
 		}
 	}
 
-	private void GenerateRooms()
+	private void GenerateStartingRooms()
 	{
 		rooms = new List<DungeonRoom>();
-
+		// Boss room
+		rooms.Add(new DungeonRoom(mapSize, bossRoomDims, false));
 		// Spawn room
-		rooms.Add(new DungeonRoom(mapSize, spawnRoomDims));
+		DungeonRoom spawnCandidate = new DungeonRoom(mapSize, spawnRoomDims, true);
+		for (int i = 0; i < 100; ++i)
+		{
+			if (!spawnCandidate.rect.Overlaps(rooms[0].rect))
+			{
+				rooms.Add(spawnCandidate);
+				return;
+			}
+			spawnCandidate = new DungeonRoom(mapSize, bossRoomDims, true);
+		}
 
+		// Failed randomly placing, manual in the corners
+		rooms = new List<DungeonRoom>();
+		rooms.Add(new DungeonRoom(mapSize, bossRoomDims, false, false));
+		rooms.Add(new DungeonRoom(mapSize, spawnRoomDims, true, false));
+	}
+
+	private void GenerateRooms()
+	{
+		GenerateStartingRooms();
 		for (int i = 0; i < roomAttempts; ++i)
 		{
 			DungeonRoom potenchRoom = new DungeonRoom(mapSize, rspPadded);
@@ -126,21 +150,21 @@ public class FloorSO : ScriptableObject
 	{
 		for (int i = 0; i < numEnemies; ++i)
 		{
-			Vector2Int roomCoords = RandomNonSpawnRoom().RandomPointInside();
-
-			Vector3 offset = 2 * new Vector3(roomCoords.x, roomCoords.y);
-			Instantiate(enemySpawner, displayTilemap.transform.position + offset, Quaternion.identity);
+			Vector3Int roomCoords = (Vector3Int)RandomNonSpecialRoom().RandomPointInside();
+			Instantiate(enemySpawner, displayTilemap.GetCellCenterWorld(roomCoords), Quaternion.identity);
 		}
+		Vector3Int bossCoords = (Vector3Int)rooms[0].RandomPointInside();
+		Instantiate(bossSpawner, displayTilemap.GetCellCenterWorld(bossCoords), Quaternion.identity);
 	}
 
-	public DungeonRoom RandomNonSpawnRoom()
+	public DungeonRoom RandomNonSpecialRoom()
 	{
-		return rooms[UnityEngine.Random.Range(1,rooms.Count)];
+		return rooms[UnityEngine.Random.Range(2,rooms.Count)];
 	}
 
 	public DungeonRoom SpawnRoom()
 	{
-		return rooms[0];
+		return rooms[1];
 	}
 }
 

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6624636368445990740}
   - component: {fileID: 9024039671447907708}
   m_Layer: 0
-  m_Name: BaseEnemySpawner
+  m_Name: TimeLord
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 5811361662789150160, guid: d3f84d7d0e955fa4c996254877b78abd, type: 3}
-  enemyList: {fileID: 11400000, guid: a2c45120504d8f44da268fc431701e42, type: 2}
+  enemyList: {fileID: 11400000, guid: 828a5dc37e73e3b47a7ebee1454eb473, type: 2}
   enemyDroppables: {fileID: 11400000, guid: 1c46ff5a50013c94db6c08099f6cacd7, type: 2}
 --- !u!58 &6624636368445990740
 CircleCollider2D:

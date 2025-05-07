@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapSize: {x: 20, y: 20}
   spawnRoomDims: {x: 4, y: 4}
+  bossRoomDims: {x: 4, y: 4}
   roomAttempts: 10
-  numEnemies: 5
+  numEnemies: 10
   enemySpawner: {fileID: 7086528610666175836, guid: fbe60dfcc72a1cf4a800b4a0be3337ab, type: 3}
+  bossSpawner: {fileID: 7086528610666175836, guid: 47187d3d29a12f745bb3934482e9f4d2, type: 3}
   roomSizeParameters: {fileID: 11400000, guid: 4a9c641f221c22e478548ff558a9939a, type: 2}
   corridorGenerationStrategy: {fileID: 11400000, guid: 53fb409971bdc3241b56b7ecba88b840, type: 2}

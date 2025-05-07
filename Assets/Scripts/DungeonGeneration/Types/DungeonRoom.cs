@@ -13,15 +13,20 @@ public class DungeonRoom
 	public RectInt rect { get; private set; }
 	bool isSpawnRoom;
 
-	public DungeonRoom(Vector2Int mapSize, Vector2Int spawnRoomDims)
+	public DungeonRoom(Vector2Int mapSize, Vector2Int fixedRoomDims, bool isSpawn, bool placeRandom = true)
 	{
-		spawnRoomDims = spawnRoomDims + 2 * Vector2Int.one;
-		int leftPointX = UnityEngine.Random.Range(-1, mapSize.x - spawnRoomDims.x + 1);
-		int leftPointY = UnityEngine.Random.Range(-1, mapSize.y - spawnRoomDims.y + 1);
+		fixedRoomDims = fixedRoomDims + 2 * Vector2Int.one;
+		int leftPointX = (isSpawn) ? -1 : mapSize.x - fixedRoomDims.x + 1;
+		int leftPointY = (isSpawn) ? -1 : mapSize.y - fixedRoomDims.y + 1;
+		if (placeRandom)
+		{
+			leftPointX = UnityEngine.Random.Range(-1, mapSize.x - fixedRoomDims.x + 1);
+			leftPointY = UnityEngine.Random.Range(-1, mapSize.y - fixedRoomDims.y + 1);
+		}
 		Vector2Int randomLowerLeftPoint = new (leftPointX, leftPointY);
 		
-		rect = new RectInt(randomLowerLeftPoint, spawnRoomDims);
-		isSpawnRoom = true;
+		rect = new RectInt(randomLowerLeftPoint, fixedRoomDims);
+		isSpawnRoom = isSpawn;
 	}
 
 	// Generates a random room given params, padded by a ring of walls
@@ -41,19 +46,21 @@ public class DungeonRoom
 		isSpawnRoom = false;
 	}
 
+	public Vector2Int ShopTilePosition()
+	{
+		return new(UnityEngine.Random.Range(rect.xMin + 1, rect.xMax - 1), rect.yMax - 1);
+	}
+
 	public Vector2Int RandomPointInside()
 	{
-		return new(UnityEngine.Random.Range(rect.xMin + 1, rect.xMax), UnityEngine.Random.Range(rect.yMin + 1, rect.yMax));
+		return new(UnityEngine.Random.Range(rect.xMin + 1, rect.xMax - 1), UnityEngine.Random.Range(rect.yMin + 1, rect.yMax - 1));
 	}
 
-	public void PopulateSpawnRoom()
+	public void PopulateBossRoom()
 	{
-		if (!isSpawnRoom)
-			Debug.LogWarning("Populating non-spawn room with spawn room items");
-
-		// TODO
+		if (isSpawnRoom)
+			Debug.LogWarning("Populating spawn room as boss room");
 	}
-
 };
 
 } // namespace DungeonGeneration

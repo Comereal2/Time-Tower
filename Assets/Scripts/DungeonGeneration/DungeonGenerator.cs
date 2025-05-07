@@ -14,13 +14,14 @@ public class DungeonGenerator : MonoBehaviour
 	// TODO: Have FloorSO type that builds the boss room
 
 	public FloorSO dungeon;
-	public TriggerHandler goalPrefab;
 	GameObject disabledInitializer;
 
 	DungeonRenderer dungeonRenderer;
 
 	public Tilemap collisionTilemap;
 	public Tilemap displayTilemap;
+	public ShopTile shopTilePrefab;
+	public ShopTile bonusTimeShopTile;
 
 	int floorNumber;
 
@@ -36,14 +37,23 @@ public class DungeonGenerator : MonoBehaviour
 		dungeon.GenerateDungeon();
 		dungeonRenderer.Draw(dungeon.terrains, collisionTilemap, displayTilemap);
 
-		DungeonRoom goalRoom = dungeon.RandomNonSpawnRoom();
-		Vector3 pos = displayTilemap.gameObject.transform.position + 2 * (Vector3)goalRoom.rect.center;
-		Instantiate(goalPrefab, pos, Quaternion.identity);
+		DungeonRoom goalRoom = dungeon.RandomNonSpecialRoom();
 		++floorNumber;
 
 		Debug.Log($"Floor {floorNumber} generated");
 		dungeon.PlaceEnemies(displayTilemap);
 		PlacePlayer();
+		PopulateSpawnRoom();
+	}
+
+	public void PopulateSpawnRoom()
+	{
+		Vector3Int shopPos = (Vector3Int)dungeon.SpawnRoom().ShopTilePosition();
+		Instantiate(shopTilePrefab, displayTilemap.GetCellCenterWorld(shopPos) + .7f * Vector3.down, Quaternion.identity);
+		Vector3Int bonusTimeShopPos = (Vector3Int)dungeon.SpawnRoom().ShopTilePosition();
+		while (shopPos == bonusTimeShopPos)
+			bonusTimeShopPos = (Vector3Int)dungeon.SpawnRoom().ShopTilePosition();
+		Instantiate(bonusTimeShopTile, displayTilemap.GetCellCenterWorld(bonusTimeShopPos) + .7f * Vector3.down, Quaternion.identity);
 	}
 
 	private void PlacePlayer()

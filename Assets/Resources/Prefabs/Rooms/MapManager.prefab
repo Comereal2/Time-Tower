@@ -47,10 +47,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dungeon: {fileID: 11400000, guid: edf68db46b772b9448a57fe0b1ec9171, type: 2}
-  goalPrefab: {fileID: 6398221722578934677, guid: 6728cbda92ad0134cb4d80dcb39c8b46, type: 3}
-  playerPrefab: {fileID: 1015275897447953776, guid: 891f53175b873c743ae4295c341462d2, type: 3}
   collisionTilemap: {fileID: 9216070556259406616}
   displayTilemap: {fileID: 3250164111532702931}
+  shopTilePrefab: {fileID: 5058420197807633108, guid: b4a94b7ece76f9b4badfc409d7789403, type: 3}
+  bonusTimeShopTile: {fileID: 5058420197807633108, guid: 5a2b48a2bea2dcd44aea3f2025e87369, type: 3}
 --- !u!114 &1367420154115075161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319,7 +319,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -470,7 +470,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -2
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
