@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ShopTile : MonoBehaviour
@@ -15,30 +16,30 @@ public class ShopTile : MonoBehaviour
     private TMP_Text itemTooltip;
     private Canvas shopCanvas;
     private Vector2 tooltipOffset = new Vector2(0, 1.5f);
+    private PlayerController player;
+    private bool isRandomizedItem = false;
+    private bool displayShopItems = true;
 
     private void Awake()
     {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         itemPurchaseSFX = Resources.LoadAll<AudioClip>("SFX/Purchase");
         itemTooltipPrefab = Resources.Load<GameObject>("Prefabs/ItemTooltip");
         shopCanvas = GameObject.FindGameObjectWithTag("ShopCanvas").GetComponent<Canvas>();
+        if (item == null)
+        {
+            RandomizeItem();
+            isRandomizedItem = true;
+        }
+        displayShopItems = PlayerPrefs.GetInt("ShopTags", 1) == 1;
     }
 
     private void Start()
     {
-        string itemDescription = "";
-        foreach(var modifier in item.modifiers)
-        {
-            itemDescription += modifier.modifiedVariableVisibleDescription + '\n';
-        }
-        itemTooltipPrefab = Instantiate(itemTooltipPrefab, shopCanvas.transform);
+        itemTooltipPrefab = Instantiate(itemTooltipPrefab, shopCanvas != null ? shopCanvas.transform : gameObject.transform); /*Make sure tooltip exists, even if it wont display*/
         itemTooltip = itemTooltipPrefab.GetComponentInChildren<TMP_Text>();
-        itemTooltip.text = "<size=72><b>" + item.itemName + " - Cost: " + item.cost + "</b></size>" + '\n' + "<size=56>" + itemDescription + "</size>";
-        if (item.itemIcon != null)
-        {
-            var childRenderer = transform.GetChild(0).GetComponentInChildren<SpriteRenderer>();
-            childRenderer.sprite = item.itemIcon;
-            childRenderer.transform.localScale = new Vector2(item.spriteXScale, item.spriteYScale);
-        }
+        UpdateItemText();
+        UpdateItemSprite();
     }
 
     private void Update()
@@ -51,18 +52,72 @@ public class ShopTile : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
-            if (player.score < item.cost) return;
+            int price = (int)Mathf.Max(item.cost * player.costModifier, 1);
+            // Dont realize the purchase if player doesnt have the money for it
+            if (player.score < price) return;
+
             player.PlaySound(itemPurchaseSFX[UnityEngine.Random.Range(0, itemPurchaseSFX.Length)]);
-            player.ChangeScore(-item.cost);
+            player.ChangeScore(-price);
+
             foreach(var modifier in item.modifiers)
             {
                 player.ChangeVariable(modifier);
             }
+
             if (isOneTimeUse)
             {
                 Destroy(itemTooltipPrefab);
                 Destroy(gameObject);
             }
+
+            if (isRandomizedItem)
+            {
+                RandomizeItem();
+            }
+
+            //Update item description just in case price changes
+            UpdateItemText();
+        }
+    }
+
+    /// <summary>
+    /// Randomizes the item in the shop tile
+    /// </summary>
+    private void RandomizeItem()
+    {
+        var resources = Resources.LoadAll("Data/Items");
+        item = (Item)resources[UnityEngine.Random.Range(0, resources.Length)];
+        UpdateItemSprite();
+    }
+
+    /// <summary>
+    /// Updates the text displayed in the itemTooltip
+    /// </summary>
+    private void UpdateItemText()
+    {
+        string itemDescription = "";
+        foreach (var modifier in item.modifiers)
+        {
+            itemDescription += modifier.modifiedVariableVisibleDescription + '\n';
+        }
+        if (displayShopItems) itemTooltip.text = "<size=72><b>" + item.itemName + " - Cost: " + (Mathf.Max(item.cost * player.costModifier, 1)).ToString() + "</b></size>" + '\n' + "<size=56>" + itemDescription + "</size>";
+        else itemTooltip.text = "<size=72><b>??? - Cost: ???</b></size>" + '\n' + "???";
+    }
+
+    /// <summary>
+    /// Updates the sprite displayed on the shop tile itself
+    /// </summary>
+    private void UpdateItemSprite()
+    {
+        var childRenderer = transform.GetChild(0).GetComponentInChildren<SpriteRenderer>();
+        if (item.itemIcon != null)
+        {
+            childRenderer.sprite = item.itemIcon;
+            childRenderer.transform.localScale = new Vector2(item.spriteXScale, item.spriteYScale);
+        }
+        else
+        {
+            childRenderer.sprite = null;
         }
     }
 }

@@ -27,14 +27,17 @@ public class Modifier : ScriptableObject
         { "weirdBullets", "Weird Bullets" },
         { "damageResistance", "Damage Resistance" },
         { "bouncyBullets", "Bouncy Bullets" },
-        { "bulletDespawnTime", "Bullet Lifespan" }
+        { "bulletDespawnTime", "Bullet Lifespan" },
+        { "costModifier", "Cost Modifier" },
+        { "canTeleport", "Teleportation" }
     };
 
+    //Special case for display
     private List<string> boolVariableList = new(){
-        "weirdBullets", "bouncyBullets"
+        "weirdBullets", "bouncyBullets", "canTeleport"
     };
 
-    private void Awake()
+    private void OnEnable()
     {
         if (variableDescriptionMap.TryGetValue(modifiedVariable, out string description))
         {

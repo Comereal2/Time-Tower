@@ -23,6 +23,7 @@ public class BulletBehavior : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             collision.gameObject.GetComponent<EnemyBehavior>().Attacked();
+            Destroy(gameObject);
         }
         else if (collision.gameObject.layer == 3)
         {
