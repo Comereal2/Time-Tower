@@ -11,6 +11,7 @@ public class EnemyBehavior : FightingController
     private int currentHealth = 1;
     private bool displayHealthBars = true;
     private GameObject enemyProjectile;
+    private GameObject endOfLevelFlag;
     public GameObject healthBar;
     private Vector2 bossBarOffset = new(0f, 1f); //This theoretically could just be a constant, but changing it for bosses with a larger scale should be possible
 
@@ -18,6 +19,7 @@ public class EnemyBehavior : FightingController
     {
         if (enemyStats.health > 1) healthBar = Resources.Load<GameObject>("Prefabs/HealthBar");
         if (enemyStats.isRanged) enemyProjectile = Resources.Load<GameObject>("Prefabs/EnemyBullet");
+        endOfLevelFlag = Resources.Load<GameObject>("Prefabs/Rooms/Goal");
         // I honestly hate the fact that I couldnt instantiate the emptyGameObject in the FightingController, but that Awake would always be overwritten by this one
         emptyGameObject = new GameObject("Empty");
         emptyGameObject.AddComponent<Text>();
@@ -91,7 +93,12 @@ public class EnemyBehavior : FightingController
             {
                 Instantiate(player.coin, transform.position, Quaternion.identity, GameObject.FindGameObjectWithTag("RoomContainer").transform);
             }
-            if (enemyStats.isBoss) MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.dungeonTheme);
+            if (enemyStats.isBoss)
+            {
+                MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.dungeonTheme);
+                //This will only work once we merge everything
+                Instantiate(endOfLevelFlag, transform.position, Quaternion.identity, transform.parent);
+            }
             if (enemyStats.health > 1 && displayHealthBars) Destroy(healthBar);
             MusicManager.musicManager.PlaySound(player.enemyDefeatSFX);
             if(equippedWeapon != null) DropWeapon(equippedWeapon, gameObject.transform.position);
