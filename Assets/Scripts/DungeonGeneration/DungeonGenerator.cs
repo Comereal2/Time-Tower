@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-
+using Pathfinding;
 
 namespace DungeonGeneration
 {
@@ -14,8 +14,8 @@ public class DungeonGenerator : MonoBehaviour
 	// TODO: Have FloorSO type that builds the boss room
 
 	public FloorSO dungeon;
-	public Goal goalPrefab;
-	public PlayerController playerPrefab;
+	public TriggerHandler goalPrefab;
+	GameObject disabledInitializer;
 
 	DungeonRenderer dungeonRenderer;
 
@@ -26,6 +26,7 @@ public class DungeonGenerator : MonoBehaviour
 
 	void Start()
 	{
+		disabledInitializer = GameObject.Find("DisabledInitializer");
 		dungeonRenderer = GetComponent<DungeonRenderer>();
 		GenerateFloor();
 	}
@@ -46,10 +47,10 @@ public class DungeonGenerator : MonoBehaviour
 
 	private void PlacePlayer()
 	{
-		GameObject player = GameObject.Find("Player");
+		GameObject player = GameObject.FindWithTag("Player");
 		if (player == null)
 		{
-			player = Instantiate(playerPrefab).gameObject;
+			Debug.LogWarning("Player not in scene");
 		}
 		player.transform.position = displayTilemap.gameObject.transform.position + 2 * (Vector3)dungeon.SpawnRoom().rect.center; 
 	}

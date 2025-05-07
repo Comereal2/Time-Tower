@@ -10,9 +10,10 @@ namespace DungeonGeneration
 public class FloorSO : ScriptableObject
 {
 	[Header("Settings")]
-	[SerializeField] Vector2Int mapSize;
+	public Vector2Int mapSize;
 	[SerializeField] Vector2Int spawnRoomDims;
 	[SerializeField] int roomAttempts;
+	[SerializeField] int numEnemies;
 	[SerializeField] RoomSizeParameters roomSizeParameters;
 	[SerializeField] ICorridorGenerationStrategy corridorGenerationStrategy;
 

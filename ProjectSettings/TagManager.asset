@@ -12,6 +12,7 @@ TagManager:
   - RoomContainer
   - ShopCanvas
   - Weapon
+  - EnemyBullet
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - 
   - 
   - DisplayTiles
-  - Goal
+  - PlayerTriggers
   - 
   - 
   - 
