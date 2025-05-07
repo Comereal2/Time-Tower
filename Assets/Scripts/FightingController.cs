@@ -12,7 +12,7 @@ public class FightingController : MonoBehaviour
     protected void Teleport(float range)
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, range);
-        List<Vector2> potentialPositions = new List<Vector2>();
+        List<Vector2> potentialPositions = new ();
 
         //Not required but makes teleports better
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -22,7 +22,7 @@ public class FightingController : MonoBehaviour
         {
             for (float y = -range; y <= range; y += 0.5f)
             {
-                Vector2 potentialPosition = new Vector2(transform.position.x + x, transform.position.y + y);
+                Vector2 potentialPosition = new (transform.position.x + x, transform.position.y + y);
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, potentialPosition - (Vector2)transform.position, range);
 
                 if (hit.collider == null || hit.collider.gameObject == gameObject)
@@ -98,8 +98,8 @@ public class FightingController : MonoBehaviour
         Vector2 direction = (targetPosition - (Vector2)transform.position).normalized;
 
         projectile = Instantiate(projectile, (Vector2)transform.position + direction, Quaternion.identity);
-        Rigidbody2D projectileRb = projectile.GetComponent<Rigidbody2D>();
-        if (projectileRb != null)
+        bool projectileExists = projectile.TryGetComponent(out Rigidbody2D projectileRb);
+        if (projectileExists)
         {
             projectileRb.velocity = direction * speed;
         }

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc248821b4b444946ae1b36621e21b23, type: 3}
+  m_Name: DangerousCoins
+  m_EditorClassIdentifier: 
+  cost: 0
+  itemName: Hurtful Coins
+  modifiers:
+  - {fileID: 11400000, guid: 3ad11873e4e750041b0d44f51595b493, type: 2}
+  - {fileID: 11400000, guid: 45b81989463aa5c48bb217f525197f6e, type: 2}
+  itemIcon: {fileID: 21300000, guid: 7c66eed864fe26a40a38280b83008fb0, type: 3}
+  spriteXScale: 1
+  spriteYScale: 1

@@ -31,7 +31,7 @@ namespace Pathfinding {
 			if (ai != null) ai.onSearchPath -= Update;
 		}
 
-        private void Awake()
+        new private void Awake()
         {
 			target = GameObject.FindGameObjectWithTag("Player").transform;
         }
