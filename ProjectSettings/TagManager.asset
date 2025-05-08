@@ -15,6 +15,7 @@ TagManager:
   - EnemyBullet
   - DungeonGenerator
   - ShopTile
+  - CollisionCollider
   layers:
   - Default
   - TransparentFX

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace DungeonGeneration
@@ -59,8 +60,8 @@ public class DungeonRenderer : MonoBehaviour
 				}
 			}
 		}
-
 		collisionTilemap.SetTiles(positions.ToArray(), invisTiles.ToArray());
+		StartCoroutine(UpdateBoundsForAstar());
 	}
 
 	private void DrawDisplayTiles()
@@ -163,6 +164,12 @@ public class DungeonRenderer : MonoBehaviour
 			position = new Vector3Int(x, y, 0),
 			color = ((t == mapTileList.floors[0]) ? Color.black : Color.white),
 			transform = GetTransform(x, y, t)};
+	}
+
+	private IEnumerator UpdateBoundsForAstar()
+	{
+		yield return new WaitForSeconds(.1f);
+		AstarPath.active.Scan();
 	}
 }
 
