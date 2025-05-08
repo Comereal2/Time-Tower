@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dec673cd622393a43ac849d34682e10b, type: 3}
-  m_Name: SmallFloor
+  m_Name: Floor1
   m_EditorClassIdentifier: 
   mapSize: {x: 20, y: 20}
   spawnRoomDims: {x: 4, y: 4}

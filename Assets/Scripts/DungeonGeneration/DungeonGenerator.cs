@@ -10,50 +10,76 @@ namespace DungeonGeneration
 [RequireComponent(typeof(DungeonRenderer))]
 public class DungeonGenerator : MonoBehaviour
 {
-	// TODO: link multiple FloorSOs to make a cohesive dungeon
-	// TODO: Have FloorSO type that builds the boss room
+	public List<FloorSO> floorsList;
+	public FloorSO MaxFloor;
+	private FloorSO currentFloor;
 
-	public FloorSO dungeon;
-	GameObject disabledInitializer;
-
-	DungeonRenderer dungeonRenderer;
-
+	private DungeonRenderer dungeonRenderer;
+	public float tileScaleFactor = 2.0f;
 	public Tilemap collisionTilemap;
 	public Tilemap displayTilemap;
 	public ShopTile shopTilePrefab;
 	public ShopTile bonusTimeShopTile;
+	public int attemptsForRandomBossPlacement = 100;
 
 	int floorNumber;
 
+	// It is required that rooms[0] is the boss room, and rooms[1] is the Spawn Room
+	List<DungeonRoom> rooms;
+	public DungeonTerrainType[,] terrains;
+
+	void Awake()
+	{
+		dungeonRenderer = GetComponent<DungeonRenderer>();
+		dungeonRenderer.SetTilemaps(collisionTilemap, displayTilemap);
+		transform.localScale = new Vector3(tileScaleFactor, tileScaleFactor, 1.0f);
+	}
+
 	void Start()
 	{
-		disabledInitializer = GameObject.Find("DisabledInitializer");
-		dungeonRenderer = GetComponent<DungeonRenderer>();
-		GenerateFloor();
+		GenerateFloor(false);
 	}
 
-	public void GenerateFloor()
+	public void GenerateFloor(bool incrementFloor)
 	{
-		dungeon.GenerateDungeon();
-		dungeonRenderer.Draw(dungeon.terrains, collisionTilemap, displayTilemap);
+		if (incrementFloor)
+		{
+			++floorNumber;
+		}
+		// Fading should be done outside of this
+		currentFloor = (floorNumber >= floorsList.Count)
+				? MaxFloor
+				: floorsList[floorNumber];
+		PrepareForGeneration();
+		FloodWithRock();
+		GenerateRooms();
+		currentFloor.corridorGenerationStrategy.GenerateCorridors(rooms, ref terrains);
+		dungeonRenderer.Draw(terrains);
+		PlaceEnemies();
+		PopulateSpawnRoom();
+		PlacePlayer();
 
-		DungeonRoom goalRoom = dungeon.RandomNonSpecialRoom();
-		++floorNumber;
+		// Fade Back in 
 
 		Debug.Log($"Floor {floorNumber} generated");
-		dungeon.PlaceEnemies(displayTilemap);
-		PlacePlayer();
-		PopulateSpawnRoom();
 	}
 
-	public void PopulateSpawnRoom()
+	private void PrepareForGeneration()
 	{
-		Vector3Int shopPos = (Vector3Int)dungeon.SpawnRoom().ShopTilePosition();
-		Instantiate(shopTilePrefab, displayTilemap.GetCellCenterWorld(shopPos) + .7f * Vector3.down, Quaternion.identity);
-		Vector3Int bonusTimeShopPos = (Vector3Int)dungeon.SpawnRoom().ShopTilePosition();
-		while (shopPos == bonusTimeShopPos)
-			bonusTimeShopPos = (Vector3Int)dungeon.SpawnRoom().ShopTilePosition();
-		Instantiate(bonusTimeShopTile, displayTilemap.GetCellCenterWorld(bonusTimeShopPos) + .7f * Vector3.down, Quaternion.identity);
+		terrains = new DungeonTerrainType[currentFloor.mapSize.x,currentFloor.mapSize.y];
+		rooms = new List<DungeonRoom>();
+	}
+
+
+	private void PopulateSpawnRoom()
+	{
+		Vector2Int[] shopPos = SpawnRoom().SpawnRoomShopPositions();
+
+		Vector3Int itemShopPos = new(shopPos[0].x, shopPos[0].y);
+		Vector3Int timeShopPos = new(shopPos[1].x, shopPos[1].y);
+
+		Instantiate(shopTilePrefab, displayTilemap.GetCellCenterWorld(itemShopPos) + .7f * Vector3.down, Quaternion.identity);
+		Instantiate(bonusTimeShopTile, displayTilemap.GetCellCenterWorld(timeShopPos) + .7f * Vector3.down, Quaternion.identity);
 	}
 
 	private void PlacePlayer()
@@ -63,7 +89,135 @@ public class DungeonGenerator : MonoBehaviour
 		{
 			Debug.LogWarning("Player not in scene");
 		}
-		player.transform.position = displayTilemap.transform.position + 2 * (Vector3)dungeon.SpawnRoom().rect.center; 
+		player.transform.position = displayTilemap.transform.position + tileScaleFactor * (Vector3)SpawnRoom().rect.center; 
+	}
+
+	private void FloodWithRock()
+	{
+		for (int i = 0; i < currentFloor.mapSize.x; ++i)
+		{
+			for (int j = 0; j < currentFloor.mapSize.y; ++j)
+			{
+				terrains[i,j] = DungeonTerrainType.Rock;
+			}
+		}
+	}
+
+	private void GenerateStartingRooms()
+	{
+		// Attempt to randomly place rooms
+		// TODO: make sure that they are sufficiently far enough, though it can be a fun chase through the map
+		rooms.Add(new DungeonRoom(currentFloor.mapSize, currentFloor.bossRoomDims, false));
+		DungeonRoom spawnCandidate = new DungeonRoom(currentFloor.mapSize, currentFloor.spawnRoomDims, true);
+		
+		for (int i = 0; i < attemptsForRandomBossPlacement; ++i)
+		{
+			if (!spawnCandidate.rect.Overlaps(rooms[0].rect))
+			{
+				rooms.Add(spawnCandidate);
+				return;
+			}
+			spawnCandidate = new DungeonRoom(currentFloor.mapSize, currentFloor.bossRoomDims, true);
+		}
+
+		// Failed randomly placing, manual in the corners
+		rooms = new List<DungeonRoom>();
+		rooms.Add(new DungeonRoom(currentFloor.mapSize, currentFloor.bossRoomDims, false, false));
+		rooms.Add(new DungeonRoom(currentFloor.mapSize, currentFloor.spawnRoomDims, true, false));
+	}
+
+	private void GenerateRooms()
+	{
+		GenerateStartingRooms();
+		for (int i = 0; i < currentFloor.roomAttempts; ++i)
+		{
+			DungeonRoom potenchRoom = new DungeonRoom(currentFloor.mapSize
+					, currentFloor.roomMinWidth
+					, currentFloor.roomMaxWidth
+					, currentFloor.roomMinHeight
+					, currentFloor.roomMaxHeight);
+			bool roomValid = true;
+			foreach (var room in rooms)
+			{
+				if (potenchRoom.rect.Overlaps(room.rect))
+				{
+					roomValid = false;
+					break;
+				}
+			}
+			if (roomValid)
+			{
+				rooms.Add(potenchRoom);
+			}
+		}
+		UpdateTerrain();
+	}
+
+	private void UpdateTerrain()
+	{
+		foreach (var room in rooms)
+		{
+			for (int i = room.rect.xMin + 1; i < Mathf.Min(currentFloor.mapSize.x, room.rect.xMax); ++i)
+			{
+				for (int j = room.rect.yMin + 1; j < room.rect.yMax; ++j)
+				{
+					terrains[i,j] = DungeonTerrainType.RoomFloor;
+				}
+			}
+			if (room.rect.xMin > -1)
+			{
+				for (int i = room.rect.yMin; i <= room.rect.yMax; ++i)
+				{
+					if (i >= 0 && i < currentFloor.mapSize.y)
+						terrains[room.rect.xMin, i] = DungeonTerrainType.RoomOutline;
+				}
+			}
+			if (room.rect.xMax < currentFloor.mapSize.x)
+			{
+				for (int i = room.rect.yMin; i <= room.rect.yMax; ++i)
+				{
+					if (i >= 0 && i < currentFloor.mapSize.y)
+						terrains[room.rect.xMax, i] = DungeonTerrainType.RoomOutline;
+				}
+			}
+			if (room.rect.yMin > -1)
+			{
+				for (int i = room.rect.xMin; i <= room.rect.xMax; ++i)
+				{
+					if (i >= 0 && i < currentFloor.mapSize.x)
+						terrains[i, room.rect.yMin] = DungeonTerrainType.RoomOutline;
+				}
+			}
+			if (room.rect.yMax < currentFloor.mapSize.y)
+			{
+				for (int i = room.rect.xMin; i <= room.rect.xMax; ++i)
+				{
+					if (i >= 0 && i < currentFloor.mapSize.x)
+						terrains[i, room.rect.yMax] = DungeonTerrainType.RoomOutline;
+				}
+			}
+		}
+	}
+
+	private void PlaceEnemies()
+	{
+		for (int i = 0; i < currentFloor.numEnemies; ++i)
+		{
+			Vector3Int roomCoords = (Vector3Int)RandomNonSpecialRoom().RandomPointInside();
+			Instantiate(currentFloor.enemySpawner, displayTilemap.GetCellCenterWorld(roomCoords), Quaternion.identity);
+		}
+		Vector3Int bossCoords = (Vector3Int)rooms[0].RandomPointInside();
+		Instantiate(currentFloor.bossSpawner, displayTilemap.GetCellCenterWorld(bossCoords), Quaternion.identity);
+	}
+
+	public DungeonRoom RandomNonSpecialRoom()
+	{
+		return rooms[UnityEngine.Random.Range(2,rooms.Count)];
+	}
+
+	public DungeonRoom SpawnRoom()
+	{
+		return rooms[1];
 	}
 }
 

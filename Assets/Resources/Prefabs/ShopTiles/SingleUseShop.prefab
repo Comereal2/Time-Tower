@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
-  isOneTimeUse: 0
+  isOneTimeUse: 1
 --- !u!1 &3021473883555286880
 GameObject:
   m_ObjectHideFlags: 0

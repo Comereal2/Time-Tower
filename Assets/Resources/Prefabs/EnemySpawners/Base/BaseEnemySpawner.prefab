@@ -48,7 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 5811361662789150160, guid: d3f84d7d0e955fa4c996254877b78abd, type: 3}
   enemyList: {fileID: 11400000, guid: a2c45120504d8f44da268fc431701e42, type: 2}
-  enemyDroppables: {fileID: 11400000, guid: 1c46ff5a50013c94db6c08099f6cacd7, type: 2}
+  enemyDroppables: {fileID: 11400000, guid: 4ff0b664cbce8514297032f6f2251502, type: 2}
 --- !u!58 &6624636368445990740
 CircleCollider2D:
   m_ObjectHideFlags: 0

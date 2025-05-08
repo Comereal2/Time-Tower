@@ -46,11 +46,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1acc1ebb7507a24fbd132e4dcc06937, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dungeon: {fileID: 11400000, guid: edf68db46b772b9448a57fe0b1ec9171, type: 2}
+  floorsList: []
+  MaxFloor: {fileID: 11400000, guid: edf68db46b772b9448a57fe0b1ec9171, type: 2}
+  tileScaleFactor: 2
   collisionTilemap: {fileID: 9216070556259406616}
   displayTilemap: {fileID: 3250164111532702931}
   shopTilePrefab: {fileID: 5058420197807633108, guid: b4a94b7ece76f9b4badfc409d7789403, type: 3}
   bonusTimeShopTile: {fileID: 5058420197807633108, guid: 5a2b48a2bea2dcd44aea3f2025e87369, type: 3}
+  attemptsForRandomBossPlacement: 100
 --- !u!114 &1367420154115075161
 MonoBehaviour:
   m_ObjectHideFlags: 0
