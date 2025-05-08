@@ -454,9 +454,10 @@ public class PlayerController : FightingController
     public void Defeat() 
     {
         Time.timeScale = 0;
+		int floorNumber = GameObject.FindWithTag("DungeonGenerator").GetComponent<DungeonGeneration.DungeonGenerator>().floorNumber;
         GameObject defeatScreen = Instantiate(weaponCompare, coinCounter.transform.parent);
         defeatScreen.transform.position = new Vector2(Screen.width/2, Screen.height/2);
-        defeatScreen.transform.GetChild(0).GetComponent<TMP_Text>().text = $"<align=center><size=72>Score: {maxScore} \n </size><size=108><b>Defeat</b></size> \n <size=72>Floor: GetFloorNumber() </size></align>";
+        defeatScreen.transform.GetChild(0).GetComponent<TMP_Text>().text = $"<align=center><size=72>Score: {maxScore} \n </size><size=108><b>Defeat</b></size> \n <size=72>Floor: {floorNumber} </size></align>";
         StartCoroutine(SpawnQuitButton());
         pauseButton.onClick.RemoveAllListeners();
     }

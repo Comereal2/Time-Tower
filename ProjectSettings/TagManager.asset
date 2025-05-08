@@ -13,6 +13,7 @@ TagManager:
   - ShopCanvas
   - Weapon
   - EnemyBullet
+  - DungeonGenerator
   layers:
   - Default
   - TransparentFX

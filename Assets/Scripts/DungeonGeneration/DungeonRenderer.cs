@@ -25,6 +25,12 @@ public class DungeonRenderer : MonoBehaviour
 		displayTilemap = d;
 	}
 
+	public void ClearTilemaps()
+	{
+		collisionTilemap.ClearAllTiles();
+		displayTilemap.ClearAllTiles();
+	}
+
 	private void InitializeData(Vector2Int mapSize_, DungeonTerrainType[,] terrains_)
 	{
 		mapSize = mapSize_;
@@ -68,7 +74,6 @@ public class DungeonRenderer : MonoBehaviour
 			}
 		}
 		displayTilemap.SetTiles(tcd.ToArray(), true);
-		displayTilemap.SetTile(new TileChangeData(Vector3Int.zero, mapTileList.floors[0], Color.blue, Matrix4x4.identity), true);
 	}
 
 	private bool TerrainShouldHaveCollider(DungeonTerrainType t)

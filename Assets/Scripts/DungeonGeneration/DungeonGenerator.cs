@@ -8,6 +8,7 @@ namespace DungeonGeneration
 {
 
 [RequireComponent(typeof(DungeonRenderer))]
+[RequireComponent(typeof(CameraFade))]
 public class DungeonGenerator : MonoBehaviour
 {
 	public List<FloorSO> floorsList;
@@ -22,7 +23,9 @@ public class DungeonGenerator : MonoBehaviour
 	public ShopTile bonusTimeShopTile;
 	public int attemptsForRandomBossPlacement = 100;
 
-	int floorNumber;
+	private GameObject enemyHolder;
+
+	public int floorNumber {get; private set; }
 
 	// It is required that rooms[0] is the boss room, and rooms[1] is the Spawn Room
 	List<DungeonRoom> rooms;
@@ -42,11 +45,14 @@ public class DungeonGenerator : MonoBehaviour
 
 	public void GenerateFloor(bool incrementFloor)
 	{
+		SendMessage("FadeOut");
 		if (incrementFloor)
 		{
+			Destroy(enemyHolder);
+			dungeonRenderer.ClearTilemaps();
 			++floorNumber;
 		}
-		// Fading should be done outside of this
+		enemyHolder = new GameObject("EnemyHolder");
 		currentFloor = (floorNumber >= floorsList.Count)
 				? MaxFloor
 				: floorsList[floorNumber];
@@ -59,9 +65,7 @@ public class DungeonGenerator : MonoBehaviour
 		PopulateSpawnRoom();
 		PlacePlayer();
 
-		// Fade Back in 
-
-		Debug.Log($"Floor {floorNumber} generated");
+		SendMessage("FadeIn");
 	}
 
 	private void PrepareForGeneration()
@@ -89,9 +93,6 @@ public class DungeonGenerator : MonoBehaviour
 		{
 			Debug.LogWarning("Player not in scene");
 		}
-		Debug.Log($"Spawn: {SpawnRoom().ToString()}");
-		Debug.Log($"SpawnCenter: {SpawnRoom().CenterCoords()}");
-		Debug.Log($"SpawnCenterWorld: {displayTilemap.GetCellCenterWorld(SpawnRoom().CenterCoords())}");
 		player.transform.position = collisionTilemap.GetCellCenterWorld(SpawnRoom().CenterCoords());
 	}
 
@@ -207,10 +208,10 @@ public class DungeonGenerator : MonoBehaviour
 		for (int i = 0; i < currentFloor.numEnemies; ++i)
 		{
 			Vector3Int roomCoords = (Vector3Int)RandomNonSpecialRoom().RandomPointInside();
-			Instantiate(currentFloor.enemySpawner, collisionTilemap.GetCellCenterWorld(roomCoords), Quaternion.identity);
+			var newEnemySpawner = Instantiate(currentFloor.enemySpawner, collisionTilemap.GetCellCenterWorld(roomCoords), Quaternion.identity, enemyHolder.transform);
 		}
 		Vector3Int bossCoords = (Vector3Int)rooms[0].RandomPointInside();
-		Instantiate(currentFloor.bossSpawner, collisionTilemap.GetCellCenterWorld(bossCoords), Quaternion.identity);
+		Instantiate(currentFloor.bossSpawner, collisionTilemap.GetCellCenterWorld(bossCoords), Quaternion.identity, enemyHolder.transform);
 	}
 
 	public DungeonRoom RandomNonSpecialRoom()

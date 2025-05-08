@@ -27,7 +27,7 @@ public class EnemySpawner : MonoBehaviour
 		EnemyBehavior newEnemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity, gameObject.transform);
 		newEnemy.enemyStats = enemyList.RandomEnemy();
 		newEnemy.equippedWeapon = enemyDroppables.RandomWeapon();
-		newEnemy.gameObject.transform.SetParent(null);
+		newEnemy.gameObject.transform.SetParent(gameObject.transform.parent);
 		Destroy(gameObject);
 	}
 };
