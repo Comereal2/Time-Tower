@@ -17,12 +17,12 @@ public class DungeonRoom
 	// TODO: VisualStudio comment for these
 	public DungeonRoom(Vector2Int mapSize, Vector2Int fixedRoomDims, bool isSpawn, bool placeRandom = true)
 	{
-		int leftPointX = (isSpawn) ? 0 : mapSize.x - fixedRoomDims.x;
-		int leftPointY = (isSpawn) ? 0 : mapSize.y - fixedRoomDims.y;
+		int leftPointX = (isSpawn) ? 0 : mapSize.x - fixedRoomDims.x - 1;
+		int leftPointY = (isSpawn) ? 0 : mapSize.y - fixedRoomDims.y - 1;
 		if (placeRandom)
 		{
-			leftPointX = UnityEngine.Random.Range(0, mapSize.x - fixedRoomDims.x);
-			leftPointY = UnityEngine.Random.Range(0, mapSize.y - fixedRoomDims.y);
+			leftPointX = UnityEngine.Random.Range(0, mapSize.x - fixedRoomDims.x - 1);
+			leftPointY = UnityEngine.Random.Range(0, mapSize.y - fixedRoomDims.y - 1);
 		}
 		Vector2Int randomLowerLeftPoint = new (leftPointX, leftPointY);
 		
@@ -31,12 +31,12 @@ public class DungeonRoom
 
 	public DungeonRoom(Vector2Int mapSize, int minWidth, int maxWidth, int minHeight, int maxHeight)
 	{
-		int leftPointX = UnityEngine.Random.Range(0, mapSize.x - minWidth);
-		int leftPointY = UnityEngine.Random.Range(0, mapSize.y - minHeight);
+		int leftPointX = UnityEngine.Random.Range(0, mapSize.x - minWidth - 1);
+		int leftPointY = UnityEngine.Random.Range(0, mapSize.y - minHeight - 1);
 		Vector2Int randomLowerLeftPoint = new (leftPointX, leftPointY);
 
-		int maxPossibleSizeX = Mathf.Min(maxWidth, mapSize.x - leftPointX);
-		int maxPossibleSizeY = Mathf.Min(maxHeight, mapSize.y - leftPointY);
+		int maxPossibleSizeX = Mathf.Min(maxWidth, mapSize.x - leftPointX - 1);
+		int maxPossibleSizeY = Mathf.Min(maxHeight, mapSize.y - leftPointY - 1);
 		int sizeX = UnityEngine.Random.Range(minWidth, maxPossibleSizeX);
 		int sizeY = UnityEngine.Random.Range(minWidth, maxPossibleSizeY);
 		Vector2Int randomSize = new (sizeX, sizeY);
