@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dec673cd622393a43ac849d34682e10b, type: 3}
+  m_Name: Floor2
+  m_EditorClassIdentifier: 
+  mapSize: {x: 30, y: 30}
+  spawnRoomDims: {x: 3, y: 3}
+  bossRoomDims: {x: 4, y: 4}
+  roomAttempts: 0
+  numEnemies: 0
+  enemySpawner: {fileID: 0}
+  bossSpawner: {fileID: 0}
+  corridorGenerationStrategy: {fileID: 11400000, guid: 53fb409971bdc3241b56b7ecba88b840, type: 2}
+  roomMinWidth: 4
+  roomMaxWidth: 5
+  roomMinHeight: 4
+  roomMaxHeight: 5

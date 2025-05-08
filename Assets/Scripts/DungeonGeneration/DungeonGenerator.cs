@@ -222,6 +222,10 @@ public class DungeonGenerator : MonoBehaviour
 
 	private void PlaceEnemies()
 	{
+		if (rooms.Count == 2)
+		{
+			return;
+		}
 		for (int i = 0; i < currentFloor.numEnemies; ++i)
 		{
 			Vector3Int roomCoords = (Vector3Int)RandomNonSpecialRoom().RandomPointInside();
@@ -231,10 +235,16 @@ public class DungeonGenerator : MonoBehaviour
 		Instantiate(currentFloor.bossSpawner, collisionTilemap.GetCellCenterWorld(bossCoords), Quaternion.identity, enemyHolder.transform);
 	}
 
-	public DungeonRoom RandomNonSpecialRoom()
+#nullable enable
+	public DungeonRoom? RandomNonSpecialRoom()
 	{
+		if (rooms.Count <= 2)
+		{
+			return null;
+		}
 		return rooms[UnityEngine.Random.Range(2,rooms.Count)];
 	}
+#nullable disable
 
 	public DungeonRoom SpawnRoom()
 	{
