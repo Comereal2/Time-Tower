@@ -131,6 +131,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 230697473053737183, guid: 53cf0b063805d404f8c223b817411234, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 678951807706072472, guid: 53cf0b063805d404f8c223b817411234, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 678984086163574564, guid: 53cf0b063805d404f8c223b817411234, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -223,9 +231,17 @@ PrefabInstance:
       propertyPath: image
       value: 
       objectReference: {fileID: 485111805}
+    - target: {fileID: 5393466331301895023, guid: 53cf0b063805d404f8c223b817411234, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7649945769964236657, guid: 53cf0b063805d404f8c223b817411234, type: 3}
       propertyPath: m_Name
       value: MenuCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 7933695016090204926, guid: 53cf0b063805d404f8c223b817411234, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8703344350926624482, guid: 53cf0b063805d404f8c223b817411234, type: 3}
       propertyPath: m_IsActive
