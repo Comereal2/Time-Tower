@@ -55,7 +55,8 @@ public class FloorSO : ScriptableObject
 			failedChecks = true;
 		}
 
-		float minDistance = (float) Mathf.Min(bossRoomDims.x, bossRoomDims.y, spawnRoomDims.x, spawnRoomDims.y);
+		// Max here since we use center for distance calculations.
+		float minDistance = (float) Mathf.Max(bossRoomDims.x, bossRoomDims.y, spawnRoomDims.x, spawnRoomDims.y);
 		if (minimumBossSpawnDistance < minDistance)
 		{
 			minimumBossSpawnDistance = minDistance;

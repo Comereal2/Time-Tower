@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: BaseEnemyList
   m_EditorClassIdentifier: 
   enemyTypes:
-  - {fileID: 11400000, guid: bda2783dd963edb4cb8d733c3f4f1093, type: 2}
-  - {fileID: 11400000, guid: a5ed2c8ad60d9b9469e710cc60c0205b, type: 2}
-  - {fileID: 11400000, guid: 421f9d3d0d9f37041a7c5d276c8b3acf, type: 2}
+  - {fileID: 11400000, guid: c532da93f0ec2ce4497b12e4fc05d7eb, type: 2}
+  - {fileID: 11400000, guid: 0e143b174bd776d45b3ff14f312175b3, type: 2}
+  - {fileID: 11400000, guid: ab930cd7c3f863640a9f69f71f818edc, type: 2}
   cdf:
   - 0.45
   - 0.9

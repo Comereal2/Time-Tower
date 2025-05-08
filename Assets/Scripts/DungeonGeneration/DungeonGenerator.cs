@@ -126,7 +126,6 @@ public class DungeonGenerator : MonoBehaviour
 	private void GenerateStartingRooms()
 	{
 		// Attempt to randomly place rooms
-		// TODO: make sure that they are sufficiently far enough, though it can be a fun chase through the map
 		rooms.Add(new DungeonRoom(currentFloor.mapSize, currentFloor.bossRoomDims, false));
 		DungeonRoom spawnCandidate = new DungeonRoom(currentFloor.mapSize, currentFloor.spawnRoomDims, true);
 		
@@ -134,8 +133,12 @@ public class DungeonGenerator : MonoBehaviour
 		{
 			if (!spawnCandidate.rect.Overlaps(rooms[0].rect))
 			{
-				rooms.Add(spawnCandidate);
-				return;
+				Vector2 distanceVector = rooms[0].rect.center - spawnCandidate.rect.center;
+				if (distanceVector.magnitude >= currentFloor.minimumBossSpawnDistance)
+				{
+					rooms.Add(spawnCandidate);
+					return;
+				}
 			}
 			spawnCandidate = new DungeonRoom(currentFloor.mapSize, currentFloor.bossRoomDims, true);
 		}
@@ -221,6 +224,8 @@ public class DungeonGenerator : MonoBehaviour
 
 	private void PlaceEnemies()
 	{
+		Vector3Int bossCoords = (Vector3Int)rooms[0].RandomPointInside();
+		Instantiate(currentFloor.bossSpawner, collisionTilemap.GetCellCenterWorld(bossCoords), Quaternion.identity, enemyHolder.transform);
 		if (rooms.Count == 2)
 		{
 			return;
@@ -230,8 +235,6 @@ public class DungeonGenerator : MonoBehaviour
 			Vector3Int roomCoords = (Vector3Int)RandomNonSpecialRoom().RandomPointInside();
 			var newEnemySpawner = Instantiate(currentFloor.enemySpawner, collisionTilemap.GetCellCenterWorld(roomCoords), Quaternion.identity, enemyHolder.transform);
 		}
-		Vector3Int bossCoords = (Vector3Int)rooms[0].RandomPointInside();
-		Instantiate(currentFloor.bossSpawner, collisionTilemap.GetCellCenterWorld(bossCoords), Quaternion.identity, enemyHolder.transform);
 	}
 
 #nullable enable

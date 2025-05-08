@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65ba7a127ffd34e45a6e576b7f0d4f56, type: 3}
   m_Name: TimeLordOnly
   m_EditorClassIdentifier: 
-  enemyTypes: []
-  cdf: []
+  enemyTypes:
+  - {fileID: 11400000, guid: 853103df8d11c0742ada74a79406f8af, type: 2}
+  cdf:
+  - 1

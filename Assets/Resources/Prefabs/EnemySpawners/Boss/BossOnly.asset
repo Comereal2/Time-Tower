@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: BossOnly
   m_EditorClassIdentifier: 
   enemyTypes:
-  - {fileID: 11400000, guid: 09fcca95deeea5d42879f2381594e67c, type: 2}
+  - {fileID: 11400000, guid: d3b19d98ebd35034cae65866c4d9522f, type: 2}
   cdf:
   - 1
