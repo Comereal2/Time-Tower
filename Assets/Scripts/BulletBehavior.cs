@@ -44,7 +44,7 @@ public class BulletBehavior : MonoBehaviour
     {
         if(PlayerController.playerController.equippedWeapon.teleportsPlayer)
         {
-            PlayerController.playerController.Teleport((transform.position-PlayerController.playerController.transform.position).magnitude, (Vector2)transform.position.normalized);
+            PlayerController.playerController.Teleport((transform.position-PlayerController.playerController.transform.position).magnitude, (Vector2)(transform.position-PlayerController.playerController.transform.position).normalized);
         }
     }
 }

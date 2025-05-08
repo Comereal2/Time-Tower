@@ -19,11 +19,9 @@ public class EnemyBehavior : FightingController
     {
         if (enemyStats.health > 1) healthBar = Resources.Load<GameObject>("Prefabs/HealthBar");
         if (enemyStats.isRanged) enemyProjectile = Resources.Load<GameObject>("Prefabs/EnemyBullet");
-        endOfLevelFlag = Resources.Load<GameObject>("Prefabs/Rooms/Goal");
-        // I honestly hate the fact that I couldnt instantiate the emptyGameObject in the FightingController, but that Awake would always be overwritten by this one
-        emptyGameObject = new GameObject("Empty");
-        emptyGameObject.AddComponent<Text>();
+        endOfLevelFlag = Resources.Load<GameObject>("Prefabs/Goal");
         displayHealthBars = PlayerPrefs.GetInt("EnemyHealthBars", 1) == 1;
+        emptyGameObject = GameManager.empty;
     }
 
     private void Start()
@@ -46,6 +44,12 @@ public class EnemyBehavior : FightingController
     private void Update()
     {
         if (enemyStats.health > 1 && displayHealthBars) healthBar.transform.position = Camera.main.WorldToScreenPoint(transform.position + (Vector3)bossBarOffset);
+    }
+
+    private void OnDestroy()
+    {
+        if (enemyStats.health > 1 && displayHealthBars) Destroy(healthBar);
+        Destroy(gameObject.GetComponent<TimerManager>().timerText.gameObject);
     }
 
     /// <summary>
@@ -88,7 +92,7 @@ public class EnemyBehavior : FightingController
         }
         else
         {
-            player.gameObject.GetComponent<TimerManager>().timeLeft += gameObject.GetComponent<TimerManager>().timeLeft * player.timeMultiplier * player.enemyTimeMultiplier;
+            player.gameObject.GetComponent<TimerManager>().timeLeft += gameObject.GetComponent<TimerManager>().timeLeft * player.timeMultiplier * player.enemyTimeMultiplier * 0.4f; //Turns out it was too strong so we nerf it a lot
             if (enemyStats.hasCoin)
             {
                 Instantiate(player.coin, transform.position, Quaternion.identity, GameObject.FindGameObjectWithTag("RoomContainer").transform);
@@ -99,10 +103,8 @@ public class EnemyBehavior : FightingController
                 //This will only work once we merge everything
                 Instantiate(endOfLevelFlag, transform.position, Quaternion.identity, transform.parent);
             }
-            if (enemyStats.health > 1 && displayHealthBars) Destroy(healthBar);
             MusicManager.musicManager.PlaySound(player.enemyDefeatSFX);
-            if(equippedWeapon != null) DropWeapon(equippedWeapon, gameObject.transform.position);
-            Destroy(gameObject.GetComponent<TimerManager>().timerText.gameObject);
+            if (equippedWeapon != null) DropWeapon(equippedWeapon, gameObject.transform.position);
             Destroy(gameObject);
         }
     }

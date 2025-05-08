@@ -3,7 +3,10 @@ guid: 701c73bcf39021544b85dc55db2ed209
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - dungeonTheme: {fileID: 8300000, guid: 7afc77980bdfd7d49983c461288c574e, type: 3}
+  - bossTheme: {fileID: 8300000, guid: 7afc77980bdfd7d49983c461288c574e, type: 3}
+  - mainMenuTheme: {fileID: 8300000, guid: 7afc77980bdfd7d49983c461288c574e, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -16,7 +16,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3c6f3317828a4d54ea8bbf4fbb85a950, type: 2}
   - {fileID: 11400000, guid: 8ea87f22f883c34489bd8b19f5d4406b, type: 2}
   - {fileID: 11400000, guid: 0c8d68037c481a44c8ca85e48457165e, type: 2}
+  - {fileID: 11400000, guid: 14ebd0902d62ed247a7a4131c17391e9, type: 2}
   cdf:
-  - 0.45
-  - 0.9
+  - 0.25
+  - 0.5
+  - 0.75
   - 1

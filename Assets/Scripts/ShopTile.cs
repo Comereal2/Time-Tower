@@ -63,7 +63,6 @@ public class ShopTile : MonoBehaviour
 
             if (isOneTimeUse)
             {
-                Destroy(itemTooltipPrefab);
                 Destroy(gameObject);
             }
 
@@ -75,6 +74,11 @@ public class ShopTile : MonoBehaviour
             //Update item description just in case price changes
             UpdateItemText();
         }
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(itemTooltip.transform.parent.gameObject);
     }
 
     /// <summary>

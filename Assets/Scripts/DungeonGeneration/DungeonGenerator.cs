@@ -46,12 +46,21 @@ public class DungeonGenerator : MonoBehaviour
 	public void GenerateFloor(bool incrementFloor)
 	{
 		SendMessage("FadeOut");
+		WipeMap();
 		if (incrementFloor)
 		{
 			Destroy(enemyHolder);
 			dungeonRenderer.ClearTilemaps();
 			++floorNumber;
-		}
+                // This should only be uncommented for builds as it changes values in Scriptable Objects to buff enemies
+                foreach (Enemy enemy in Resources.LoadAll<Enemy>("Data/Enemies"))
+                {
+                    for (int i = 0; i < PlayerPrefs.GetInt("", 0)+1; i++)
+                    {
+						enemy.UpgradeEnemy();
+                    }
+                }
+            }
 		enemyHolder = new GameObject("EnemyHolder");
 		currentFloor = (floorNumber >= floorsList.Count)
 				? MaxFloor
@@ -67,6 +76,14 @@ public class DungeonGenerator : MonoBehaviour
 
 		SendMessage("FadeIn");
 	}
+
+	private void WipeMap()
+	{
+        foreach (GameObject gameObject in Object.FindObjectsByType(typeof(GameObject), FindObjectsSortMode.None))
+        {
+			if (gameObject.CompareTag("Coin") || gameObject.CompareTag("Weapon") || gameObject.CompareTag("PlayerBullet") || gameObject.CompareTag("EnemyBullet") || gameObject.CompareTag("ShopTile")) Destroy(gameObject);
+        }
+    }
 
 	private void PrepareForGeneration()
 	{

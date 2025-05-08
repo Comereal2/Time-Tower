@@ -69,7 +69,6 @@ public class TimerManager : MonoBehaviour
                 timeLeft += 15f;
                 return;
             }
-            Destroy(timerText.gameObject);
             Destroy(gameObject);
         }
         timerText.text = Mathf.Round(timeLeft).ToString();
