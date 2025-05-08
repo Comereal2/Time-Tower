@@ -21,6 +21,7 @@ public class MusicManager : MonoBehaviour
     public void ChangeMusic(AudioClip song)
     {
         musicManager.GetComponent<AudioSource>().clip = song;
+        musicManager.GetComponent<AudioSource>().Play();
     }
 
     /// <summary>

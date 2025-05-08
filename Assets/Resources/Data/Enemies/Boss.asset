@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 20
   damageMultiplier: 1
-  speed: 4
+  speed: 3.5
   spawnTime: 100
   scale: 2
+  rangedAttackCooldown: 1
+  projectileSpeed: 5
   hasCoin: 1
   isBoss: 1
+  isRanged: 0
   sprite: {fileID: 0}

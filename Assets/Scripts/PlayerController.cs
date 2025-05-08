@@ -458,22 +458,27 @@ public class PlayerController : FightingController
         GameObject defeatScreen = Instantiate(weaponCompare, coinCounter.transform.parent);
         defeatScreen.transform.position = new Vector2(Screen.width/2, Screen.height/2);
         defeatScreen.transform.GetChild(0).GetComponent<TMP_Text>().text = $"<align=center><size=72>Score: {maxScore} \n </size><size=108><b>Defeat</b></size> \n <size=72>Floor: {floorNumber} \n CR: {PlayerPrefs.GetInt("ChallengeRating", 0)}</size></align>";
-        StartCoroutine(SpawnQuitButton());
+        StartCoroutine(SpawnButtons());
         pauseButton.onClick.RemoveAllListeners();
     }
 
     /// <summary>
     /// Only use this in Defeat()
     /// </summary>
-    private IEnumerator SpawnQuitButton()
+    private IEnumerator SpawnButtons()
     {
         yield return new WaitForSecondsRealtime(2f);
         GameObject pauseMenu = Instantiate(menu, gameObject.transform);
         var quitButton = pauseMenu.transform.GetChild(1);
+        var resumeButton = pauseMenu.transform.GetChild(0);
         quitButton.position += new Vector3(0, -50f, 0);
         quitButton.GetComponent<Button>().onClick.AddListener(ToMainMenu);
-        Destroy(pauseMenu.transform.GetChild(0).gameObject);
-        StopCoroutine(SpawnQuitButton());
+        resumeButton.position += new Vector3(0, 50f, 0);
+        resumeButton.GetChild(0).GetComponent<TMP_Text>().text = "Restart";
+        resumeButton.GetComponent<Button>().onClick.AddListener(() => {
+            Time.timeScale = 1;
+            SceneManager.LoadScene(1);
+        });
     }
 
     /// <summary>
