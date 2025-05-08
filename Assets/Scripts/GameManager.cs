@@ -21,8 +21,14 @@ public class GameManager : MonoBehaviour
         empty.AddComponent<Text>();
         Instantiate(canvases);
         Instantiate(player);
-        Instantiate(pathfinderManager);
         Instantiate(roomObjectManager);
         Instantiate(dungeonGenerator);
+        Instantiate(pathfinderManager);
+        /* Canvases appear first for displays like timers to draw on them
+         * Player appears second as a reference to other objects and to be teleported
+         * The room object holder appears third for the dungeon generator to place objects in it
+         * Dungeon generator appears fourth
+         * Pathfinder appears last so it generates a path with the dungeon generated
+         */
     }
 }

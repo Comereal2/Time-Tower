@@ -5,7 +5,7 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - dungeonTheme: {fileID: 8300000, guid: 7afc77980bdfd7d49983c461288c574e, type: 3}
-  - bossTheme: {fileID: 8300000, guid: 7afc77980bdfd7d49983c461288c574e, type: 3}
+  - bossTheme: {fileID: 8300000, guid: 233d3c8fc0fe855419d554da64108553, type: 3}
   - mainMenuTheme: {fileID: 8300000, guid: 7afc77980bdfd7d49983c461288c574e, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}

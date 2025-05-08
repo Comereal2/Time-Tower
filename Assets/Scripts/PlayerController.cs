@@ -221,8 +221,6 @@ public class PlayerController : FightingController
         var timerManager = gameObject.GetComponent<TimerManager>();
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            MusicManager.musicManager.PlaySound(playerHurtSFX);
-
             // Every enemy has an enemyBehavior
             var enemy = collision.gameObject.GetComponent<EnemyBehavior>();
 
@@ -232,6 +230,8 @@ public class PlayerController : FightingController
             }
 
             hasIFrames = true;
+            MusicManager.musicManager.PlaySound(playerHurtSFX);
+            StartCoroutine(DisableIFrames());
 
             /* The damage system has two cases, because score is a shield for the player in case of melee attacks to make the game a bit more bearable
              * An enemy always takes at least 1 score, even with 100% damage resistance, enemies also have a damageMultiplier, which negates itself with the resistance
@@ -248,7 +248,6 @@ public class PlayerController : FightingController
             }
             timerManager.timeLeft -= Mathf.Max(collision.gameObject.GetComponent<TimerManager>().timeLeft, 20f) * damage * enemy.enemyStats.health;
             Destroy(collision.gameObject);
-            Invoke(nameof(DisableIFrames), 0.5f);
         }
         else if (collision.gameObject.CompareTag("Coin"))
         {
@@ -266,8 +265,9 @@ public class PlayerController : FightingController
         }
     }
 
-    private void DisableIFrames()
+    private IEnumerator DisableIFrames()
     {
+        yield return new WaitForSeconds(0.5f);
         hasIFrames = false;
     }
 
