@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08a0ef0d7b939d94d966e29eb76e3273, type: 3}
   m_Name: BossDrops
   m_EditorClassIdentifier: 
-  items: []
-  cdf: []
+  items:
+  - {fileID: 11400000, guid: 3c6f3317828a4d54ea8bbf4fbb85a950, type: 2}
+  - {fileID: 11400000, guid: 8ea87f22f883c34489bd8b19f5d4406b, type: 2}
+  - {fileID: 11400000, guid: 0c8d68037c481a44c8ca85e48457165e, type: 2}
+  cdf:
+  - 0.45
+  - 0.9
+  - 1

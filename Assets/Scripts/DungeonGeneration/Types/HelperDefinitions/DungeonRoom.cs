@@ -71,6 +71,11 @@ public class DungeonRoom
 		return new(x, y);
 	}
 
+	public Vector3Int CenterCoords()
+	{
+		return new Vector3Int((int) rect.center.x, (int) rect.center.y, 0); 
+	}
+
 	private int RandomXInsideRoom()
 	{
 		return UnityEngine.Random.Range(rect.xMin + 1, rect.xMax - 1);

@@ -13,9 +13,10 @@ public class DungeonRenderer : MonoBehaviour
 {
 	[SerializeField] MapTileList mapTileList;
 
-	Vector2Int mapSize;
 	Tilemap collisionTilemap;
 	Tilemap displayTilemap;
+
+	Vector2Int mapSize;
 	DungeonTerrainType[,] terrains;
 
 	public void SetTilemaps(Tilemap c, Tilemap d)
@@ -24,9 +25,15 @@ public class DungeonRenderer : MonoBehaviour
 		displayTilemap = d;
 	}
 
-	public void Draw(DungeonTerrainType[,] terrains_)
+	private void InitializeData(Vector2Int mapSize_, DungeonTerrainType[,] terrains_)
 	{
+		mapSize = mapSize_;
 		terrains = terrains_;
+	}
+
+	public void Draw(Vector2Int mapSize_, DungeonTerrainType[,] terrains_)
+	{
+		InitializeData(mapSize_, terrains_);
 		DrawCollisionTiles();
 		DrawDisplayTiles();
 	}
@@ -41,7 +48,7 @@ public class DungeonRenderer : MonoBehaviour
 			{
 				if (TerrainShouldHaveCollider(terrains[i,j]))
 				{
-					positions.Add(new (i - 1, j - 1, 0));
+					positions.Add(new (i, j, 0));
 					invisTiles.Add(mapTileList.invisible);
 				}
 			}
@@ -61,6 +68,7 @@ public class DungeonRenderer : MonoBehaviour
 			}
 		}
 		displayTilemap.SetTiles(tcd.ToArray(), true);
+		displayTilemap.SetTile(new TileChangeData(Vector3Int.zero, mapTileList.floors[0], Color.blue, Matrix4x4.identity), true);
 	}
 
 	private bool TerrainShouldHaveCollider(DungeonTerrainType t)
@@ -147,7 +155,7 @@ public class DungeonRenderer : MonoBehaviour
 	{
 		Tile t = GetTile(x, y);
 		return new TileChangeData{tile = t,
-			position = new Vector3Int(x-1, y-1, 0),
+			position = new Vector3Int(x, y, 0),
 			color = ((t == mapTileList.floors[0]) ? Color.black : Color.white),
 			transform = GetTransform(x, y, t)};
 	}
