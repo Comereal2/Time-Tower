@@ -1,4 +1,6 @@
 using System.Collections;
+using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Enemy", menuName = "Object/Enemy")]
