@@ -9,7 +9,6 @@ public class Goal : MonoBehaviour
 		//You need to check if it actually is the player or something else
 		if (other.gameObject.CompareTag("Player"))
 		{
-            Debug.Log("Goal collided with player");
             gameObject.SetActive(false);
             //GameObject.Find("MapManager").GetComponent<DungeonGeneration.DungeonGenerator>().GenerateFloor(true);
             //This is why you use tags pal

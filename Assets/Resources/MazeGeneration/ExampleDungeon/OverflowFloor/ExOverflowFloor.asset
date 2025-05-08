@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dec673cd622393a43ac849d34682e10b, type: 3}
+  m_Name: ExOverflowFloor
+  m_EditorClassIdentifier: 
+  mapSize: {x: 40, y: 25}
+  spawnRoomDims: {x: 3, y: 3}
+  bossRoomDims: {x: 8, y: 6}
+  minimumBossSpawnDistance: 45
+  roomAttempts: 350
+  maxNumRandomShops: 10
+  numEnemies: 45
+  enemySpawner: {fileID: 7086528610666175836, guid: 7bf9c3599ea90d04684ce99a8e5a672d, type: 3}
+  bossSpawner: {fileID: 7086528610666175836, guid: 12367671bbe0c254c84022c5f542d634, type: 3}
+  corridorGenerationStrategy: {fileID: 11400000, guid: e5a5206039609634184db54e9bc838c0, type: 2}
+  checkParameters: 1
+  roomMinWidth: 4
+  roomMaxWidth: 20
+  roomMinHeight: 4
+  roomMaxHeight: 20

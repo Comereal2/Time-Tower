@@ -9,17 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc1c4f8d4a406c24e8f2ef7debb03763, type: 3}
-  m_Name: Miniboss
+  m_Script: {fileID: 11500000, guid: 65ba7a127ffd34e45a6e576b7f0d4f56, type: 3}
+  m_Name: OverflowBossList
   m_EditorClassIdentifier: 
-  health: 5
-  damageMultiplier: 0.5
-  speed: 3
-  spawnTime: 80
-  scale: 1
-  rangedAttackCooldown: 1
-  projectileSpeed: 5
-  coinChance: 0.9
-  isBoss: 0
-  isRanged: 0
-  sprite: {fileID: 0}
+  enemyTypes:
+  - {fileID: 11400000, guid: d3b19d98ebd35034cae65866c4d9522f, type: 2}
+  - {fileID: 11400000, guid: 853103df8d11c0742ada74a79406f8af, type: 2}
+  cdf:
+  - 0.75
+  - 1

@@ -10,19 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dec673cd622393a43ac849d34682e10b, type: 3}
-  m_Name: Floor1
+  m_Name: ExFloor2
   m_EditorClassIdentifier: 
-  mapSize: {x: 20, y: 20}
-  spawnRoomDims: {x: 4, y: 4}
-  bossRoomDims: {x: 5, y: 5}
+  mapSize: {x: 15, y: 10}
+  spawnRoomDims: {x: 3, y: 3}
+  bossRoomDims: {x: 4, y: 4}
   minimumBossSpawnDistance: 10
-  roomAttempts: 10
-  numEnemies: 10
+  roomAttempts: 20
+  maxNumRandomShops: 4
+  numEnemies: 8
   enemySpawner: {fileID: 7086528610666175836, guid: fbe60dfcc72a1cf4a800b4a0be3337ab, type: 3}
   bossSpawner: {fileID: 7086528610666175836, guid: 47187d3d29a12f745bb3934482e9f4d2, type: 3}
   corridorGenerationStrategy: {fileID: 11400000, guid: 53fb409971bdc3241b56b7ecba88b840, type: 2}
   checkParameters: 1
   roomMinWidth: 4
-  roomMaxWidth: 5
+  roomMaxWidth: 7
   roomMinHeight: 4
-  roomMaxHeight: 5
+  roomMaxHeight: 6

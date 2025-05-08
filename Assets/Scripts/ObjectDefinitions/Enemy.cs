@@ -14,7 +14,7 @@ public class Enemy : ScriptableObject
     public float scale = 1f;
     public float rangedAttackCooldown = 1f;
     public float projectileSpeed = 5f;
-    public bool hasCoin = false;
+    public float coinChance = .4f;
     public bool isBoss = false;
     public bool isRanged = false;
     public Sprite sprite;

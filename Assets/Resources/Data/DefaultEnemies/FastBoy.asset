@@ -17,6 +17,9 @@ MonoBehaviour:
   speed: 6
   spawnTime: 20
   scale: 1
-  hasCoin: 0
+  rangedAttackCooldown: 1
+  projectileSpeed: 5
+  coinChance: 0.2
   isBoss: 0
+  isRanged: 0
   sprite: {fileID: 0}

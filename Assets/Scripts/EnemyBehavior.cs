@@ -93,14 +93,14 @@ public class EnemyBehavior : FightingController
         else
         {
             player.gameObject.GetComponent<TimerManager>().timeLeft += gameObject.GetComponent<TimerManager>().timeLeft * player.timeMultiplier * player.enemyTimeMultiplier * 0.4f; //Turns out it was too strong so we nerf it a lot
-            if (enemyStats.hasCoin)
+            if (UnityEngine.Random.value < enemyStats.coinChance)
             {
                 Instantiate(player.coin, transform.position, Quaternion.identity, GameObject.FindGameObjectWithTag("RoomContainer").transform);
             }
             if (enemyStats.isBoss)
             {
                 MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.dungeonTheme);
-                //This will only work once we merge everything
+				GameObject.FindWithTag("DungeonGenerator").SendMessage("BossDefeated");
                 Instantiate(endOfLevelFlag, transform.position, Quaternion.identity, transform.parent);
             }
             MusicManager.musicManager.PlaySound(player.enemyDefeatSFX);

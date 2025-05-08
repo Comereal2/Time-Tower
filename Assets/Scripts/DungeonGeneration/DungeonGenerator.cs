@@ -21,9 +21,10 @@ public class DungeonGenerator : MonoBehaviour
 	public Tilemap displayTilemap;
 	public ShopTile shopTilePrefab;
 	public ShopTile bonusTimeShopTile;
+	public ShopTile singleUseShopTile;
 	public int attemptsForRandomBossPlacement = 100;
 
-	private GameObject enemyHolder;
+	private GameObject floorEntityHolder;
 
 	public int floorNumber {get; private set; }
 
@@ -49,7 +50,7 @@ public class DungeonGenerator : MonoBehaviour
 		WipeMap();
 		if (incrementFloor)
 		{
-			Destroy(enemyHolder);
+			Destroy(floorEntityHolder);
 			dungeonRenderer.ClearTilemaps();
 			++floorNumber;
 				foreach (Enemy enemy in Resources.LoadAll<Enemy>("Data/Enemies"))
@@ -60,7 +61,7 @@ public class DungeonGenerator : MonoBehaviour
 					}
 				}
 			}
-		enemyHolder = new GameObject("EnemyHolder");
+		floorEntityHolder = new GameObject("FloorEntityHolder");
 		currentFloor = (floorNumber >= floorsList.Count)
 				? MaxFloor
 				: floorsList[floorNumber];
@@ -70,11 +71,13 @@ public class DungeonGenerator : MonoBehaviour
 		currentFloor.corridorGenerationStrategy.GenerateCorridors(rooms, ref terrains);
 		dungeonRenderer.Draw(currentFloor.mapSize, terrains);
 		PlaceEnemies();
+		PlaceShops();
 		PopulateSpawnRoom();
 		PlacePlayer();
 
 		SendMessage("FadeIn");
 	}
+
 
 	private void WipeMap()
 	{
@@ -90,6 +93,21 @@ public class DungeonGenerator : MonoBehaviour
 		rooms = new List<DungeonRoom>();
 	}
 
+	private void PlaceFloorEntity(GameObject obj, Vector2Int cellPosition)
+	{
+		Vector3Int roomCoords = (Vector3Int)cellPosition;
+		Instantiate(obj, collisionTilemap.GetCellCenterWorld(roomCoords), Quaternion.identity, floorEntityHolder.transform);
+	}
+
+	private void PlaceFloorEntity(GameObject obj, Vector3Int roomCoords)
+	{
+		Instantiate(obj, collisionTilemap.GetCellCenterWorld(roomCoords), Quaternion.identity, floorEntityHolder.transform);
+	}
+
+	private void PlaceFloorEntity(GameObject obj, Vector3 worldCoords)
+	{
+		Instantiate(obj, worldCoords, Quaternion.identity, floorEntityHolder.transform);
+	}
 
 	private void PopulateSpawnRoom()
 	{
@@ -98,8 +116,8 @@ public class DungeonGenerator : MonoBehaviour
 		Vector3Int itemShopPos = new(shopPos[0].x, shopPos[0].y);
 		Vector3Int timeShopPos = new(shopPos[1].x, shopPos[1].y);
 
-		Instantiate(shopTilePrefab, collisionTilemap.GetCellCenterWorld(itemShopPos) + .7f * Vector3.down, Quaternion.identity);
-		Instantiate(bonusTimeShopTile, collisionTilemap.GetCellCenterWorld(timeShopPos) + .7f * Vector3.down, Quaternion.identity);
+		PlaceFloorEntity(shopTilePrefab.gameObject, collisionTilemap.GetCellCenterWorld(itemShopPos) + .7f * Vector3.down);
+		PlaceFloorEntity(bonusTimeShopTile.gameObject, collisionTilemap.GetCellCenterWorld(timeShopPos) + .7f * Vector3.down);
 	}
 
 	private void PlacePlayer()
@@ -224,17 +242,35 @@ public class DungeonGenerator : MonoBehaviour
 
 	private void PlaceEnemies()
 	{
-		Vector3Int bossCoords = (Vector3Int)rooms[0].RandomPointInside();
-		Instantiate(currentFloor.bossSpawner, collisionTilemap.GetCellCenterWorld(bossCoords), Quaternion.identity, enemyHolder.transform);
+		PlaceFloorEntity(currentFloor.bossSpawner.gameObject, rooms[0].RandomPointInside());
 		if (rooms.Count == 2)
 		{
 			return;
 		}
 		for (int i = 0; i < currentFloor.numEnemies; ++i)
 		{
-			Vector3Int roomCoords = (Vector3Int)RandomNonSpecialRoom().RandomPointInside();
-			var newEnemySpawner = Instantiate(currentFloor.enemySpawner, collisionTilemap.GetCellCenterWorld(roomCoords), Quaternion.identity, enemyHolder.transform);
+			PlaceFloorEntity(currentFloor.enemySpawner.gameObject, RandomNonSpecialRoom().RandomPointInside());
 		}
+	}
+
+	private void PlaceShops()
+	{
+		if (rooms.Count == 2)
+		{
+			return;
+		}
+		// They look bad when they dont have enough space. easiest way is restrict 1 to the non special rooms
+		// Can change to allow multiple in each room but i dont think this harms the experience
+		List<DungeonRoom> nonSpecialRooms = new();
+		for (int i = 2; i < rooms.Count; ++i)
+			nonSpecialRooms.Add(rooms[i]);
+		for (int i = 0; i < currentFloor.maxNumRandomShops && nonSpecialRooms.Count > 0; ++i)
+		{
+			var randomRoom = nonSpecialRooms[UnityEngine.Random.Range(0, nonSpecialRooms.Count)];
+			PlaceFloorEntity(singleUseShopTile.gameObject, randomRoom.RandomShopTilePosition());
+			nonSpecialRooms.Remove(randomRoom);
+		}
+
 	}
 
 #nullable enable
@@ -251,6 +287,11 @@ public class DungeonGenerator : MonoBehaviour
 	public DungeonRoom SpawnRoom()
 	{
 		return rooms[1];
+	}
+
+	public void BossDefeated()
+	{
+		PlaceFloorEntity(singleUseShopTile.gameObject, rooms[0].RandomShopTilePosition());
 	}
 }
 

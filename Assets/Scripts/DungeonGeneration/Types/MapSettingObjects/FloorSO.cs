@@ -15,6 +15,7 @@ public class FloorSO : ScriptableObject
 	public Vector2Int bossRoomDims;
 	public float minimumBossSpawnDistance; 
 	public int roomAttempts;
+	public int maxNumRandomShops;
 	public int numEnemies;
 	public EnemySpawner enemySpawner;
 	public EnemySpawner bossSpawner;
@@ -31,18 +32,18 @@ public class FloorSO : ScriptableObject
 	{
 		if (!checkParameters)
 		{
-			Debug.LogWarning("Remeber to turn Check Parameters on when you're done");
+			Debug.LogWarning("Remember to turn Check Parameters on when you're done");
 			return;
 		}
 
 		bool failedChecks = false;
-		int x = Mathf.Max(spawnRoomDims.x, 3);
+		int x = Mathf.Max(spawnRoomDims.x, 4);
 		int y = Mathf.Max(spawnRoomDims.y, 3);
 		var newSpawnRoomDims = new Vector2Int(x, y);
 		if (newSpawnRoomDims != spawnRoomDims)
 		{
 			spawnRoomDims = newSpawnRoomDims;
-			Debug.LogError("Spawn Room must be at least 3 wide on both sides");
+			Debug.LogError("Spawn Room must be at least 4 wide and 3 tall");
 			failedChecks = true;
 		}
 		int bossx = Mathf.Max(bossRoomDims.x, 4);
@@ -52,6 +53,12 @@ public class FloorSO : ScriptableObject
 		{
 			bossRoomDims = newBossRoomDims;
 			Debug.LogError("Boss Room must be at least 4 wide on both sides");
+			failedChecks = true;
+		}
+		if (maxNumRandomShops > roomAttempts)
+		{
+			maxNumRandomShops = roomAttempts;
+			Debug.LogError("Each room can have max 1 random shop, updating");
 			failedChecks = true;
 		}
 

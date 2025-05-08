@@ -545,13 +545,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1acc1ebb7507a24fbd132e4dcc06937, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floorsList: []
-  MaxFloor: {fileID: 11400000, guid: edf68db46b772b9448a57fe0b1ec9171, type: 2}
+  floorsList:
+  - {fileID: 11400000, guid: 2b28ead31b2dcb3498be04752a52732e, type: 2}
+  - {fileID: 11400000, guid: 986e10a07b9289f4c88af36623a84d51, type: 2}
+  - {fileID: 11400000, guid: 663adc8e1f67e5f46850d4897b221fd6, type: 2}
+  - {fileID: 11400000, guid: f452f24bd7438944488798929bec0360, type: 2}
+  MaxFloor: {fileID: 11400000, guid: f90ace637ca926948b39e15e9ae4fea0, type: 2}
   tileScaleFactor: 2
   collisionTilemap: {fileID: 4491782871959908313}
   displayTilemap: {fileID: 4041623000398131088}
   shopTilePrefab: {fileID: 5058420197807633108, guid: b4a94b7ece76f9b4badfc409d7789403, type: 3}
   bonusTimeShopTile: {fileID: 5058420197807633108, guid: 5a2b48a2bea2dcd44aea3f2025e87369, type: 3}
+  singleUseShopTile: {fileID: 5058420197807633108, guid: 339f69b04e093844ebd8f3f0047d8986, type: 3}
   attemptsForRandomBossPlacement: 100
 --- !u!114 &223717168176211841
 MonoBehaviour:
