@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        ReloadEnemies();
         empty = new GameObject("Empty");
         empty.AddComponent<Text>();
         Instantiate(canvases);
@@ -30,5 +31,18 @@ public class GameManager : MonoBehaviour
          * Dungeon generator appears fourth
          * Pathfinder appears last so it generates a path with the dungeon generated
          */
+    }
+
+    private void ReloadEnemies()
+    {
+        foreach (var enemy in Resources.LoadAll<Enemy>("Data/Enemies"))
+        {
+            var defaultE = Resources.Load<Enemy>("Data/DefaultEnemies/" + enemy.name);
+            enemy.health = defaultE.health;
+            enemy.speed = defaultE.speed;
+            enemy.damageMultiplier = defaultE.damageMultiplier;
+            enemy.rangedAttackCooldown = defaultE.rangedAttackCooldown;
+            enemy.projectileSpeed = defaultE.projectileSpeed;
+        }
     }
 }

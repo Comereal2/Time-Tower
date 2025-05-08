@@ -52,14 +52,13 @@ public class DungeonGenerator : MonoBehaviour
 			Destroy(enemyHolder);
 			dungeonRenderer.ClearTilemaps();
 			++floorNumber;
-				// This should only be uncommented for builds as it changes values in Scriptable Objects to buff enemies
-				//foreach (Enemy enemy in Resources.LoadAll<Enemy>("Data/Enemies"))
-				//{
-				//	for (int i = 0; i < PlayerPrefs.GetInt("", 0) + 1; i++)
-				//	{
-				//		enemy.UpgradeEnemy();
-				//	}
-				//}
+				foreach (Enemy enemy in Resources.LoadAll<Enemy>("Data/Enemies"))
+				{
+					for (int i = 0; i < PlayerPrefs.GetInt("", 0) + 1; i++)
+					{
+						enemy.UpgradeEnemy();
+					}
+				}
 			}
 		enemyHolder = new GameObject("EnemyHolder");
 		currentFloor = (floorNumber >= floorsList.Count)
