@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
             enemy.isBoss = defaultE.isBoss;
             enemy.isRanged = defaultE.isRanged;
             enemy.sprite = defaultE.sprite;
+			enemy.drops = defaultE.drops;
         }
     }
 }
