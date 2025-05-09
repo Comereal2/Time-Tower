@@ -16,7 +16,7 @@ MonoBehaviour:
   damageMultiplier: 2
   speed: 0
   spawnTime: 100
-  scale: 3
+  scale: 1
   rangedAttackCooldown: 1
   projectileSpeed: 5
   coinChance: 1

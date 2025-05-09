@@ -16,10 +16,11 @@ MonoBehaviour:
   damageMultiplier: 2
   speed: 0
   spawnTime: 100
-  scale: 3
+  scale: 1
   rangedAttackCooldown: 1
   projectileSpeed: 5
   coinChance: 1
   isBoss: 1
   isRanged: 1
   sprite: {fileID: 21300000, guid: 3493d7a191cb503459217a7ed2e70be3, type: 3}
+  drops: {fileID: 0}
