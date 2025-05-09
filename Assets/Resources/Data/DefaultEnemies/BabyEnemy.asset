@@ -22,5 +22,5 @@ MonoBehaviour:
   coinChance: 0.2
   isBoss: 0
   isRanged: 0
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 218c15551b23be144a56bf1b9f9a05df, type: 3}
   drops: {fileID: 11400000, guid: 443f0cb8b619fb74fb30c876e7c67c5f, type: 2}

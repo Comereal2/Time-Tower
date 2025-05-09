@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Hourglass Hammer
   m_EditorClassIdentifier: 
   baseDamage: 4
-  numberOfAttacks: 1
+  numberOfAttacks: 2
   attackCooldown: 2
   attackDespawnTime: 0
   bulletTravelSpeed: 0
   meleeRangeX: 3
   isRanged: 0
+  teleportsPlayer: 0
   weaponEquipped: {fileID: 21300000, guid: 945ef9c12aa29584ca32f6ecd333c541, type: 3}
   weaponDropped: {fileID: 21300000, guid: 945ef9c12aa29584ca32f6ecd333c541, type: 3}

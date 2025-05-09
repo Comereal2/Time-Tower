@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,7 +21,11 @@ public class Goal : MonoBehaviour
     private void ContinueButton()
     {
         GameObject.FindGameObjectWithTag("DungeonGenerator").GetComponent<DungeonGeneration.DungeonGenerator>().GenerateFloor(true);
-        Destroy(continueButton);
+        //For some reason these sometimes duplicate so I just destroy all >:3
+        foreach (Transform child in continueButton.transform.parent)
+        {
+            if (child.CompareTag("ContinueButtonERRORFIX")) Destroy(child);
+        }
         Destroy(gameObject);
     }
 }

@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24a819a2a0554544685deecacd75173f, type: 3}
   m_Name: Philosophers' Wand
   m_EditorClassIdentifier: 
-  baseDamage: 0
-  numberOfAttacks: 1
-  attackCooldown: 0
+  baseDamage: 1
+  numberOfAttacks: 4
+  attackCooldown: 1
   attackDespawnTime: 0
   bulletTravelSpeed: 0
-  meleeRangeX: 1
+  meleeRangeX: 3
   isRanged: 0
   teleportsPlayer: 0
-  weaponEquipped: {fileID: 0}
-  weaponDropped: {fileID: 0}
+  weaponEquipped: {fileID: 21300000, guid: a236ecb61e58e8248b26c697771556b1, type: 3}
+  weaponDropped: {fileID: 21300000, guid: 669e8dee9bda9564db18f20e0dc80f88, type: 3}

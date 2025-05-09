@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24a819a2a0554544685deecacd75173f, type: 3}
   m_Name: Teleport Dagger
   m_EditorClassIdentifier: 
-  baseDamage: 1
+  baseDamage: 4
   numberOfAttacks: 1
   attackCooldown: 0.7
   attackDespawnTime: 3

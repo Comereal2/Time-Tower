@@ -16,6 +16,7 @@ TagManager:
   - DungeonGenerator
   - ShopTile
   - CollisionCollider
+  - ContinueButtonERRORFIX
   layers:
   - Default
   - TransparentFX

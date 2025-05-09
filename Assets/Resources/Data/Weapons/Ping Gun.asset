@@ -16,8 +16,9 @@ MonoBehaviour:
   numberOfAttacks: 3
   attackCooldown: 1
   attackDespawnTime: 2
-  bulletTravelSpeed: 5
+  bulletTravelSpeed: 7
   meleeRangeX: 1
   isRanged: 1
+  teleportsPlayer: 0
   weaponEquipped: {fileID: 0}
   weaponDropped: {fileID: 21300000, guid: cf3fd4346e7bab94fb69adf03d68c195, type: 3}

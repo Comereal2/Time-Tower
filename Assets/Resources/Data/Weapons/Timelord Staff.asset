@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseDamage: 3
   numberOfAttacks: 1
-  attackCooldown: 0.4
-  attackDespawnTime: 5
-  bulletTravelSpeed: 8
+  attackCooldown: 1
+  attackDespawnTime: 3
+  bulletTravelSpeed: 5
   meleeRangeX: 1
   isRanged: 1
+  teleportsPlayer: 0
   weaponEquipped: {fileID: 0}
   weaponDropped: {fileID: 21300000, guid: 12003370ee63c744b9413fc094988361, type: 3}
