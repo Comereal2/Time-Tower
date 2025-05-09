@@ -7,8 +7,10 @@ public class TriggerHandler : MonoBehaviour
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		if (triggerEvent != null)
-			triggerEvent.Invoke();
+		//Again, check if the player interacts, because otherwise anything else can activate it, causing a chain reaction
+		if(other.transform.CompareTag("Player"))
+			if (triggerEvent != null)
+				triggerEvent.Invoke();
 	}
 }
 

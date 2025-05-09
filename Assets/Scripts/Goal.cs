@@ -1,19 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Goal : MonoBehaviour
 {
-	void OnTriggerEnter2D(Collider2D other)
+    [SerializeField] private GameObject continueButton;
+    void OnTriggerEnter2D(Collider2D other)
 	{
 		//You need to check if it actually is the player or something else
 		if (other.gameObject.CompareTag("Player"))
 		{
+            continueButton = Instantiate(continueButton, GameObject.FindGameObjectWithTag("CoinCounter").transform.parent);
             gameObject.SetActive(false);
-            //GameObject.Find("MapManager").GetComponent<DungeonGeneration.DungeonGenerator>().GenerateFloor(true);
-            //This is why you use tags pal
-            //Also you need to get rid of things like shops, bullets and coins
-            GameObject.FindGameObjectWithTag("DungeonGenerator").GetComponent<DungeonGeneration.DungeonGenerator>().GenerateFloor(true);
+            continueButton.GetComponent<Button>().onClick.AddListener(ContinueButton);
         }
 	}
+
+    private void ContinueButton()
+    {
+        GameObject.FindGameObjectWithTag("DungeonGenerator").GetComponent<DungeonGeneration.DungeonGenerator>().GenerateFloor(true);
+        Destroy(continueButton);
+        Destroy(gameObject);
+    }
 }

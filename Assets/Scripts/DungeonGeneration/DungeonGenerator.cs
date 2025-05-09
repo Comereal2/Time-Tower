@@ -55,7 +55,7 @@ public class DungeonGenerator : MonoBehaviour
 			++floorNumber;
 				foreach (Enemy enemy in Resources.LoadAll<Enemy>("Data/Enemies"))
 				{
-					for (int i = 0; i < PlayerPrefs.GetInt("", 0) + 1; i++)
+					for (int i = 0; i < PlayerPrefs.GetInt("ChallengeRating", 0) + 1; i++)
 					{
 						enemy.UpgradeEnemy();
 					}
@@ -70,13 +70,15 @@ public class DungeonGenerator : MonoBehaviour
 		GenerateRooms();
 		currentFloor.corridorGenerationStrategy.GenerateCorridors(rooms, ref terrains);
 		dungeonRenderer.Draw(currentFloor.mapSize, terrains);
-		PlaceEnemies();
 		PlaceShops();
 		PopulateSpawnRoom();
-		PlacePlayer();
 
-		SendMessage("FadeIn");
-	}
+		//Enemies sometimes pathfind to the player through walls right at the start even though the pathfinder tells them they cant
+
+		PlacePlayer();
+        PlaceEnemies();
+        SendMessage("FadeIn");
+    }
 
 
 	private void WipeMap()
@@ -127,8 +129,8 @@ public class DungeonGenerator : MonoBehaviour
 		{
 			Debug.LogWarning("Player not in scene");
 		}
-		player.transform.position = collisionTilemap.GetCellCenterWorld(SpawnRoom().CenterCoords());
-	}
+        player.transform.position = collisionTilemap.GetCellCenterWorld(SpawnRoom().CenterCoords());
+    }
 
 	private void FloodWithRock()
 	{

@@ -30,7 +30,7 @@ public class BulletBehavior : MonoBehaviour
             if (bouncyBullets)
             {
                 Vector2 normal = collision.GetContact(0).normal;
-                rb.velocity = Vector2.Reflect(velocity * 1.3f, normal);
+                rb.velocity = Vector2.Reflect(velocity * 1.1f, normal);
                 velocity = rb.velocity;
             }
             else

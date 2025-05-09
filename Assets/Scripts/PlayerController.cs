@@ -455,20 +455,24 @@ public class PlayerController : FightingController
     {
         Time.timeScale = 0;
 		int floorNumber = GameObject.FindWithTag("DungeonGenerator").GetComponent<DungeonGeneration.DungeonGenerator>().floorNumber;
-        GameObject defeatScreen = Instantiate(weaponCompare, coinCounter.transform.parent);
+        GameObject pauseMenu = Instantiate(menu, gameObject.transform);
+        pauseMenu.transform.GetChild(0).gameObject.SetActive(false);
+        pauseMenu.transform.GetChild(1).gameObject.SetActive(false);
+        GameObject defeatScreen = Instantiate(weaponCompare, pauseMenu.transform);
         defeatScreen.transform.position = new Vector2(Screen.width/2, Screen.height/2);
         defeatScreen.transform.GetChild(0).GetComponent<TMP_Text>().text = $"<align=center><size=72>Score: {maxScore} \n </size><size=108><b>Defeat</b></size> \n <size=72>Floor: {floorNumber} \n CR: {PlayerPrefs.GetInt("ChallengeRating", 0)}</size></align>";
-        StartCoroutine(SpawnButtons());
+        StartCoroutine(SpawnButtons(pauseMenu));
         pauseButton.onClick.RemoveAllListeners();
     }
 
     /// <summary>
     /// Only use this in Defeat()
     /// </summary>
-    private IEnumerator SpawnButtons()
+    private IEnumerator SpawnButtons(GameObject pauseMenu)
     {
         yield return new WaitForSecondsRealtime(2f);
-        GameObject pauseMenu = Instantiate(menu, gameObject.transform);
+        pauseMenu.transform.GetChild(0).gameObject.SetActive(true);
+        pauseMenu.transform.GetChild(1).gameObject.SetActive(true);
         var quitButton = pauseMenu.transform.GetChild(1);
         var resumeButton = pauseMenu.transform.GetChild(0);
         quitButton.position += new Vector3(0, -50f, 0);

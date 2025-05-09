@@ -30,6 +30,11 @@ public class Enemy : ScriptableObject
                 health = Mathf.Max(health + 1, (int)((float)health * 1.2f));
                 break;
             case 2:
+                if (speed == 0)
+                {
+                    UpgradeEnemy();
+                    break;
+                }
                 speed = Mathf.Max(speed + 2, speed * 1.2f);
                 break;
             case 3:

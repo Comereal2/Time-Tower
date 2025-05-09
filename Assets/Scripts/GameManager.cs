@@ -43,6 +43,12 @@ public class GameManager : MonoBehaviour
             enemy.damageMultiplier = defaultE.damageMultiplier;
             enemy.rangedAttackCooldown = defaultE.rangedAttackCooldown;
             enemy.projectileSpeed = defaultE.projectileSpeed;
+            enemy.spawnTime = defaultE.spawnTime;
+            enemy.scale = defaultE.scale;
+            enemy.coinChance = defaultE.coinChance;
+            enemy.isBoss = defaultE.isBoss;
+            enemy.isRanged = defaultE.isRanged;
+            enemy.sprite = defaultE.sprite;
         }
     }
 }

@@ -143,3 +143,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e4e0aea607a4174f979c4f4147cc16c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  continueButton: {fileID: 3720342001328296229, guid: 68b5bf532ed229342a88689d3a4f6407, type: 3}

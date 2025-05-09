@@ -26,9 +26,6 @@ public class EnemyBehavior : FightingController
 
     private void Start()
     {
-        // Pathfinding and movement is handled in the pathfinding asset entirely, so we need to refer to that when setting enemy speed
-        // Every enemy should be able to pathfind, even stationary ones, if you want an enemy to not move, set their speed to 0
-        GetComponent<AIPath>().maxSpeed = enemyStats.speed;
         if (enemyStats.health > 1 && displayHealthBars)
         {
             healthBar = Instantiate(healthBar, GameObject.FindGameObjectWithTag("TimerCanvas").transform);
@@ -39,6 +36,10 @@ public class EnemyBehavior : FightingController
         gameObject.transform.localScale = new Vector2(enemyStats.scale, enemyStats.scale);
         if (enemyStats.isRanged) InvokeRepeating(nameof(DetermineShot), 0, enemyStats.rangedAttackCooldown);
         if (enemyStats.isBoss) MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.bossTheme);
+
+        // Pathfinding and movement is handled in the pathfinding asset entirely, so we need to refer to that when setting enemy speed
+        // Every enemy should be able to pathfind, even stationary ones, if you want an enemy to not move, set their speed to 0
+        GetComponent<AIPath>().maxSpeed = enemyStats.speed;
     }
 
     private void Update()
