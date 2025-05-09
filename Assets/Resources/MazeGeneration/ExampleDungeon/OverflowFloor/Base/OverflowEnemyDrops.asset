@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08a0ef0d7b939d94d966e29eb76e3273, type: 3}
   m_Name: OverflowEnemyDrops
   m_EditorClassIdentifier: 
-  items: []
-  cdf: []
+  items:
+  - {fileID: 0}
+  cdf:
+  - 1

@@ -99,11 +99,12 @@ public class MainMenuBehavior : MonoBehaviour
     /// </summary>
     private void SaveSettings()
     {
+        int tmp;
         PlayerPrefs.SetInt("HardMode", settings[0].GetComponent<Toggle>().isOn ? 1 : 0);
         PlayerPrefs.SetInt("EnemyHealthBars", settings[1].GetComponent<Toggle>().isOn ? 1 : 0);
         PlayerPrefs.SetInt("ShopTags", settings[2].GetComponent<Toggle>().isOn ? 1 : 0);
         PlayerPrefs.SetInt("BonusCash", settings[3].GetComponent<Toggle>().isOn ? 1 : 0);
-        PlayerPrefs.SetInt("ChallengeRating", int.Parse(settings[4].GetComponent<TMP_InputField>().text != null ? settings[4].GetComponent<TMP_InputField>().text : "0"));
+        PlayerPrefs.SetInt("ChallengeRating", int.TryParse(settings[4].GetComponent<TMP_InputField>().text, out tmp) ? int.Parse(settings[4].GetComponent<TMP_InputField>().text) : 0);
         PlayerPrefs.SetFloat("Music", settings[5].GetComponent<Slider>().value);
         PlayerPrefs.SetFloat("SFX", settings[6].GetComponent<Slider>().value);
         PlayerPrefs.Save();
