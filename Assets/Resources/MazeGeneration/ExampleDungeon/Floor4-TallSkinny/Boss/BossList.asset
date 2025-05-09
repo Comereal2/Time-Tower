@@ -12,5 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65ba7a127ffd34e45a6e576b7f0d4f56, type: 3}
   m_Name: BossList
   m_EditorClassIdentifier: 
-  enemyTypes: []
-  cdf: []
+  enemyTypes:
+  - {fileID: 11400000, guid: d3b19d98ebd35034cae65866c4d9522f, type: 2}
+  - {fileID: 11400000, guid: 853103df8d11c0742ada74a79406f8af, type: 2}
+  cdf:
+  - 0.9
+  - 1
