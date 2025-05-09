@@ -53,8 +53,7 @@ public class EnemyBehavior : FightingController
         if (enemyStats.health > 1 && displayHealthBars) healthBar.transform.position = Camera.main.WorldToScreenPoint(transform.position + (Vector3)bossBarOffset);
         if (hasCustomSprite)
         {
-            //transform.GetChild(0).rotation = -transform.rotation;
-            //transform.GetChild(0).rotation = Quaternion.Euler(0, 0, -transform.rotation.eulerAngles.z);
+            transform.GetChild(0).rotation = Quaternion.identity;
             var aiPath = GetComponent<AIPath>();
             if (aiPath.desiredVelocity.x < 0)
                 transform.GetChild(0).localScale = new Vector2(-1f, 1f) * enemyStats.scale;
