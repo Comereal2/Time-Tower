@@ -10,11 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 08a0ef0d7b939d94d966e29eb76e3273, type: 3}
-  m_Name: BossDrops
+  m_Name: FastBoyDrops
   m_EditorClassIdentifier: 
   items:
-  - {fileID: 11400000, guid: 14ebd0902d62ed247a7a4131c17391e9, type: 2}
-  - {fileID: 11400000, guid: 3c6f3317828a4d54ea8bbf4fbb85a950, type: 2}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: c55dc6f365b72eb49888f7d91b6bc984, type: 2}
+  - {fileID: 11400000, guid: 2a8880c98042c9f4289bcccea1b9ca0f, type: 2}
+  - {fileID: 11400000, guid: 8ea87f22f883c34489bd8b19f5d4406b, type: 2}
+  - {fileID: 11400000, guid: 2a8880c98042c9f4289bcccea1b9ca0f, type: 2}
   cdf:
+  - 0.2
+  - 0.25
   - 0.5
+  - 0.95
   - 1

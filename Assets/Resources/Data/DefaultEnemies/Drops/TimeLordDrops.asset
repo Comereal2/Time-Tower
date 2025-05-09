@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 08a0ef0d7b939d94d966e29eb76e3273, type: 3}
-  m_Name: BabyBossDrops
+  m_Name: TimeLordDrops
   m_EditorClassIdentifier: 
   items:
-  - {fileID: 11400000, guid: 14ebd0902d62ed247a7a4131c17391e9, type: 2}
+  - {fileID: 11400000, guid: 2a8880c98042c9f4289bcccea1b9ca0f, type: 2}
   - {fileID: 11400000, guid: 3c6f3317828a4d54ea8bbf4fbb85a950, type: 2}
+  - {fileID: 11400000, guid: 0c8d68037c481a44c8ca85e48457165e, type: 2}
   cdf:
-  - 0.5
+  - 0.4
+  - 0.9
   - 1

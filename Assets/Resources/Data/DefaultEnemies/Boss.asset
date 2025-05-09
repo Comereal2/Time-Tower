@@ -23,3 +23,4 @@ MonoBehaviour:
   isBoss: 1
   isRanged: 0
   sprite: {fileID: 0}
+  drops: {fileID: 11400000, guid: 99a8826b2390be648900731d832e27e3, type: 2}
