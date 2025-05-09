@@ -42,10 +42,14 @@ public class EnemyBehavior : FightingController
         gameObject.transform.localScale = new Vector2(enemyStats.scale, enemyStats.scale);
         if (enemyStats.isRanged) InvokeRepeating(nameof(DetermineShot), 0, enemyStats.rangedAttackCooldown);
         if (enemyStats.isBoss) MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.bossTheme);
+		if (enemyStats.drops != null)
+			equippedWeapon = enemyStats.drops.RandomWeapon();
+		else
+			Debug.LogWarning($"{enemyStats.name} does not have any drops");
 
         // Pathfinding and movement is handled in the pathfinding asset entirely, so we need to refer to that when setting enemy speed
         // Every enemy should be able to pathfind, even stationary ones, if you want an enemy to not move, set their speed to 0
-        GetComponent<AIPath>().maxSpeed = enemyStats.speed;
+        GetComponent<AIPath>().maxSpeed = enemyStats.speed + Random.Range(-0.2f, 0.2f);
     }
 
     private void Update()

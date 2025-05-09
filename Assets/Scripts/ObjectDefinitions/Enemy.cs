@@ -18,6 +18,7 @@ public class Enemy : ScriptableObject
     public bool isBoss = false;
     public bool isRanged = false;
     public Sprite sprite;
+	public WeaponList drops;
 
     /// <summary>
     /// Upgrades the selected enemy statblock GLOBALLY

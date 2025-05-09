@@ -8,7 +8,6 @@ public class EnemySpawner : MonoBehaviour
 {
 	public EnemyBehavior enemyPrefab;
 	public EnemyList enemyList;
-	public WeaponList enemyDroppables;
 	// Weapon drops
 	private CircleCollider2D trigger;
 	
@@ -17,7 +16,7 @@ public class EnemySpawner : MonoBehaviour
 		trigger = GetComponent<CircleCollider2D>();
 		if (trigger == null)
 		{
-			Debug.LogWarning("trigger null");
+			Debug.LogError("trigger null");
 		}
 	}
 
@@ -26,9 +25,7 @@ public class EnemySpawner : MonoBehaviour
 		gameObject.SetActive(false);
 		EnemyBehavior newEnemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity, gameObject.transform);
 		newEnemy.enemyStats = enemyList.RandomEnemy();
-		newEnemy.enemyStats.speed += Random.Range(-0.2f, 0.2f);
-		newEnemy.equippedWeapon = enemyDroppables.RandomWeapon();
-		newEnemy.gameObject.transform.SetParent(gameObject.transform.parent);
+		newEnemy.gameObject.transform.SetParent(gameObject.transform.parent); // This awakens the enemy
 		Destroy(gameObject);
 	}
 };
