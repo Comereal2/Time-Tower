@@ -571,6 +571,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapTileList: {fileID: 11400000, guid: b3e8ac570b65d494d9f9d22fc4bc7e85, type: 2}
+  collisionPadding: 10
 --- !u!114 &5720525266675108731
 MonoBehaviour:
   m_ObjectHideFlags: 0
