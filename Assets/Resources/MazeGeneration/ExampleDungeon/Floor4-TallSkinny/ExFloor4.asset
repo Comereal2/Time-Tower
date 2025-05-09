@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: ExFloor4
   m_EditorClassIdentifier: 
   mapSize: {x: 11, y: 20}
-  spawnRoomDims: {x: 3, y: 3}
+  spawnRoomDims: {x: 4, y: 3}
   bossRoomDims: {x: 5, y: 8}
-  minimumBossSpawnDistance: 40
+  minimumBossSpawnDistance: 60
   roomAttempts: 350
   maxNumRandomShops: 10
   numEnemies: 45

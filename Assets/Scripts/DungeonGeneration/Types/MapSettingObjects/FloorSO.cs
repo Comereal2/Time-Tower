@@ -28,6 +28,11 @@ public class FloorSO : ScriptableObject
 	public int roomMinHeight;
 	public int roomMaxHeight;
 
+	private void LogError(string s)
+	{
+		Debug.LogError($"{base.name} - {s}");
+	}
+
 	void OnValidate()
 	{
 		if (!checkParameters)
@@ -43,7 +48,7 @@ public class FloorSO : ScriptableObject
 		if (newSpawnRoomDims != spawnRoomDims)
 		{
 			spawnRoomDims = newSpawnRoomDims;
-			Debug.LogError("Spawn Room must be at least 4 wide and 3 tall");
+			LogError("Spawn Room must be at least 4 wide and 3 tall");
 			failedChecks = true;
 		}
 		int bossx = Mathf.Max(bossRoomDims.x, 4);
@@ -52,13 +57,13 @@ public class FloorSO : ScriptableObject
 		if (newBossRoomDims != bossRoomDims)
 		{
 			bossRoomDims = newBossRoomDims;
-			Debug.LogError("Boss Room must be at least 4 wide on both sides");
+			LogError("Boss Room must be at least 4 on both sides");
 			failedChecks = true;
 		}
 		if (maxNumRandomShops > roomAttempts)
 		{
 			maxNumRandomShops = roomAttempts;
-			Debug.LogError("Each room can have max 1 random shop, updating");
+			LogError("Each room can have max 1 random shop, updating");
 			failedChecks = true;
 		}
 
@@ -83,38 +88,38 @@ public class FloorSO : ScriptableObject
 		if (updatedMapSize != mapSize)
 		{
 			mapSize = updatedMapSize;
-			Debug.LogError("Map must be big enough to hold both the Spawn and Boss rooms at opposite ends of the map");
+			LogError("Map must be big enough to hold both the Spawn and Boss rooms at opposite ends of the map");
 			failedChecks = true;
 		}
 
 		// Force Rooms to be at least 2x2 tiles large
 		if (roomMinHeight < 4)
 		{
-			Debug.LogError("min dimensions must be 4 or larger to account for padding");
+			LogError("min dimensions must be 4 or larger to account for padding");
 			roomMinHeight = 4;
 			failedChecks = true;
 		}
 		if (roomMinWidth < 4)
 		{
-			Debug.LogError("min dimensions must be 4 or larger to account for padding");
+			LogError("min dimensions must be 4 or larger to account for padding");
 			roomMinWidth = 4;
 			failedChecks = true;
 		}
 		if (roomMinWidth >= roomMaxWidth)
 		{
-			Debug.LogError("Width dims are [inclusive, exclusive)");
+			LogError("Width dims are [inclusive, exclusive)");
 			roomMaxWidth = roomMinWidth + 1;
 			failedChecks = true;
 		}
 		if (roomMinHeight >= roomMaxHeight)
 		{
-			Debug.LogError("Height dims are [inclusive, exclusive)");
+			LogError("Height dims are [inclusive, exclusive)");
 			roomMaxHeight = roomMinHeight + 1;
 			failedChecks = true;
 		}
 		if (enemySpawner == null || bossSpawner == null || corridorGenerationStrategy == null)
 		{
-			Debug.LogError("All SOs must be instantiated");
+			LogError("All SOs must be instantiated");
 			failedChecks = true;
 		}
 		

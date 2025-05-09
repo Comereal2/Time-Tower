@@ -13,6 +13,7 @@ namespace DungeonGeneration
 public class DungeonRenderer : MonoBehaviour
 {
 	[SerializeField] MapTileList mapTileList;
+	[SerializeField] int collisionPadding = 10;
 
 	Tilemap collisionTilemap;
 	Tilemap displayTilemap;
@@ -36,6 +37,8 @@ public class DungeonRenderer : MonoBehaviour
 	{
 		mapSize = mapSize_;
 		terrains = terrains_;
+		if (collisionPadding < 0)
+			collisionPadding = 0;
 	}
 
 	public void Draw(Vector2Int mapSize_, DungeonTerrainType[,] terrains_)
@@ -49,11 +52,11 @@ public class DungeonRenderer : MonoBehaviour
 	{
 		List<Vector3Int> positions = new List<Vector3Int>();
 		List<Tile> invisTiles = new List<Tile>();
-		for (int i = 0; i < mapSize.x; ++i)
+		for (int i = -collisionPadding; i < mapSize.x + collisionPadding; ++i)
 		{
-			for (int j = 0; j < mapSize.y; ++j)
+			for (int j = -collisionPadding; j < mapSize.y + collisionPadding; ++j)
 			{
-				if (TerrainShouldHaveCollider(terrains[i,j]))
+				if (IsPadding(i, j) || TerrainShouldHaveCollider(terrains[i,j]))
 				{
 					positions.Add(new (i, j, 0));
 					invisTiles.Add(mapTileList.invisible);
@@ -75,6 +78,14 @@ public class DungeonRenderer : MonoBehaviour
 			}
 		}
 		displayTilemap.SetTiles(tcd.ToArray(), true);
+	}
+
+	private bool IsPadding(int x, int y)
+	{
+		return x < 0
+				|| y < 0
+				|| x >= mapSize.x
+				|| y >= mapSize.y;
 	}
 
 	private bool TerrainShouldHaveCollider(DungeonTerrainType t)
