@@ -18,7 +18,8 @@ MonoBehaviour:
   spawnTime: 100
   scale: 3
   rangedAttackCooldown: 1
-  hasCoin: 0
+  projectileSpeed: 5
+  coinChance: 1
   isBoss: 1
   isRanged: 1
-  sprite: {fileID: 21300000, guid: 53023a27050847546b3d536b19585ffc, type: 3}
+  sprite: {fileID: 21300000, guid: 3493d7a191cb503459217a7ed2e70be3, type: 3}

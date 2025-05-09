@@ -1,5 +1,6 @@
 using Pathfinding;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,7 @@ public class EnemyBehavior : FightingController
     public Weapon equippedWeapon;
     private int currentHealth = 1;
     private bool displayHealthBars = true;
+    private bool hasCustomSprite = false;
     private GameObject enemyProjectile;
     private GameObject endOfLevelFlag;
     public GameObject healthBar;
@@ -32,7 +34,11 @@ public class EnemyBehavior : FightingController
             currentHealth = enemyStats.health;
             UpdateHealthBar();
         }
-        if (enemyStats.sprite != null) transform.GetComponent<SpriteRenderer>().sprite = enemyStats.sprite;
+        if (enemyStats.sprite != null)
+        {
+            transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = enemyStats.sprite;
+            hasCustomSprite = true;
+        }
         gameObject.transform.localScale = new Vector2(enemyStats.scale, enemyStats.scale);
         if (enemyStats.isRanged) InvokeRepeating(nameof(DetermineShot), 0, enemyStats.rangedAttackCooldown);
         if (enemyStats.isBoss) MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.bossTheme);
@@ -45,6 +51,16 @@ public class EnemyBehavior : FightingController
     private void Update()
     {
         if (enemyStats.health > 1 && displayHealthBars) healthBar.transform.position = Camera.main.WorldToScreenPoint(transform.position + (Vector3)bossBarOffset);
+        if (hasCustomSprite)
+        {
+            //transform.GetChild(0).rotation = -transform.rotation;
+            //transform.GetChild(0).rotation = Quaternion.Euler(0, 0, -transform.rotation.eulerAngles.z);
+            var aiPath = GetComponent<AIPath>();
+            if (aiPath.desiredVelocity.x < 0)
+                transform.GetChild(0).localScale = new Vector2(-1f, 1f) * enemyStats.scale;
+            else if (aiPath.desiredVelocity.x > 0)
+                transform.GetChild(0).localScale = new Vector2(1f, 1f) * enemyStats.scale;
+        }
     }
 
     private void OnDestroy()

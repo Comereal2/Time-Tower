@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc1c4f8d4a406c24e8f2ef7debb03763, type: 3}
-  m_Name: FastBoy
+  m_Name: BabyEnemy
   m_EditorClassIdentifier: 
   health: 1
-  damageMultiplier: 1
-  speed: 4
-  spawnTime: 20
+  damageMultiplier: 0.5
+  speed: 2
+  spawnTime: 30
   scale: 1
   rangedAttackCooldown: 1
   projectileSpeed: 5
   coinChance: 0.2
   isBoss: 0
   isRanged: 0
-  sprite: {fileID: 21300000, guid: 21f2695e7a27c9a4c807839f5013502e, type: 3}
+  sprite: {fileID: 0}
