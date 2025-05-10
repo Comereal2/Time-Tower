@@ -16,6 +16,7 @@ MonoBehaviour:
   spawnRoomDims: {x: 4, y: 3}
   bossRoomDims: {x: 8, y: 6}
   minimumBossSpawnDistance: 45
+  minimumEnemySpawnerDistance: 20
   roomAttempts: 350
   maxNumRandomShops: 10
   numEnemies: 45

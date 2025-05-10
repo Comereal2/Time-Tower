@@ -13,6 +13,7 @@ namespace DungeonGeneration
 public class DungeonRoom
 {
 	public RectInt rect { get; private set; }
+	private List<Vector2Int> openTiles;
 
 	// TODO: VisualStudio comment for these
 	public DungeonRoom(Vector2Int mapSize, Vector2Int fixedRoomDims, bool isSpawn, bool placeRandom = true)
@@ -27,6 +28,7 @@ public class DungeonRoom
 		Vector2Int randomLowerLeftPoint = new (leftPointX, leftPointY);
 		
 		rect = new RectInt(randomLowerLeftPoint, fixedRoomDims);
+		PopulateOpenTiles();
 	}
 
 	public DungeonRoom(Vector2Int mapSize, int minWidth, int maxWidth, int minHeight, int maxHeight)
@@ -42,6 +44,7 @@ public class DungeonRoom
 		Vector2Int randomSize = new (sizeX, sizeY);
 
 		rect = new RectInt(randomLowerLeftPoint, randomSize);
+		PopulateOpenTiles();
 	}
 
 	public Vector2Int[] SpawnRoomShopPositions()
@@ -84,6 +87,28 @@ public class DungeonRoom
 	{
 		return UnityEngine.Random.Range(rect.yMin + 1, rect.yMax - 1);
 	}
+	private void PopulateOpenTiles()
+	{
+		openTiles = new List<Vector2Int>();
+		for (int i = rect.xMin + 1; i < rect.xMax - 1; ++i)
+		{
+			for (int j = rect.yMin + 1; j < rect.yMax - 1; ++j)
+			{
+				openTiles.Add(new(i, j));
+			}
+		}
+	}
+#nullable enable
+	public Vector2Int? GetRandomEnemyLocation()
+	{
+		if (openTiles.Count == 0)
+			return null;
+		Vector2Int location = openTiles[UnityEngine.Random.Range(0, openTiles.Count)];
+		openTiles.Remove(location);
+		return location;
+	}
+#nullable disable
+	
 };
 
 } // namespace DungeonGeneration

@@ -242,16 +242,46 @@ public class DungeonGenerator : MonoBehaviour
 		}
 	}
 
+	public T GetRandomFromList<T>(List<T> l)
+	{
+		return l[UnityEngine.Random.Range(0, l.Count)];
+	}
+
 	private void PlaceEnemies()
 	{
+		Debug.Log("Placing enemies");
 		PlaceFloorEntity(currentFloor.bossSpawner.gameObject, rooms[0].RandomPointInside());
 		if (rooms.Count == 2)
 		{
 			return;
 		}
+
+		List<DungeonRoom> roomsWithOpenSpace = new List<DungeonRoom>();
+		for (int i = 2; i < rooms.Count; ++i)
+		{
+			roomsWithOpenSpace.Add(rooms[i]);
+		}
+
+		Vector3 playerPos = PlayerController.playerController.transform.position;
 		for (int i = 0; i < currentFloor.numEnemies; ++i)
 		{
-			PlaceFloorEntity(currentFloor.enemySpawner.gameObject, RandomNonSpecialRoom().RandomPointInside());
+			var r = GetRandomFromList(roomsWithOpenSpace);
+			Vector2Int? loc = r.GetRandomEnemyLocation();
+			if (loc == null)
+			{
+				roomsWithOpenSpace.Remove(r);
+				if (roomsWithOpenSpace.Count == 0)
+				{
+					break;
+				}
+				--i;
+				continue;
+			}
+
+			if (Vector3.Distance(collisionTilemap.GetCellCenterWorld((Vector3Int)loc.Value), playerPos) > currentFloor.minimumEnemySpawnerDistance)
+				PlaceFloorEntity(currentFloor.enemySpawner.gameObject, loc.Value);
+			else
+				--i;
 		}
 	}
 
@@ -272,10 +302,10 @@ public class DungeonGenerator : MonoBehaviour
 			PlaceFloorEntity(singleUseShopTile.gameObject, randomRoom.RandomShopTilePosition());
 			nonSpecialRooms.Remove(randomRoom);
 		}
-
 	}
 
 #nullable enable
+
 	public DungeonRoom? RandomNonSpecialRoom()
 	{
 		if (rooms.Count <= 2)

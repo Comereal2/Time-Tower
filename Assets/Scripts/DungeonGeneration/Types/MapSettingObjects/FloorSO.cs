@@ -14,6 +14,7 @@ public class FloorSO : ScriptableObject
 	public Vector2Int spawnRoomDims;
 	public Vector2Int bossRoomDims;
 	public float minimumBossSpawnDistance; 
+	public float minimumEnemySpawnerDistance = 10f; 
 	public int roomAttempts;
 	public int maxNumRandomShops;
 	public int numEnemies;
