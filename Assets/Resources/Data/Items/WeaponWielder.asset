@@ -10,15 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc248821b4b444946ae1b36621e21b23, type: 3}
-  m_Name: Weapon Master
+  m_Name: WeaponWielder
   m_EditorClassIdentifier: 
   cost: 5
-  itemName: Weapon Master
+  itemName: Weapon Wielder
   modifiers:
-  - {fileID: 11400000, guid: 855a40c21deeebf4dbcc79049e878b65, type: 2}
-  - {fileID: 11400000, guid: e2b6d9c5a4a17724da0787b01ebbf7eb, type: 2}
-  - {fileID: 11400000, guid: fba4468ff1b2a3e4e9098a7b58ff76c2, type: 2}
+  - {fileID: 11400000, guid: 69ca22122e93f3246a12fa8b17d22bbe, type: 2}
+  - {fileID: 11400000, guid: ff522fe081a6c71478c83c6cbfb6af92, type: 2}
   - {fileID: 11400000, guid: bc7c1ebc6e7bd68439f733ff7bad20d3, type: 2}
-  itemIcon: {fileID: 21300000, guid: 0cb28e454f0f4244db68bf5709cd694a, type: 3}
-  spriteXScale: 0.8
-  spriteYScale: 0.8
+  itemIcon: {fileID: 21300000, guid: dceb6f7ac0fe2594c9ea6c47bbae1f5d, type: 3}
+  spriteXScale: 0.15
+  spriteYScale: 0.15

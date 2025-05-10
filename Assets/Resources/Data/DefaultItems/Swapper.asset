@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc248821b4b444946ae1b36621e21b23, type: 3}
-  m_Name: Weapon Master
+  m_Name: Swapper
   m_EditorClassIdentifier: 
-  cost: 5
-  itemName: Weapon Master
+  cost: 2
+  itemName: Swapper
   modifiers:
-  - {fileID: 11400000, guid: 855a40c21deeebf4dbcc79049e878b65, type: 2}
+  - {fileID: 11400000, guid: bc712060d8834024fa0f41cdb84e3cde, type: 2}
+  - {fileID: 11400000, guid: 9ac0dbbf81ec8a842b4dbf5d2a9bddbc, type: 2}
   - {fileID: 11400000, guid: e2b6d9c5a4a17724da0787b01ebbf7eb, type: 2}
-  - {fileID: 11400000, guid: fba4468ff1b2a3e4e9098a7b58ff76c2, type: 2}
-  - {fileID: 11400000, guid: bc7c1ebc6e7bd68439f733ff7bad20d3, type: 2}
-  itemIcon: {fileID: 21300000, guid: 0cb28e454f0f4244db68bf5709cd694a, type: 3}
-  spriteXScale: 0.8
-  spriteYScale: 0.8
+  - {fileID: 11400000, guid: f205f1705a1096d4fa0704bb2c8d838f, type: 2}
+  itemIcon: {fileID: 21300000, guid: ec48842b3f1b134488353dce02db338b, type: 3}
+  spriteXScale: 0.15
+  spriteYScale: 0.15

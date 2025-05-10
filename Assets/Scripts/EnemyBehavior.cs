@@ -113,7 +113,7 @@ public class EnemyBehavior : FightingController
         else
         {
             player.gameObject.GetComponent<TimerManager>().timeLeft += gameObject.GetComponent<TimerManager>().timeLeft * player.timeMultiplier * player.enemyTimeMultiplier * 0.4f; //Turns out it was too strong so we nerf it a lot
-            if (UnityEngine.Random.value < enemyStats.coinChance)
+            if (Random.value < enemyStats.coinChance)
             {
                 Instantiate(player.coin, transform.position, Quaternion.identity, GameObject.FindGameObjectWithTag("RoomContainer").transform);
             }

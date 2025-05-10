@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc248821b4b444946ae1b36621e21b23, type: 3}
-  m_Name: BouncyBullets
+  m_Name: Procrastinator
   m_EditorClassIdentifier: 
-  cost: 4
-  itemName: Bouncy Bullets
+  cost: 2
+  itemName: Procrastinator's Curse
   modifiers:
-  - {fileID: 11400000, guid: b361f32b0944988489fe9168792ab0fe, type: 2}
-  - {fileID: 11400000, guid: 5d1c1c819e104a940ac4486b122e2791, type: 2}
-  itemIcon: {fileID: 21300000, guid: 51d3391a0205a87488c3cfe1558a37b3, type: 3}
-  spriteXScale: 1
-  spriteYScale: 1
+  - {fileID: 11400000, guid: b59573572907621468163fe68107505d, type: 2}
+  - {fileID: 11400000, guid: bc712060d8834024fa0f41cdb84e3cde, type: 2}
+  itemIcon: {fileID: 21300000, guid: 54532e5b5c112cd46a1dbe59911c93ff, type: 3}
+  spriteXScale: 0.3
+  spriteYScale: 0.3

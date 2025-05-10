@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         ReloadEnemies();
+        ReloadItemCosts();
         empty = new GameObject("Empty");
         empty.AddComponent<Text>();
         Instantiate(canvases);
@@ -33,11 +34,14 @@ public class GameManager : MonoBehaviour
          */
     }
 
+    /// <summary>
+    /// Reloads all enemy stats by loading in the default
+    /// </summary>
     private void ReloadEnemies()
     {
-        foreach (var enemy in Resources.LoadAll<Enemy>("Data/Enemies"))
+        foreach (Enemy enemy in Resources.LoadAll<Enemy>("Data/Enemies"))
         {
-            var defaultE = Resources.Load<Enemy>("Data/DefaultEnemies/" + enemy.name);
+            Enemy defaultE = Resources.Load<Enemy>("Data/DefaultEnemies/" + enemy.name);
             enemy.health = defaultE.health;
             enemy.speed = defaultE.speed;
             enemy.damageMultiplier = defaultE.damageMultiplier;
@@ -50,6 +54,17 @@ public class GameManager : MonoBehaviour
             enemy.isRanged = defaultE.isRanged;
             enemy.sprite = defaultE.sprite;
 			enemy.drops = defaultE.drops;
+        }
+    }
+
+    /// <summary>
+    /// Reloads the cost of all items by loading in the default
+    /// </summary>
+    private void ReloadItemCosts()
+    {
+        foreach(Item item in Resources.LoadAll<Item>("Data/Items"))
+        {
+            item.cost = Resources.Load<Item>("Data/DefaultItems/" + item.name).cost;
         }
     }
 }

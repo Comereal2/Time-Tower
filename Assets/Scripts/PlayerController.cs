@@ -463,6 +463,13 @@ public class PlayerController : FightingController
         defeatScreen.transform.GetChild(0).GetComponent<TMP_Text>().text = $"<align=center><size=72>Score: {maxScore} \n </size><size=108><b>Defeat</b></size> \n <size=72>Floor: {floorNumber} \n CR: {PlayerPrefs.GetInt("ChallengeRating", 0)}</size></align>";
         StartCoroutine(SpawnButtons(pauseMenu));
         pauseButton.onClick.RemoveAllListeners();
+        foreach (Transform obj in coinCounter.transform.parent)
+        {
+            if (obj.gameObject.CompareTag("ContinueButtonERRORFIX"))
+            {
+                Destroy(obj.gameObject);
+            }
+        }
     }
 
     /// <summary>
