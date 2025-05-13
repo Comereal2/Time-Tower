@@ -1,60 +1,91 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace DungeonGeneration
 {
+
+// We have 2 tilemaps here:
+// On the farthest bottom layer is the collisionTilemap. This holds invisible tiles so that the TilemapCollider can be generated
+// The layer farther up is the displayTilemap. This is offset by .5 up and to the right. 
+// The tile and its displayed rotation are determined based on what tiles underneath it are colliders or not
 public class DungeonRenderer : MonoBehaviour
 {
 	[SerializeField] MapTileList mapTileList;
+	[SerializeField] int collisionPadding = 10;
+
+	Tilemap collisionTilemap;
+	Tilemap displayTilemap;
 
 	Vector2Int mapSize;
 	DungeonTerrainType[,] terrains;
-	public void Draw(DungeonTerrainType[,] terrains_, Tilemap collisionMap, Tilemap displayMap)
-	{
-		// Padding
-		mapSize = new Vector2Int(terrains_.GetLength(0) + 2, terrains_.GetLength(1) + 2);
-		terrains = new DungeonTerrainType[mapSize.x, mapSize.y];
-		for (int i = 0; i < terrains_.GetLength(0); ++i)
-		{
-			for (int j = 0; j < terrains_.GetLength(1); ++j)
-			{
-				terrains[i+1,j+1] = terrains_[i,j];
-			}
-		}
-		for (int i = 0; i < mapSize.x; ++i)
-		{
-			terrains[i,0] = DungeonTerrainType.Rock;
-			terrains[i,mapSize.y-1] = DungeonTerrainType.Rock;
-		}
-		for (int i = 0; i < mapSize.y; ++i)
-		{
-			terrains[0,i] = DungeonTerrainType.Rock;
-			terrains[mapSize.x-1,i] = DungeonTerrainType.Rock;
-		}
 
-		DrawCollisionTiles(collisionMap);
-		DrawDisplayTiles(displayMap);
+	public void SetTilemaps(Tilemap c, Tilemap d)
+	{
+		collisionTilemap = c;
+		displayTilemap = d;
 	}
 
-	private void DrawCollisionTiles(Tilemap collisionMap)
+	public void ClearTilemaps()
+	{
+		collisionTilemap.ClearAllTiles();
+		displayTilemap.ClearAllTiles();
+	}
+
+	private void InitializeData(Vector2Int mapSize_, DungeonTerrainType[,] terrains_)
+	{
+		mapSize = mapSize_;
+		terrains = terrains_;
+		if (collisionPadding < 0)
+			collisionPadding = 0;
+	}
+
+	public void Draw(Vector2Int mapSize_, DungeonTerrainType[,] terrains_)
+	{
+		InitializeData(mapSize_, terrains_);
+		DrawCollisionTiles();
+		DrawDisplayTiles();
+	}
+
+	private void DrawCollisionTiles()
 	{
 		List<Vector3Int> positions = new List<Vector3Int>();
 		List<Tile> invisTiles = new List<Tile>();
-
-		for (int i = 0; i < mapSize.x; ++i)
+		for (int i = -collisionPadding; i < mapSize.x + collisionPadding; ++i)
 		{
-			for (int j = 0; j < mapSize.y; ++j)
+			for (int j = -collisionPadding; j < mapSize.y + collisionPadding; ++j)
 			{
-				if (TerrainShouldHaveCollider(terrains[i,j]))
+				if (IsPadding(i, j) || TerrainShouldHaveCollider(terrains[i,j]))
 				{
-					positions.Add(new (i - 1, j - 1, 0));
+					positions.Add(new (i, j, 0));
 					invisTiles.Add(mapTileList.invisible);
 				}
 			}
 		}
+		collisionTilemap.SetTiles(positions.ToArray(), invisTiles.ToArray());
+		StartCoroutine(UpdateBoundsForAstar());
+	}
 
-		collisionMap.SetTiles(positions.ToArray(), invisTiles.ToArray());
+	private void DrawDisplayTiles()
+	{
+		List<TileChangeData> tcd = new();
+		for (int i = 0; i < mapSize.x - 1; ++i)
+		{
+			for (int j = 0; j < mapSize.y - 1; ++j)
+			{
+				tcd.Add(GetTileDataAtIndex(i, j));
+			}
+		}
+		displayTilemap.SetTiles(tcd.ToArray(), true);
+	}
+
+	private bool IsPadding(int x, int y)
+	{
+		return x < 0
+				|| y < 0
+				|| x >= mapSize.x
+				|| y >= mapSize.y;
 	}
 
 	private bool TerrainShouldHaveCollider(DungeonTerrainType t)
@@ -66,25 +97,25 @@ public class DungeonRenderer : MonoBehaviour
 #nullable enable
 	private Tile? GetTile(int x, int y)
 	{
-		int count = 0;
-		if (TerrainShouldHaveCollider(terrains[x,y])) ++count;
-		if (TerrainShouldHaveCollider(terrains[x,y+1])) ++count;
-		if (TerrainShouldHaveCollider(terrains[x+1,y])) ++count;
-		if (TerrainShouldHaveCollider(terrains[x+1,y+1])) ++count;
+		int colliderCount = 0;
+		if (TerrainShouldHaveCollider(terrains[x,y])) ++colliderCount;
+		if (TerrainShouldHaveCollider(terrains[x,y+1])) ++colliderCount;
+		if (TerrainShouldHaveCollider(terrains[x+1,y])) ++colliderCount;
+		if (TerrainShouldHaveCollider(terrains[x+1,y+1])) ++colliderCount;
 
-		if (count == 0)
+		if (colliderCount == 0)
 		{
 			return mapTileList.PickFloor();
 		}
-		if (count == 1)
+		if (colliderCount == 1)
 		{
 			return mapTileList.PickCornerOut();
 		}
-		if (count == 2)
+		if (colliderCount == 2)
 		{
 			return mapTileList.PickWall();
 		}
-		if (count == 3)
+		if (colliderCount == 3)
 		{
 			return mapTileList.PickCornerIn();
 		}
@@ -141,25 +172,16 @@ public class DungeonRenderer : MonoBehaviour
 	{
 		Tile t = GetTile(x, y);
 		return new TileChangeData{tile = t,
-			position = new Vector3Int(x-1, y-1, 0),
+			position = new Vector3Int(x, y, 0),
 			color = ((t == mapTileList.floors[0]) ? Color.black : Color.white),
 			transform = GetTransform(x, y, t)};
 	}
 
-	private void DrawDisplayTiles(Tilemap displayMap)
+	private IEnumerator UpdateBoundsForAstar()
 	{
-		List<TileChangeData> tcd = new();
-		for (int i = 0; i < mapSize.x - 1; ++i)
-		{
-			for (int j = 0; j < mapSize.y - 1; ++j)
-			{
-				tcd.Add(GetTileDataAtIndex(i, j));
-			}
-		}
-		displayMap.SetTiles(tcd.ToArray(), true);
+		yield return new WaitForSeconds(.1f);
+		AstarPath.active.Scan();
 	}
-
-
 }
 
 } // namespace DungeonGeneration

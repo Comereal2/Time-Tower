@@ -30,7 +30,7 @@ public class BulletBehavior : MonoBehaviour
             if (bouncyBullets)
             {
                 Vector2 normal = collision.GetContact(0).normal;
-                rb.velocity = Vector2.Reflect(velocity * 1.3f, normal);
+                rb.velocity = Vector2.Reflect(velocity * 1.1f, normal);
                 velocity = rb.velocity;
             }
             else
@@ -44,7 +44,7 @@ public class BulletBehavior : MonoBehaviour
     {
         if(PlayerController.playerController.equippedWeapon.teleportsPlayer)
         {
-            PlayerController.playerController.Teleport((transform.position-PlayerController.playerController.transform.position).magnitude, (Vector2)transform.position.normalized);
+            PlayerController.playerController.Teleport((transform.position-PlayerController.playerController.transform.position).magnitude, (Vector2)(transform.position-PlayerController.playerController.transform.position).normalized);
         }
     }
 }

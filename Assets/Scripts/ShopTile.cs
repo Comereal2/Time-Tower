@@ -63,18 +63,24 @@ public class ShopTile : MonoBehaviour
 
             if (isOneTimeUse)
             {
-                Destroy(itemTooltipPrefab);
                 Destroy(gameObject);
             }
+
+            item.cost += (int)Mathf.Max(1, item.cost * 1.2f); //Increase cost by at least 1, but scalable
 
             if (isRandomizedItem)
             {
                 RandomizeItem();
             }
 
-            //Update item description just in case price changes
+            //Update item description because price changes
             UpdateItemText();
         }
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(itemTooltip.transform.parent.gameObject);
     }
 
     /// <summary>

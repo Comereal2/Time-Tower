@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc248821b4b444946ae1b36621e21b23, type: 3}
+  m_Name: HeavySoul
+  m_EditorClassIdentifier: 
+  cost: 2
+  itemName: Heavy Soul
+  modifiers:
+  - {fileID: 11400000, guid: e2b6d9c5a4a17724da0787b01ebbf7eb, type: 2}
+  - {fileID: 11400000, guid: bc712060d8834024fa0f41cdb84e3cde, type: 2}
+  - {fileID: 11400000, guid: 9ac0dbbf81ec8a842b4dbf5d2a9bddbc, type: 2}
+  - {fileID: 11400000, guid: f205f1705a1096d4fa0704bb2c8d838f, type: 2}
+  itemIcon: {fileID: 21300000, guid: afb20bbd3d84932448e6f0400e61cc6f, type: 3}
+  spriteXScale: 0.15
+  spriteYScale: 0.15

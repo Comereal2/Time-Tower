@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2109896532325715267
+--- !u!1 &6582164882239764854
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2885957843938177676}
-  - component: {fileID: 9193536572067035689}
-  - component: {fileID: 1825869927837696924}
+  - component: {fileID: 1138471559653143672}
+  - component: {fileID: 1992192826911920857}
+  - component: {fileID: 5062728777213321531}
   m_Layer: 0
   m_Name: Pathfinder Manager
   m_TagString: Untagged
@@ -18,13 +18,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2885957843938177676
+--- !u!4 &1138471559653143672
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2109896532325715267}
+  m_GameObject: {fileID: 6582164882239764854}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -33,13 +33,13 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9193536572067035689
+--- !u!114 &1992192826911920857
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2109896532325715267}
+  m_GameObject: {fileID: 6582164882239764854}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 78396926cbbfc4ac3b48fc5fc34a87d1, type: 3}
@@ -47,9 +47,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAACQn+s3REDTWQIAAA4FAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF9VNty2jAQ/RVGzyVjLklI31ogpDMlMKGdvPhFWGusQZY8kswlGf69u7KNXTrTJy/n7OXsRXwyqV0BiTd2YaVYGgHsa4+Rzb70WvIFTnxn9EZ+QOPzLoXPyIkHnzfupUF8QGHO5OCtTL7pnSLnCMFSy9TYfC52MDXOO4RTrhwgZY2naI3QZ4+d8NN/opAzWsNHsj7Qeop6FzQT0B5s69o4Nm79++BW6kTxvABBmlvv4TVvlU1jN7UHKU+MUtLVUpg/F6HVTZGBBepVSI6dhfKDuxECGchd5ilfN3qVpg58Lcry80xaHFGVln031dxy7vaVsANXJRWaBElVyuU/bH8Q6NSa/KWpOoiogs9ksn/j54Q73xlrF551hIfpHLna862C9wz0q1lYU2qBpLclhZYOhrP257WxaQbJvsUrqTdgWfxnOdjDJfR+miqZb4m6G1fARpkw7rB6sLiYHyg4HIarUyBKKn47+MV33QuqiWdpnUeq7lKTvK0pLbmyeZgZdVP6qbEaAlyLLkBz5c9rTONvF3jDdcreMM+c3kpdvOaaJ3ATEuDWP4puqLU5XpflMnNcgstWpVdSQyuaiFec09RoXd1XdyZN2Ka0KU86YbtSir9Pi40enmDyOHlIt8l2DCLqD1L8bsX9eBIJMeIDFm5PauyTq3UltB4Pbk23yTXeGWX8CQdQ4clYflzIj9x0tUmdmk1iAfSqir6KBosF8EGKuZA4nA14L3XYNfuMmTLJHkR8LReHLucnb3ncZolZIQ/GExKzafi/iBnB1zteWzhIOFLxJtmFXf4AUEsDBBQAAAgIAACQn+ss00bobAAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz0jM011FQSi9KLMgoBooYgjilmSkgdrSSsZllqoW5hVlaUnKSSWqKga5hGpBOSjE1sTBISTFONFSKBaovqSxI9UvMTYXoCUgsyUjLzEvJzEvXcy/KTHEHGa0UWwsAUEsBAi0AFAAACAgAAJCf6zdEQNNZAgAADgUAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAAJCf6yzTRuhsAAAAeAAAAAkAJAAAAAAAAAAAAAAApgIAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAABdAwAAAAA=
+    dataString: UEsDBBQAAAgIAACQn+v37fWAXwIAACAFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF9VE1z2jAQ/SuMziVjAiGktxZI0pkmYUI6ufgirDXWIEseSeZz+O/dlW3s0mm5IN7u231vteLEpHYFJN7YJyvFixHAvvYYndmXXht8hj1fG72UR2hyPqXwGSXxkPPOvTSID4jmTA7eyuSbXitKjhAstUyNzediDVPjvEM45coBhqzxxNYInXpsj1/9B6Ic8HR7T6cjnh6i3hmPCWgPtk1tEpu0/l1IK3WieF6AIM1t9ji6iegznNS0Fgg0je5qRnQzpnZGKelqccwfimB+WWRggdwLydFrEDS4GSKQgVxnnpR32W9p6sDXMi0/zKTFoVVl2XdTTTLnblNJ3XJVUqNKVFXy5a9ofxDCqTX5c9N1EFEHn8lk884PCXe+M+guPOsID/PacbXhKwWfGehX82RNqQUGvS2JWjq4nbU/L8amGSSbFq+kXoFl8Z/rQg/n4H0/VTJfhcGPKmCpTBh3WAaweDU/UHBYFVeXQJRU/HLwwdfdnaoDj9I6j6HapSZ5K1NaSmXzMDNyU/qpsRpst0IBmit/WGAdf32DV7F/sx45PZ+6ex1rXsUVJcBtfhRdhRZmd7ktl5ndC7jsrfRKamhHTYFXHNTUaF0tWNdSQ1uWNuVJh7Yupfhzt9hw/ACT+8k4XSWrEYioP0jxeyXuRpNIiCEfsLB8UqNPrhaV0Ho8eG26La5x0ajiT9iCCm/G8t2TPObGtUlSp2aZWAD9VpEvmsFifXySYi4kzmYJ3ksd7pqdYqZMsgERXwrFweR87y2P2yoxK+TWeEJiNg3/IDEj+LLHCwtbCTtq3hQ7s/NvUEsDBBQAAAgIAACQn+ss00bobAAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz0jM011FQSi9KLMgoBooYgjilmSkgdrSSsZllqoW5hVlaUnKSSWqKga5hGpBOSjE1sTBISTFONFSKBaovqSxI9UvMTYXoCUgsyUjLzEvJzEvXcy/KTHEHGa0UWwsAUEsBAi0AFAAACAgAAJCf6/ft9YBfAgAAIAUAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAAJCf6yzTRuhsAAAAeAAAAAkAJAAAAAAAAAAAAAAArAIAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAABjAwAAAAA=
     upgradeData: 
-    file_cachedStartup: {fileID: 0}
+    file_cachedStartup: {fileID: 4900000, guid: bca9931f0c1d6084d939c06dd9a58463, type: 3}
     data_cachedStartup: 
     cacheStartup: 0
   showNavGraphs: 1
@@ -75,11 +75,43 @@ MonoBehaviour:
     _MeshEdgeColor: {r: 0, g: 0, b: 0, a: 0.5}
     _AreaColors:
     - {r: 0, g: 0, b: 0, a: 0}
-  tagNames: []
+  tagNames:
+  - Basic Ground
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 20
+  - 21
+  - 22
+  - 23
+  - 24
+  - 25
+  - 26
+  - 27
+  - 28
+  - 29
+  - 30
+  - 31
   heuristic: 2
   heuristicScale: 1
   threadCount: 1
-  maxFrameTime: 1
+  maxFrameTime: 10
   batchGraphUpdates: 0
   graphUpdateBatchingInterval: 0.2
   euclideanEmbedding:
@@ -88,19 +120,19 @@ MonoBehaviour:
     pivotPointRoot: {fileID: 0}
     spreadOutCount: 1
   showGraphs: 1
---- !u!114 &1825869927837696924
+--- !u!114 &5062728777213321531
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2109896532325715267}
+  m_GameObject: {fileID: 6582164882239764854}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a634230476dc478b88eceac73b1c8a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  updateDistance: 10
+  updateDistance: 20
   target: {fileID: 0}
   graphIndex: 0

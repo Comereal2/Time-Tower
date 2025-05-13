@@ -78,9 +78,7 @@ public class PlayerController : FightingController
     private void Awake()
     {
         playerController = this;
-        // I honestly hate the fact that I couldnt instantiate the emptyGameObject in the FightingController, but that Awake would always be overwritten by this one
-        emptyGameObject = new GameObject("Empty");
-        emptyGameObject.AddComponent<Text>();
+        emptyGameObject = GameManager.empty;
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         // I tried making the player not rely on the coinCounter, but couldnt find a way. Welp, guess this is the one thing you have to add to the scene with him. Whoops
@@ -213,13 +211,27 @@ public class PlayerController : FightingController
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        
+    }
+
+    private bool hasIFrames = false;
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
         var timerManager = gameObject.GetComponent<TimerManager>();
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            MusicManager.musicManager.PlaySound(playerHurtSFX);
-
             // Every enemy has an enemyBehavior
             var enemy = collision.gameObject.GetComponent<EnemyBehavior>();
+
+            if (hasIFrames)
+            {
+                return;
+            }
+
+            hasIFrames = true;
+            MusicManager.musicManager.PlaySound(playerHurtSFX);
+            StartCoroutine(DisableIFrames());
 
             /* The damage system has two cases, because score is a shield for the player in case of melee attacks to make the game a bit more bearable
              * An enemy always takes at least 1 score, even with 100% damage resistance, enemies also have a damageMultiplier, which negates itself with the resistance
@@ -231,28 +243,10 @@ public class PlayerController : FightingController
             if (enemy.enemyStats.isBoss)
             {
                 rb.velocity = (rb.position - (Vector2)collision.transform.position).normalized * 20f;
-                if (score > damage && !isHardMode)
-                {
-                    ChangeScore((int)-damage);
-                }
-                else
-                {
-                    timerManager.timeLeft -= 20f * (damage - score);
-                    ChangeScore(-score);
-                }
+                timerManager.timeLeft -= 20f * damage;
                 return;
             }
-            if(score > damage && !isHardMode)
-            {
-                ChangeScore((int)((float)-enemy.enemyStats.health * damage));
-            }
-            else
-            {
-                timerManager.timeLeft -= Mathf.Max(collision.gameObject.GetComponent<TimerManager>().timeLeft, 20f) * (damage - score);
-                ChangeScore(-score);
-            }
-            Destroy(collision.gameObject.GetComponent<TimerManager>().timerText.gameObject);
-            Destroy(enemy.healthBar);
+            timerManager.timeLeft -= Mathf.Max(collision.gameObject.GetComponent<TimerManager>().timeLeft, 20f) * damage * enemy.enemyStats.health;
             Destroy(collision.gameObject);
         }
         else if (collision.gameObject.CompareTag("Coin"))
@@ -269,6 +263,12 @@ public class PlayerController : FightingController
             timerManager.timeLeft -= 20f;
             Destroy(collision.gameObject);
         }
+    }
+
+    private IEnumerator DisableIFrames()
+    {
+        yield return new WaitForSeconds(0.5f);
+        hasIFrames = false;
     }
 
     /// <summary>
@@ -454,25 +454,42 @@ public class PlayerController : FightingController
     public void Defeat() 
     {
         Time.timeScale = 0;
-        GameObject defeatScreen = Instantiate(weaponCompare, coinCounter.transform.parent);
+		int floorNumber = GameObject.FindWithTag("DungeonGenerator").GetComponent<DungeonGeneration.DungeonGenerator>().floorNumber;
+        GameObject pauseMenu = Instantiate(menu, gameObject.transform);
+        pauseMenu.transform.GetChild(0).gameObject.SetActive(false);
+        pauseMenu.transform.GetChild(1).gameObject.SetActive(false);
+        GameObject defeatScreen = Instantiate(weaponCompare, pauseMenu.transform);
         defeatScreen.transform.position = new Vector2(Screen.width/2, Screen.height/2);
-        defeatScreen.transform.GetChild(0).GetComponent<TMP_Text>().text = $"<align=center><size=72>Score: {maxScore} \n </size><size=108><b>Defeat</b></size> \n <size=72>Floor: GetFloorNumber() </size></align>";
-        StartCoroutine(SpawnQuitButton());
+        defeatScreen.transform.GetChild(0).GetComponent<TMP_Text>().text = $"<align=center><size=72>Score: {maxScore} \n </size><size=108><b>Defeat</b></size> \n <size=72>Floor: {floorNumber} \n CR: {PlayerPrefs.GetInt("ChallengeRating", 0)}</size></align>";
+        StartCoroutine(SpawnButtons(pauseMenu));
         pauseButton.onClick.RemoveAllListeners();
+        foreach (Transform obj in coinCounter.transform.parent)
+        {
+            if (obj.gameObject.CompareTag("ContinueButtonERRORFIX"))
+            {
+                Destroy(obj.gameObject);
+            }
+        }
     }
 
     /// <summary>
     /// Only use this in Defeat()
     /// </summary>
-    private IEnumerator SpawnQuitButton()
+    private IEnumerator SpawnButtons(GameObject pauseMenu)
     {
         yield return new WaitForSecondsRealtime(2f);
-        GameObject pauseMenu = Instantiate(menu, gameObject.transform);
+        pauseMenu.transform.GetChild(0).gameObject.SetActive(true);
+        pauseMenu.transform.GetChild(1).gameObject.SetActive(true);
         var quitButton = pauseMenu.transform.GetChild(1);
+        var resumeButton = pauseMenu.transform.GetChild(0);
         quitButton.position += new Vector3(0, -50f, 0);
         quitButton.GetComponent<Button>().onClick.AddListener(ToMainMenu);
-        Destroy(pauseMenu.transform.GetChild(0).gameObject);
-        StopCoroutine(SpawnQuitButton());
+        resumeButton.position += new Vector3(0, 50f, 0);
+        resumeButton.GetChild(0).GetComponent<TMP_Text>().text = "Restart";
+        resumeButton.GetComponent<Button>().onClick.AddListener(() => {
+            Time.timeScale = 1;
+            SceneManager.LoadScene(1);
+        });
     }
 
     /// <summary>

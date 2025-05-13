@@ -1,5 +1,6 @@
 using Pathfinding;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,7 @@ public class EnemyBehavior : FightingController
     public Weapon equippedWeapon;
     private int currentHealth = 1;
     private bool displayHealthBars = true;
+    private bool hasCustomSprite = false;
     private GameObject enemyProjectile;
     private GameObject endOfLevelFlag;
     public GameObject healthBar;
@@ -19,33 +21,55 @@ public class EnemyBehavior : FightingController
     {
         if (enemyStats.health > 1) healthBar = Resources.Load<GameObject>("Prefabs/HealthBar");
         if (enemyStats.isRanged) enemyProjectile = Resources.Load<GameObject>("Prefabs/EnemyBullet");
-        endOfLevelFlag = Resources.Load<GameObject>("Prefabs/Rooms/Goal");
-        // I honestly hate the fact that I couldnt instantiate the emptyGameObject in the FightingController, but that Awake would always be overwritten by this one
-        emptyGameObject = new GameObject("Empty");
-        emptyGameObject.AddComponent<Text>();
+        endOfLevelFlag = Resources.Load<GameObject>("Prefabs/Goal");
         displayHealthBars = PlayerPrefs.GetInt("EnemyHealthBars", 1) == 1;
+        emptyGameObject = GameManager.empty;
     }
 
     private void Start()
     {
-        // Pathfinding and movement is handled in the pathfinding asset entirely, so we need to refer to that when setting enemy speed
-        // Every enemy should be able to pathfind, even stationary ones, if you want an enemy to not move, set their speed to 0
-        GetComponent<AIPath>().maxSpeed = enemyStats.speed;
         if (enemyStats.health > 1 && displayHealthBars)
         {
             healthBar = Instantiate(healthBar, GameObject.FindGameObjectWithTag("TimerCanvas").transform);
             currentHealth = enemyStats.health;
             UpdateHealthBar();
         }
-        if (enemyStats.sprite != null) transform.GetComponent<SpriteRenderer>().sprite = enemyStats.sprite;
+        if (enemyStats.sprite != null)
+        {
+            transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = enemyStats.sprite;
+            hasCustomSprite = true;
+        }
         gameObject.transform.localScale = new Vector2(enemyStats.scale, enemyStats.scale);
         if (enemyStats.isRanged) InvokeRepeating(nameof(DetermineShot), 0, enemyStats.rangedAttackCooldown);
         if (enemyStats.isBoss) MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.bossTheme);
+		if (enemyStats.drops != null)
+			equippedWeapon = enemyStats.drops.RandomWeapon();
+		else
+			Debug.LogWarning($"{enemyStats.name} does not have any drops");
+
+        // Pathfinding and movement is handled in the pathfinding asset entirely, so we need to refer to that when setting enemy speed
+        // Every enemy should be able to pathfind, even stationary ones, if you want an enemy to not move, set their speed to 0
+        GetComponent<AIPath>().maxSpeed = enemyStats.speed + Random.Range(-0.2f, 0.2f);
     }
 
     private void Update()
     {
         if (enemyStats.health > 1 && displayHealthBars) healthBar.transform.position = Camera.main.WorldToScreenPoint(transform.position + (Vector3)bossBarOffset);
+        if (hasCustomSprite)
+        {
+            transform.GetChild(0).rotation = Quaternion.identity;
+            var aiPath = GetComponent<AIPath>();
+            if (aiPath.desiredVelocity.x < 0)
+                transform.GetChild(0).localScale = new Vector2(-1f, 1f) * enemyStats.scale;
+            else if (aiPath.desiredVelocity.x > 0)
+                transform.GetChild(0).localScale = new Vector2(1f, 1f) * enemyStats.scale;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (enemyStats.health > 1 && displayHealthBars) Destroy(healthBar);
+        Destroy(gameObject.GetComponent<TimerManager>().timerText.gameObject);
     }
 
     /// <summary>
@@ -88,21 +112,19 @@ public class EnemyBehavior : FightingController
         }
         else
         {
-            player.gameObject.GetComponent<TimerManager>().timeLeft += gameObject.GetComponent<TimerManager>().timeLeft * player.timeMultiplier * player.enemyTimeMultiplier;
-            if (enemyStats.hasCoin)
+            player.gameObject.GetComponent<TimerManager>().timeLeft += gameObject.GetComponent<TimerManager>().timeLeft * player.timeMultiplier * player.enemyTimeMultiplier * 0.4f; //Turns out it was too strong so we nerf it a lot
+            if (Random.value < enemyStats.coinChance)
             {
                 Instantiate(player.coin, transform.position, Quaternion.identity, GameObject.FindGameObjectWithTag("RoomContainer").transform);
             }
             if (enemyStats.isBoss)
             {
                 MusicManager.musicManager.ChangeMusic(MusicManager.musicManager.dungeonTheme);
-                //This will only work once we merge everything
+				GameObject.FindWithTag("DungeonGenerator").SendMessage("BossDefeated");
                 Instantiate(endOfLevelFlag, transform.position, Quaternion.identity, transform.parent);
             }
-            if (enemyStats.health > 1 && displayHealthBars) Destroy(healthBar);
             MusicManager.musicManager.PlaySound(player.enemyDefeatSFX);
-            if(equippedWeapon != null) DropWeapon(equippedWeapon, gameObject.transform.position);
-            Destroy(gameObject.GetComponent<TimerManager>().timerText.gameObject);
+            if (equippedWeapon != null) DropWeapon(equippedWeapon, gameObject.transform.position);
             Destroy(gameObject);
         }
     }

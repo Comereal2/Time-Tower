@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dec673cd622393a43ac849d34682e10b, type: 3}
+  m_Name: ExFloor1
+  m_EditorClassIdentifier: 
+  mapSize: {x: 11, y: 11}
+  spawnRoomDims: {x: 4, y: 3}
+  bossRoomDims: {x: 4, y: 4}
+  minimumBossSpawnDistance: 20
+  minimumEnemySpawnerDistance: 8
+  roomAttempts: 3
+  maxNumRandomShops: 1
+  numEnemies: 5
+  enemySpawner: {fileID: 7086528610666175836, guid: 1fa4fe16687f40a4187222cd3f0c4ae5, type: 3}
+  bossSpawner: {fileID: 7086528610666175836, guid: 08a96fdfa6f003e468752d2754b9cc51, type: 3}
+  corridorGenerationStrategy: {fileID: 11400000, guid: 53fb409971bdc3241b56b7ecba88b840, type: 2}
+  checkParameters: 1
+  roomMinWidth: 4
+  roomMaxWidth: 5
+  roomMinHeight: 4
+  roomMaxHeight: 5
